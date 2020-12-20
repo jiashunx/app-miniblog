@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<div>
+    <label for="username">用户名</label>
+    <input id="username" type="text" />
+    <label for="password">密码</label>
+    <input id="password" type="password" />
+    <button id="btn-login">登陆</button>
+</div>
+<script type="text/javascript" src="./webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
+<script>
+    (function () {
+        let PageController = function () {
+            this.$InputUsername = $("#username");
+            this.$InputPassword = $("#password");
+            this.$BtnLogin = $("#btn-login");
+        }
+        PageController.prototype = {
+            BindEvent: function () {
+                let _this = this;
+                _this.$BtnLogin.click(function () {
+                    $.ajax({
+                        url: "./console/login",
+                        type: "POST",
+                        data: JSON.stringify({
+                            username: _this.$InputUsername.val(),
+                            password: btoa(_this.$InputPassword.val())
+                        }),
+                        contentType: "application/json",
+                        success: function (result, status, xhr) {
+                            if (xhr.status === 200 && result === "success") {
+                                window.location.href = "./console/index.html";
+                            } else {
+                                this.error(xhr);
+                            }
+                        },
+                        error: function (xhr) {
+                            alert("Login Failed, Response Status Code: " + xhr.status + ", Response Status Text: " + xhr.statusText);
+                        }
+                    })
+                })
+            }
+        }
+        new PageController().BindEvent();
+    })();
+</script>
+</body>
+</html>
