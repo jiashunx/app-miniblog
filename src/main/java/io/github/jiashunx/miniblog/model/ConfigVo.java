@@ -19,6 +19,9 @@ public class ConfigVo implements ConfigCheck {
     @JsonIgnore
     private ConfigVo cachedConfigVo;
 
+    private ConfigVo() {
+        this(false);
+    }
     private ConfigVo(boolean cloned) {
         this.cloned = cloned;
     }

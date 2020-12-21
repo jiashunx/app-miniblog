@@ -80,8 +80,10 @@ public class FileHolder {
         ConfigVo configVo = null;
         try {
             String json = IOUtils.loadFileContentFromDisk(configPath, StandardCharsets.UTF_8);
-            configVo = MRestSerializer.jsonDeserialize(ConfigVo.class, json.getBytes(StandardCharsets.UTF_8));
-            configVo = configVo.initialize();
+            if (logger.isInfoEnabled()) {
+                logger.info("load config: {}", json);
+            }
+            configVo = MRestSerializer.jsonToObj(json, ConfigVo.class).initialize();
         } catch (Throwable throwable) {
             if (logger.isErrorEnabled()) {
                 logger.error("parse config vo failed, filepath: {}, error message: {}", configPath, throwable.getMessage());
