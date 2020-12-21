@@ -16,7 +16,7 @@ public class ConfigVo implements ConfigCheck {
     private String jwtSecretKey;
     @JsonIgnore
     private MRestJWTHelper jwtHelper;
-
+    @JsonIgnore
     private ConfigVo cachedConfigVo;
 
     private ConfigVo(boolean cloned) {
