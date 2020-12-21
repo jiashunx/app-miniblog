@@ -44,7 +44,7 @@ public class FileHolder {
         try {
             FileLock.write(this.configPath, file -> {
                 // 配置持久化后更新内存缓存
-                write(this.configVo, file);
+                IOUtils.write(this.configVo, true, file);
                 this.configVo.cacheUpdate();
             });
         } catch (Throwable throwable) {
@@ -52,25 +52,6 @@ public class FileHolder {
                 logger.error("store config failed, configpath: {}", configPath, throwable);
             }
         }
-    }
-
-    private static void write(byte[] bytes, File file) {
-        String filePath = file.getAbsolutePath();
-        FileUtils.newFile(filePath);
-        try (OutputStream outputStream = new FileOutputStream(file);
-             InputStream inputStream = new ByteArrayInputStream(bytes);) {
-            IOUtils.copy(inputStream, outputStream);
-        } catch (Throwable throwable) {
-            if (logger.isErrorEnabled()) {
-                logger.error("write content to file failed, filepath: {}", filePath, throwable);
-            }
-        }
-    }
-    private static void write(String string, File file) {
-        write(string.getBytes(StandardCharsets.UTF_8), file);
-    }
-    private static void write(Object object, File file) {
-        write(MRestSerializer.objectToJsonBytes(object), file);
     }
 
     private ConfigVo parseConfigVo() {
@@ -81,7 +62,7 @@ public class FileHolder {
         try {
             String json = IOUtils.loadFileContentFromDisk(configPath, StandardCharsets.UTF_8);
             if (logger.isInfoEnabled()) {
-                logger.info("load config: {}", json);
+                logger.info("load config:\n{}", json);
             }
             configVo = MRestSerializer.jsonToObj(json, ConfigVo.class).initialize();
         } catch (Throwable throwable) {
