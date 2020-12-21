@@ -6,6 +6,7 @@ import io.github.jiashunx.masker.rest.framework.util.FileUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.masker.rest.framework.util.MRestUtils;
 import io.github.jiashunx.miniblog.console.AuthFilter;
+import io.github.jiashunx.miniblog.file.FileLock;
 import io.github.jiashunx.miniblog.model.LoginUserVo;
 import io.github.jiashunx.miniblog.util.BlogUtils;
 import org.apache.commons.cli.*;
@@ -46,7 +47,9 @@ public class MiniBlogBoot {
         this.contextPath = commandLine.hasOption("context") ? commandLine.getOptionValue("context") : "/";
         this.listenPort = Integer.parseInt(commandLine.hasOption("port") ? commandLine.getOptionValue("port") : "8080");
         this.rootPath = BlogUtils.formatPath(commandLine.hasOption("path") ? commandLine.getOptionValue("path") : MRestUtils.getUserDirPath());
-        FileUtils.newDirectory(this.rootPath);
+        FileLock.write(this.rootPath, f -> {
+            FileUtils.newDirectory(f.getAbsolutePath());
+        });
         String authUsername = commandLine.hasOption("auser") ? commandLine.getOptionValue("auser") : "admin";
         String authPassword = Base64.getEncoder().encodeToString((commandLine.hasOption("apwd") ? commandLine.getOptionValue("apwd") : "admin").getBytes());
         this.loginUserVo = new LoginUserVo(authUsername, authPassword);
