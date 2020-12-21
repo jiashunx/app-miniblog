@@ -37,10 +37,10 @@ public class AuthFilter implements MRestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        MRestJWTHelper jwtHelper = blogBoot.getJwtHelper();
+        MRestJWTHelper jwtHelper = blogBoot.getConfigVo().getJwtHelper();
         if (requestUrl.equals("/console/login") && HttpMethod.POST.equals(request.getMethod())) {
             LoginUserVo userVo = request.parseBodyToObj(LoginUserVo.class);
-            LoginUserVo loginUserVo = blogBoot.getLoginUserVo();
+            LoginUserVo loginUserVo = blogBoot.getConfigVo().getLoginUserVo();
             if (loginUserVo.getUsername().equals(userVo.getUsername()) && loginUserVo.getPassword().equals(userVo.getPassword())) {
                 String jwtToken = jwtHelper.newToken();
                 Cookie jwtCookie = new DefaultCookie(COOKIE_KEY, jwtToken);

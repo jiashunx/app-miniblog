@@ -24,4 +24,15 @@ JDK8、[masker-rest][1]、jQuery、JFinal Enjoy(模板引擎)
   - 标签及对应文章查询
   - 分类及对应文章查询
 
+### 磁盘文件层次结构设计
+
+   - /root (根目录)
+      - /config.mb (总的配置文件)
+      - /blogs (博客MarkDown文件存放目录)
+         - file0name (递增)
+         - file1name
+      - /images (图片文件存放目录)
+         - image0name (递增)
+         - image1name
+
 [1]: https://github.com/jiashunx/masker-rest

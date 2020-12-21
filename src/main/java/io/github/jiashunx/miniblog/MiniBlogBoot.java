@@ -6,9 +6,12 @@ import io.github.jiashunx.masker.rest.framework.util.FileUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.masker.rest.framework.util.MRestUtils;
 import io.github.jiashunx.miniblog.console.AuthFilter;
+import io.github.jiashunx.miniblog.file.FileHolder;
 import io.github.jiashunx.miniblog.file.FileLock;
+import io.github.jiashunx.miniblog.model.ConfigVo;
 import io.github.jiashunx.miniblog.model.LoginUserVo;
 import io.github.jiashunx.miniblog.util.BlogUtils;
+import io.github.jiashunx.miniblog.util.Constants;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +33,8 @@ public class MiniBlogBoot {
 
     private final String contextPath;
     private final int listenPort;
-    private final String rootPath;
-    private final LoginUserVo loginUserVo;
-    private final MRestJWTHelper jwtHelper;
+    private final FileHolder fileHolder;
+    private final ConfigVo configVo;
 
     public MiniBlogBoot(String[] args) throws ParseException {
         CommandLineParser commandLineParser = new BasicParser();
@@ -46,14 +48,15 @@ public class MiniBlogBoot {
         CommandLine commandLine = commandLineParser.parse(options, args);
         this.contextPath = commandLine.hasOption("context") ? commandLine.getOptionValue("context") : "/";
         this.listenPort = Integer.parseInt(commandLine.hasOption("port") ? commandLine.getOptionValue("port") : "8080");
-        this.rootPath = BlogUtils.formatPath(commandLine.hasOption("path") ? commandLine.getOptionValue("path") : MRestUtils.getUserDirPath());
-        FileLock.write(this.rootPath, f -> {
-            FileUtils.newDirectory(f.getAbsolutePath());
-        });
-        String authUsername = commandLine.hasOption("auser") ? commandLine.getOptionValue("auser") : "admin";
-        String authPassword = Base64.getEncoder().encodeToString((commandLine.hasOption("apwd") ? commandLine.getOptionValue("apwd") : "admin").getBytes());
-        this.loginUserVo = new LoginUserVo(authUsername, authPassword);
-        this.jwtHelper = new MRestJWTHelper("zxcvmnblkjhgfdsaqwertyupoi");
+        String rootPath = BlogUtils.formatPath(commandLine.hasOption("path") ? commandLine.getOptionValue("path") : MRestUtils.getUserDirPath());
+        this.fileHolder = new FileHolder(rootPath);
+        String authUsername = commandLine.hasOption("auser") ? commandLine.getOptionValue("auser") : Constants.DEFAULT_AUTH_USERNAME;
+        String authPassword = Base64.getEncoder().encodeToString((commandLine.hasOption("apwd") ? commandLine.getOptionValue("apwd") : Constants.DEFAULT_AUTH_PASSWORD).getBytes());
+        this.configVo = this.fileHolder.getConfigVo();
+        configVo.setLoginUserVo(new LoginUserVo(authUsername, authPassword));
+        // 进行配置回写
+        this.fileHolder.storeConfigVo();
+
         if (logger.isInfoEnabled()) {
             logger.info("blog service start: {}", this);
         }
@@ -72,25 +75,20 @@ public class MiniBlogBoot {
         return "MiniBlogBoot{" +
                 "contextPath=" + contextPath +
                 ", listenPort=" + listenPort +
-                ", rootPath='" + rootPath + '\'' +
-                ", loginUserVo=" + loginUserVo +
-                ", jwtHelper=" + jwtHelper +
+                ", fileHolder='" + fileHolder + '\'' +
                 '}';
     }
 
-    public MRestJWTHelper getJwtHelper() {
-        return jwtHelper;
-    }
-    public LoginUserVo getLoginUserVo() {
-        return loginUserVo;
-    }
     public int getListenPort() {
         return listenPort;
     }
-    public String getRootPath() {
-        return rootPath;
+    public FileHolder getFileHolder() {
+        return fileHolder;
     }
     public String getContextPath() {
         return contextPath;
+    }
+    public ConfigVo getConfigVo() {
+        return configVo;
     }
 }
