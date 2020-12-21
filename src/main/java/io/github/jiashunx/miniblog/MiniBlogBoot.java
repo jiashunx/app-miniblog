@@ -53,7 +53,11 @@ public class MiniBlogBoot {
         String authUsername = commandLine.hasOption("auser") ? commandLine.getOptionValue("auser") : Constants.DEFAULT_AUTH_USERNAME;
         String authPassword = Base64.getEncoder().encodeToString((commandLine.hasOption("apwd") ? commandLine.getOptionValue("apwd") : Constants.DEFAULT_AUTH_PASSWORD).getBytes());
         this.configVo = this.fileHolder.getConfigVo();
-        configVo.setLoginUserVo(new LoginUserVo(authUsername, authPassword));
+        if (!authUsername.equals(Constants.DEFAULT_AUTH_USERNAME)
+                ||!authPassword.equals(Constants.DEFAULT_AUTH_PASSWORD_BASE64)) {
+            // 只有当手工指定了用户名密码的情况下才使用新的用户名密码.
+            configVo.setLoginUserVo(new LoginUserVo(authUsername, authPassword));
+        }
         // 进行配置回写
         this.fileHolder.storeConfigVo();
 
