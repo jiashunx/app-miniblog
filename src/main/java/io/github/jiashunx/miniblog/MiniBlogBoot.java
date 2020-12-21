@@ -2,12 +2,9 @@ package io.github.jiashunx.miniblog;
 
 import io.github.jiashunx.masker.rest.framework.MRestServer;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
-import io.github.jiashunx.masker.rest.framework.util.FileUtils;
-import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.masker.rest.framework.util.MRestUtils;
 import io.github.jiashunx.miniblog.console.AuthFilter;
 import io.github.jiashunx.miniblog.file.FileHolder;
-import io.github.jiashunx.miniblog.file.FileLock;
 import io.github.jiashunx.miniblog.model.ConfigVo;
 import io.github.jiashunx.miniblog.model.LoginUserVo;
 import io.github.jiashunx.miniblog.util.BlogUtils;
@@ -58,6 +55,9 @@ public class MiniBlogBoot {
             // 只有当手工指定了用户名密码的情况下才使用新的用户名密码.
             configVo.setLoginUserVo(new LoginUserVo(authUsername, authPassword));
         }
+        long lastBootTimeMillis = System.currentTimeMillis();
+        configVo.setLastBootTimeMillis(lastBootTimeMillis);
+        configVo.setLastBootTimeStr(BlogUtils.format(lastBootTimeMillis, BlogUtils.yyyyMMddHHmmssSSS));
         // 进行配置回写
         this.fileHolder.storeConfigVo();
 

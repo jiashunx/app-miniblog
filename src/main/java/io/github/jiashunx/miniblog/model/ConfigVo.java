@@ -18,6 +18,8 @@ public class ConfigVo implements ConfigCheck {
     private MRestJWTHelper jwtHelper;
     @JsonIgnore
     private ConfigVo cachedConfigVo;
+    private long lastBootTimeMillis;
+    private String lastBootTimeStr;
 
     private ConfigVo() {
         this(false);
@@ -78,5 +80,17 @@ public class ConfigVo implements ConfigCheck {
     }
     public void setJwtHelper(MRestJWTHelper jwtHelper) {
         this.jwtHelper = jwtHelper;
+    }
+    public long getLastBootTimeMillis() {
+        return lastBootTimeMillis;
+    }
+    public void setLastBootTimeMillis(long lastBootTimeMillis) {
+        this.lastBootTimeMillis = lastBootTimeMillis;
+    }
+    public String getLastBootTimeStr() {
+        return lastBootTimeStr;
+    }
+    public void setLastBootTimeStr(String lastBootTimeStr) {
+        this.lastBootTimeStr = lastBootTimeStr;
     }
 }
