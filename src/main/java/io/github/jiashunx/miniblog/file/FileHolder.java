@@ -41,35 +41,35 @@ public class FileHolder {
     }
 
     public synchronized void storeConfigVo() {
-        try {
-            FileLock.write(this.configPath, file -> {
+        FileLock.write(this.configPath, file -> {
+            try {
                 // 配置持久化后更新内存缓存
                 IOUtils.write(this.configVo, true, file);
                 this.configVo.cacheUpdate();
-            });
-        } catch (Throwable throwable) {
-            if (logger.isErrorEnabled()) {
-                logger.error("store config failed, configpath: {}", configPath, throwable);
+            } catch (Throwable throwable) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("store config failed, configpath: {}", configPath, throwable);
+                }
             }
-        }
+        });
     }
 
     private ConfigVo parseConfigVo() {
-        FileLock.write(configPath, f -> {
-            FileUtils.newFile(configPath);
+        FileUtils.newFile(configPath);
+        ConfigVo configVo = FileLock.write(configPath, f -> {
+            try {
+                String json = IOUtils.loadFileContentFromDisk(configPath, StandardCharsets.UTF_8);
+                if (logger.isInfoEnabled()) {
+                    logger.info("load config:\n{}", json);
+                }
+                return MRestSerializer.jsonToObj(json, ConfigVo.class).initialize();
+            } catch (Throwable throwable) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("parse config vo failed, filepath: {}", configPath, throwable);
+                }
+            }
+            return null;
         });
-        ConfigVo configVo = null;
-        try {
-            String json = IOUtils.loadFileContentFromDisk(configPath, StandardCharsets.UTF_8);
-            if (logger.isInfoEnabled()) {
-                logger.info("load config:\n{}", json);
-            }
-            configVo = MRestSerializer.jsonToObj(json, ConfigVo.class).initialize();
-        } catch (Throwable throwable) {
-            if (logger.isErrorEnabled()) {
-                logger.error("parse config vo failed, filepath: {}, error message: {}", configPath, throwable.getMessage());
-            }
-        }
         if (configVo == null) {
             configVo = ConfigVo.buildDefault();
         }
