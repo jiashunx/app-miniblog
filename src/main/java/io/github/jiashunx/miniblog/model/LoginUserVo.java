@@ -5,7 +5,7 @@ import io.github.jiashunx.masker.rest.framework.util.StringUtils;
 /**
  * @author jiashunx
  */
-public class LoginUserVo implements ConfigCheck {
+public class LoginUserVo implements ConfigCheck, Cloneable {
 
     private String username;
     private String password;
@@ -15,6 +15,15 @@ public class LoginUserVo implements ConfigCheck {
     public LoginUserVo(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    @Override
+    public LoginUserVo clone() {
+        try {
+            return (LoginUserVo) super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
 
     @Override

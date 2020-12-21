@@ -1,7 +1,6 @@
 package io.github.jiashunx.miniblog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.miniblog.util.Constants;
 
@@ -11,15 +10,27 @@ import io.github.jiashunx.miniblog.util.Constants;
  */
 public class ConfigVo implements ConfigCheck {
 
+    @JsonIgnore
+    private boolean cloned;
     private LoginUserVo loginUserVo;
     private String jwtSecretKey;
     @JsonIgnore
     private MRestJWTHelper jwtHelper;
 
-    private ConfigVo() {}
+    private ConfigVo cachedConfigVo;
+
+    private ConfigVo(boolean cloned) {
+        this.cloned = cloned;
+    }
+    private ConfigVo(boolean cloned, ConfigVo vo) {
+        this(cloned);
+        this.loginUserVo = vo.loginUserVo.clone();
+        this.jwtSecretKey = vo.jwtSecretKey;
+        this.initialize();
+    }
 
     public static ConfigVo buildDefault() {
-        ConfigVo vo = new ConfigVo();
+        ConfigVo vo = new ConfigVo(false);
         vo.setLoginUserVo(new LoginUserVo(Constants.DEFAULT_AUTH_USERNAME, Constants.DEFAULT_AUTH_PASSWORD_BASE64));
         vo.setJwtSecretKey(Constants.DEFAULT_JWT_SECRET_KEY);
         vo.initialize();
@@ -28,6 +39,17 @@ public class ConfigVo implements ConfigCheck {
 
     public ConfigVo initialize() {
         this.jwtHelper = new MRestJWTHelper(getJwtSecretKey());
+        return cacheUpdate();
+    }
+
+    public ConfigVo getCachedConfigVo() {
+        return this.cachedConfigVo;
+    }
+
+    public ConfigVo cacheUpdate() {
+        if (!this.cloned) {
+            this.cachedConfigVo = new ConfigVo(true, this);
+        }
         return this;
     }
 

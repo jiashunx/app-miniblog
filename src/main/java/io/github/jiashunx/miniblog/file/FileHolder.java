@@ -43,7 +43,9 @@ public class FileHolder {
     public synchronized void storeConfigVo() {
         try {
             FileLock.write(this.configPath, file -> {
+                // 配置持久化后更新内存缓存
                 write(this.configVo, file);
+                this.configVo.cacheUpdate();
             });
         } catch (Throwable throwable) {
             if (logger.isErrorEnabled()) {
