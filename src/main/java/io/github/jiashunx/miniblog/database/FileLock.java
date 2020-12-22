@@ -1,4 +1,4 @@
-package io.github.jiashunx.miniblog.file;
+package io.github.jiashunx.miniblog.database;
 
 import io.github.jiashunx.masker.rest.framework.util.FileUtils;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import java.util.function.Function;
  * 文件锁(使用读写锁实现).
  * @author jiashunx
  */
-public class FileLock {
+class FileLock {
 
     private static final Logger logger = LoggerFactory.getLogger(FileLock.class);
 

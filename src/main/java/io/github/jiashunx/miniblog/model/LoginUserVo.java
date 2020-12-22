@@ -1,11 +1,9 @@
 package io.github.jiashunx.miniblog.model;
 
-import io.github.jiashunx.masker.rest.framework.util.StringUtils;
-
 /**
  * @author jiashunx
  */
-public class LoginUserVo implements ConfigCheck, Cloneable {
+public class LoginUserVo implements Cloneable {
 
     private String username;
     private String password;
@@ -24,11 +22,6 @@ public class LoginUserVo implements ConfigCheck, Cloneable {
         } catch (CloneNotSupportedException e) {
             return null;
         }
-    }
-
-    @Override
-    public boolean check0() {
-        return StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password);
     }
 
     @Override

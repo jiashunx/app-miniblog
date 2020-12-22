@@ -4,7 +4,6 @@ import io.github.jiashunx.masker.rest.framework.model.DiskFileResource;
 import io.github.jiashunx.masker.rest.framework.serialize.MRestSerializer;
 import io.github.jiashunx.masker.rest.framework.util.FileUtils;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
-import io.github.jiashunx.miniblog.file.FileLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

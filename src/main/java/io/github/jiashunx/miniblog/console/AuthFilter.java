@@ -7,6 +7,7 @@ import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.masker.rest.framework.util.StringUtils;
 import io.github.jiashunx.miniblog.MiniBlogBoot;
+import io.github.jiashunx.miniblog.database.DatabaseClient;
 import io.github.jiashunx.miniblog.model.LoginUserVo;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -25,9 +26,11 @@ public class AuthFilter implements MRestFilter {
     private static final long COOKIE_TIMEOUT_MILLIS = 60*60*1000L;
 
     private final MiniBlogBoot blogBoot;
+    private final DatabaseClient databaseClient;
 
     public AuthFilter(MiniBlogBoot blogBoot) {
         this.blogBoot = Objects.requireNonNull(blogBoot);
+        this.databaseClient = this.blogBoot.getDatabaseClient();
     }
 
     @Override
@@ -37,10 +40,10 @@ public class AuthFilter implements MRestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        MRestJWTHelper jwtHelper = blogBoot.getConfigVo().getCachedConfigVo().getJwtHelper();
+        MRestJWTHelper jwtHelper = databaseClient.getConfigVo().getCacheObj().getJwtHelper();
         if (requestUrl.equals("/console/login") && HttpMethod.POST.equals(request.getMethod())) {
             LoginUserVo userVo = request.parseBodyToObj(LoginUserVo.class);
-            LoginUserVo loginUserVo = blogBoot.getConfigVo().getCachedConfigVo().getLoginUserVo();
+            LoginUserVo loginUserVo = databaseClient.getConfigVo().getCacheObj().getLoginUserVo();
             if (loginUserVo.getUsername().equals(userVo.getUsername()) && loginUserVo.getPassword().equals(userVo.getPassword())) {
                 String jwtToken = jwtHelper.newToken();
                 Cookie jwtCookie = new DefaultCookie(COOKIE_KEY, jwtToken);
