@@ -19,6 +19,7 @@ public class ConfigVo extends Vo<ConfigVo> {
     private long lastBootTimeMillis;
     private String lastBootTimeStr;
     private List<ImageVo> imageVoList;
+    private List<TagVo> tagVoList;
 
     @JsonIgnore
     private MRestJWTHelper jwtHelper;
@@ -44,16 +45,30 @@ public class ConfigVo extends Vo<ConfigVo> {
 
     protected void init0() {
         this.jwtHelper = new MRestJWTHelper(getJwtSecretKey());
+        if (this.imageVoList == null) {
+            this.imageVoList = new ArrayList<>();
+        }
+        if (this.tagVoList == null) {
+            this.tagVoList = new ArrayList<>();
+        }
     }
 
     public ConfigVo buildCacheObj() {
         ConfigVo cache = new ConfigVo(false);
         cache.loginUserVo = this.loginUserVo.clone();
         cache.jwtSecretKey = this.jwtSecretKey;
+        cache.lastBootTimeMillis = this.lastBootTimeMillis;
+        cache.lastBootTimeStr = this.lastBootTimeStr;
         cache.imageVoList = new ArrayList<>();
         if (this.imageVoList != null && !this.imageVoList.isEmpty()) {
             for (ImageVo imageVo: this.imageVoList) {
                 cache.imageVoList.add(imageVo.clone());
+            }
+        }
+        cache.tagVoList = new ArrayList<>();
+        if (this.tagVoList != null && !this.tagVoList.isEmpty()) {
+            for (TagVo tagVo: this.tagVoList) {
+                cache.tagVoList.add(tagVo.clone());
             }
         }
         return cache;
@@ -98,5 +113,11 @@ public class ConfigVo extends Vo<ConfigVo> {
     }
     public void setImageVoList(List<ImageVo> imageVoList) {
         this.imageVoList = imageVoList;
+    }
+    public List<TagVo> getTagVoList() {
+        return tagVoList;
+    }
+    public void setTagVoList(List<TagVo> tagVoList) {
+        this.tagVoList = tagVoList;
     }
 }
