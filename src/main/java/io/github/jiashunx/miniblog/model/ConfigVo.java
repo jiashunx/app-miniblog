@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.miniblog.util.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 博客配置总入口
  * @author jiashunx
@@ -20,6 +23,7 @@ public class ConfigVo implements ConfigCheck {
     private ConfigVo cachedConfigVo;
     private long lastBootTimeMillis;
     private String lastBootTimeStr;
+    private List<ImageVo> imageVoList;
 
     private ConfigVo() {
         this(false);
@@ -31,6 +35,12 @@ public class ConfigVo implements ConfigCheck {
         this(cloned);
         this.loginUserVo = vo.loginUserVo.clone();
         this.jwtSecretKey = vo.jwtSecretKey;
+        this.imageVoList = new ArrayList<>();
+        if (vo.imageVoList != null && !vo.imageVoList.isEmpty()) {
+            for (ImageVo imageVo: vo.imageVoList) {
+                this.imageVoList.add(imageVo.clone());
+            }
+        }
         this.initialize();
     }
 
@@ -38,6 +48,7 @@ public class ConfigVo implements ConfigCheck {
         ConfigVo vo = new ConfigVo(false);
         vo.setLoginUserVo(new LoginUserVo(Constants.DEFAULT_AUTH_USERNAME, Constants.DEFAULT_AUTH_PASSWORD_BASE64));
         vo.setJwtSecretKey(Constants.DEFAULT_JWT_SECRET_KEY);
+        vo.setImageVoList(new ArrayList<>());
         vo.initialize();
         return vo;
     }
@@ -92,5 +103,11 @@ public class ConfigVo implements ConfigCheck {
     }
     public void setLastBootTimeStr(String lastBootTimeStr) {
         this.lastBootTimeStr = lastBootTimeStr;
+    }
+    public List<ImageVo> getImageVoList() {
+        return imageVoList;
+    }
+    public void setImageVoList(List<ImageVo> imageVoList) {
+        this.imageVoList = imageVoList;
     }
 }
