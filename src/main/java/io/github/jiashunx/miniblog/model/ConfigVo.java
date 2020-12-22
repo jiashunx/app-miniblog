@@ -20,6 +20,7 @@ public class ConfigVo extends Vo<ConfigVo> {
     private String lastBootTimeStr;
     private List<ImageVo> imageVoList;
     private List<TagVo> tagVoList;
+    private List<CategoryVo> categoryVoList;
 
     @JsonIgnore
     private MRestJWTHelper jwtHelper;
@@ -51,6 +52,9 @@ public class ConfigVo extends Vo<ConfigVo> {
         if (this.tagVoList == null) {
             this.tagVoList = new ArrayList<>();
         }
+        if (this.categoryVoList == null) {
+            this.categoryVoList = new ArrayList<>();
+        }
     }
 
     public ConfigVo buildCacheObj() {
@@ -69,6 +73,12 @@ public class ConfigVo extends Vo<ConfigVo> {
         if (this.tagVoList != null && !this.tagVoList.isEmpty()) {
             for (TagVo tagVo: this.tagVoList) {
                 cache.tagVoList.add(tagVo.clone());
+            }
+        }
+        cache.categoryVoList = new ArrayList<>();
+        if (this.categoryVoList != null && !this.categoryVoList.isEmpty()) {
+            for (CategoryVo categoryVo: this.categoryVoList) {
+                cache.categoryVoList.add(categoryVo.clone());
             }
         }
         return cache;
@@ -119,5 +129,11 @@ public class ConfigVo extends Vo<ConfigVo> {
     }
     public void setTagVoList(List<TagVo> tagVoList) {
         this.tagVoList = tagVoList;
+    }
+    public List<CategoryVo> getCategoryVoList() {
+        return categoryVoList;
+    }
+    public void setCategoryVoList(List<CategoryVo> categoryVoList) {
+        this.categoryVoList = categoryVoList;
     }
 }
