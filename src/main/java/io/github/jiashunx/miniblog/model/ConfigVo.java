@@ -2,17 +2,15 @@ package io.github.jiashunx.miniblog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
-import io.github.jiashunx.miniblog.database.Database;
-import io.github.jiashunx.miniblog.util.Constants;
+import io.github.jiashunx.miniblog.cache.CacheVo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 博客配置总入口
  * @author jiashunx
  */
-public class ConfigVo extends Vo<ConfigVo> {
+public class ConfigVo extends CacheVo<ConfigVo> implements IVo {
 
     private LoginUserVo loginUserVo;
     private String jwtSecretKey;
@@ -25,67 +23,8 @@ public class ConfigVo extends Vo<ConfigVo> {
     @JsonIgnore
     private MRestJWTHelper jwtHelper;
 
-    private ConfigVo() {
+    public ConfigVo() {
         super();
-    }
-
-    private ConfigVo(boolean cacheEnable) {
-        super(cacheEnable);
-    }
-
-    public static ConfigVo buildDefault0() {
-        ConfigVo vo = new ConfigVo();
-        vo.setLoginUserVo(new LoginUserVo(Constants.DEFAULT_AUTH_USERNAME, Constants.DEFAULT_AUTH_PASSWORD_BASE64));
-        vo.setJwtSecretKey(Constants.DEFAULT_JWT_SECRET_KEY);
-        return vo;
-    }
-
-    protected ConfigVo getObj() {
-        return this;
-    }
-
-    protected void init0() {
-        this.jwtHelper = new MRestJWTHelper(getJwtSecretKey());
-        if (this.imageVoList == null) {
-            this.imageVoList = new ArrayList<>();
-        }
-        if (this.tagVoList == null) {
-            this.tagVoList = new ArrayList<>();
-        }
-        if (this.categoryVoList == null) {
-            this.categoryVoList = new ArrayList<>();
-        }
-    }
-
-    public ConfigVo buildCacheObj() {
-        ConfigVo cache = new ConfigVo(false);
-        cache.loginUserVo = this.loginUserVo.clone();
-        cache.jwtSecretKey = this.jwtSecretKey;
-        cache.lastBootTimeMillis = this.lastBootTimeMillis;
-        cache.lastBootTimeStr = this.lastBootTimeStr;
-        cache.imageVoList = new ArrayList<>();
-        if (this.imageVoList != null && !this.imageVoList.isEmpty()) {
-            for (ImageVo imageVo: this.imageVoList) {
-                cache.imageVoList.add(imageVo.clone());
-            }
-        }
-        cache.tagVoList = new ArrayList<>();
-        if (this.tagVoList != null && !this.tagVoList.isEmpty()) {
-            for (TagVo tagVo: this.tagVoList) {
-                cache.tagVoList.add(tagVo.clone());
-            }
-        }
-        cache.categoryVoList = new ArrayList<>();
-        if (this.categoryVoList != null && !this.categoryVoList.isEmpty()) {
-            for (CategoryVo categoryVo: this.categoryVoList) {
-                cache.categoryVoList.add(categoryVo.clone());
-            }
-        }
-        return cache;
-    }
-
-    public void save(Database database) {
-        super.save(database, "/config.mb");
     }
 
     public LoginUserVo getLoginUserVo() {

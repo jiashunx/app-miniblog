@@ -3,10 +3,9 @@ package io.github.jiashunx.miniblog.cache;
 /**
  * @author jiashunx
  */
-public interface ICache<T> {
+public interface ICacheVo<T> {
 
     T getCacheObj();
-
-    T buildCacheObj();
+    void setCacheObj(T t);
 
 }

@@ -7,8 +7,8 @@ import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.masker.rest.framework.util.StringUtils;
 import io.github.jiashunx.miniblog.MiniBlogBoot;
-import io.github.jiashunx.miniblog.database.DatabaseClient;
 import io.github.jiashunx.miniblog.model.LoginUserVo;
+import io.github.jiashunx.miniblog.service.ConfigService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.cookie.Cookie;
@@ -26,11 +26,11 @@ public class AuthFilter implements MRestFilter {
     private static final long COOKIE_TIMEOUT_MILLIS = 60*60*1000L;
 
     private final MiniBlogBoot blogBoot;
-    private final DatabaseClient databaseClient;
+    private final ConfigService configService;
 
     public AuthFilter(MiniBlogBoot blogBoot) {
         this.blogBoot = Objects.requireNonNull(blogBoot);
-        this.databaseClient = this.blogBoot.getDatabaseClient();
+        this.configService = this.blogBoot.getConfigService();
     }
 
     @Override
@@ -40,10 +40,10 @@ public class AuthFilter implements MRestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        MRestJWTHelper jwtHelper = databaseClient.getConfigVo().getCacheObj().getJwtHelper();
+        MRestJWTHelper jwtHelper = configService.get().getCacheObj().getJwtHelper();
         if (requestUrl.equals("/console/login") && HttpMethod.POST.equals(request.getMethod())) {
             LoginUserVo userVo = request.parseBodyToObj(LoginUserVo.class);
-            LoginUserVo loginUserVo = databaseClient.getConfigVo().getCacheObj().getLoginUserVo();
+            LoginUserVo loginUserVo = configService.get().getCacheObj().getLoginUserVo();
             if (loginUserVo.getUsername().equals(userVo.getUsername()) && loginUserVo.getPassword().equals(userVo.getPassword())) {
                 String jwtToken = jwtHelper.newToken();
                 Cookie jwtCookie = new DefaultCookie(COOKIE_KEY, jwtToken);

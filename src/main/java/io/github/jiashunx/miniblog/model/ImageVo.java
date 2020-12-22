@@ -27,7 +27,7 @@ public class ImageVo implements Cloneable {
     private String createTimeStr;
 
     @Override
-    protected ImageVo clone() {
+    public ImageVo clone() {
         try {
             return (ImageVo) super.clone();
         } catch (CloneNotSupportedException e) {}
