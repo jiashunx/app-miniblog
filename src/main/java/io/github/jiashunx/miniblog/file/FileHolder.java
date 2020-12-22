@@ -1,15 +1,10 @@
 package io.github.jiashunx.miniblog.file;
 
 import io.github.jiashunx.masker.rest.framework.serialize.MRestSerializer;
-import io.github.jiashunx.masker.rest.framework.util.FileUtils;
-import io.github.jiashunx.masker.rest.framework.util.IOUtils;
+import io.github.jiashunx.miniblog.database.Database;
 import io.github.jiashunx.miniblog.model.ConfigVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 /**
  * @author jiashunx
@@ -18,58 +13,36 @@ public class FileHolder {
 
     private static final Logger logger = LoggerFactory.getLogger(FileHolder.class);
 
-    private final String rootPath;
-    private final File rootDirectory;
-    private final String configPath;
+    private final Database database;
     private final ConfigVo configVo;
 
     public FileHolder(String rootPath) {
-        String _rootPath = Objects.requireNonNull(rootPath);
-        while (_rootPath.endsWith("/") && _rootPath.length() > 1) {
-            _rootPath = rootPath.substring(0, _rootPath.length() - 1);
-        }
-        this.rootPath = _rootPath;
-        this.rootDirectory = new File(this.rootPath);
-        FileLock.write(this.rootPath, f -> {
-            FileUtils.newDirectory(f.getAbsolutePath());
-        });
-        this.configPath = this.rootPath + "/config.mb";
-        this.configVo = parseConfigVo();
+        this.database = new Database(rootPath);
+        this.configVo = loadConfigVo();
         if (!this.configVo.check()) {
             throw new RuntimeException("config check failed...");
         }
     }
 
     public synchronized void storeConfigVo() {
-        FileLock.write(this.configPath, file -> {
-            try {
-                // 配置持久化后更新内存缓存
-                IOUtils.write(this.configVo, true, file);
-                this.configVo.cacheUpdate();
-            } catch (Throwable throwable) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("store config failed, configpath: {}", configPath, throwable);
-                }
-            }
-        });
+        database.write("/config.mb", MRestSerializer.objectToJson(this.configVo, true));
+        this.configVo.cacheUpdate();
     }
 
-    private ConfigVo parseConfigVo() {
-        FileUtils.newFile(configPath);
-        ConfigVo configVo = FileLock.write(configPath, f -> {
-            try {
-                String json = IOUtils.loadFileContentFromDisk(configPath, StandardCharsets.UTF_8);
-                if (logger.isInfoEnabled()) {
-                    logger.info("load config:\n{}", json);
-                }
-                return MRestSerializer.jsonToObj(json, ConfigVo.class).initialize();
-            } catch (Throwable throwable) {
-                if (logger.isErrorEnabled()) {
-                    logger.error("parse config vo failed, filepath: {}", configPath, throwable);
-                }
+    private ConfigVo loadConfigVo() {
+        String filePath = "/config.mb";
+        ConfigVo configVo = null;
+        try {
+            String json = database.readString(filePath);
+            if (logger.isInfoEnabled()) {
+                logger.info("load config:\n{}", json);
             }
-            return null;
-        });
+            configVo = MRestSerializer.jsonToObj(json, ConfigVo.class).initialize();
+        } catch (Throwable throwable) {
+            if (logger.isErrorEnabled()) {
+                logger.error("parse config vo failed, filepath: {}", filePath, throwable);
+            }
+        }
         if (configVo == null) {
             configVo = ConfigVo.buildDefault();
         }
@@ -79,19 +52,10 @@ public class FileHolder {
     @Override
     public String toString() {
         return "FileHolder{" +
-                "rootPath='" + rootPath + '\'' +
+                "rootPath='" + database.getRootPath() + '\'' +
                 '}';
     }
 
-    public String getRootPath() {
-        return rootPath;
-    }
-    public File getRootDirectory() {
-        return rootDirectory;
-    }
-    public String getConfigPath() {
-        return configPath;
-    }
     public ConfigVo getConfigVo() {
         return configVo;
     }
