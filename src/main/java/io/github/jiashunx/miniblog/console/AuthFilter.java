@@ -36,7 +36,7 @@ public class AuthFilter implements MRestFilter {
     @Override
     public void doFilter(MRestRequest request, MRestResponse response, MRestFilterChain filterChain) {
         String requestUrl = request.getUrl();
-        if (!requestUrl.startsWith("/console")) {
+        if (!requestUrl.startsWith("/console") || requestUrl.startsWith("/webjars/")) {
             filterChain.doFilter(request, response);
             return;
         }

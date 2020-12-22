@@ -1,6 +1,7 @@
 package io.github.jiashunx.miniblog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.github.jiashunx.miniblog.cache.ICache;
 import io.github.jiashunx.miniblog.database.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,17 +9,13 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author jiashunx
  */
-public abstract class Cache<T extends Cache> {
+public abstract class Vo<T extends Vo<?>> implements ICache<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(Cache.class);
-
-    private static final Map<Class<? extends Cache<?>>, Cache<?>> CACHE_MAP = new ConcurrentHashMap<>();
+    private static final Logger logger = LoggerFactory.getLogger(Vo.class);
 
     @JsonIgnore
     private boolean cacheEnable;
@@ -26,15 +23,15 @@ public abstract class Cache<T extends Cache> {
     @JsonIgnore
     private T cacheObj;
 
-    public Cache() {
+    public Vo() {
         this(true);
     }
 
-    public Cache(boolean cacheEnable) {
+    public Vo(boolean cacheEnable) {
         this.cacheEnable = cacheEnable;
     }
 
-    public static <T extends Cache<?>> T buildDefault(Class<T> klass) {
+    public static <T extends Vo<?>> T buildDefault(Class<T> klass) {
         try {
             Method method = klass.getMethod("buildDefault0");
             return (T) method.invoke(null);
@@ -44,7 +41,7 @@ public abstract class Cache<T extends Cache> {
         return null;
     }
 
-    public static <T extends Cache<?>> T loadObj(Database database, String filePath, Class<T> klass) {
+    public static <T extends Vo<?>> T loadObj(Database database, String filePath, Class<T> klass) {
         T obj = database.readObject(filePath, klass);
         if (obj == null) {
             obj = buildDefault(klass);
@@ -55,7 +52,7 @@ public abstract class Cache<T extends Cache> {
         return obj;
     }
 
-    public static <T extends Cache<?>> List<T> loadList(Database database, String filePath, Class<T> klass) {
+    public static <T extends Vo<?>> List<T> loadList(Database database, String filePath, Class<T> klass) {
         List<T> list = database.readList(filePath, klass);
         if (list == null) {
             list = new ArrayList<>();
@@ -88,11 +85,6 @@ public abstract class Cache<T extends Cache> {
      * 子类实现 - 对象根据已初始化的属性进行复杂属性初始化.
      */
     protected abstract void init0();
-
-    /**
-     * 子类实现 - 创建缓存对象.
-     */
-    protected abstract T buildCacheObj();
 
     /**
      * 对象创建完成后的初始化

@@ -12,7 +12,7 @@ import java.util.List;
  * 博客配置总入口
  * @author jiashunx
  */
-public class ConfigVo extends Cache<ConfigVo> {
+public class ConfigVo extends Vo<ConfigVo> {
 
     private LoginUserVo loginUserVo;
     private String jwtSecretKey;
@@ -46,7 +46,7 @@ public class ConfigVo extends Cache<ConfigVo> {
         this.jwtHelper = new MRestJWTHelper(getJwtSecretKey());
     }
 
-    protected ConfigVo buildCacheObj() {
+    public ConfigVo buildCacheObj() {
         ConfigVo cache = new ConfigVo(false);
         cache.loginUserVo = this.loginUserVo.clone();
         cache.jwtSecretKey = this.jwtSecretKey;
