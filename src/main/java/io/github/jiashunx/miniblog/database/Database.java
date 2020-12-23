@@ -95,12 +95,7 @@ public class Database {
     public byte[] read(String filePath) {
         try {
             return fileLock.read(filePath, file -> {
-                DiskFileResource resource = IOUtils.loadFileBytesFromDisk(file.getAbsolutePath());
-                byte[] bytes = null;
-                if (resource != null) {
-                    bytes = resource.getBytes();
-                }
-                return bytes;
+                return IOUtils.loadBytesFromDisk(file.getAbsolutePath());
             });
         } catch (Throwable throwable) {
             logger.error("read file content failed: {}", filePath, throwable);
