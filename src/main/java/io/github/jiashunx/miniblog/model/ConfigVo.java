@@ -16,9 +16,6 @@ public class ConfigVo extends CacheVo<ConfigVo> implements IVo {
     private String jwtSecretKey;
     private long lastBootTimeMillis;
     private String lastBootTimeStr;
-    private List<ImageVo> imageVoList;
-    private List<TagVo> tagVoList;
-    private List<CategoryVo> categoryVoList;
 
     @JsonIgnore
     private MRestJWTHelper jwtHelper;
@@ -56,23 +53,5 @@ public class ConfigVo extends CacheVo<ConfigVo> implements IVo {
     }
     public void setLastBootTimeStr(String lastBootTimeStr) {
         this.lastBootTimeStr = lastBootTimeStr;
-    }
-    public List<ImageVo> getImageVoList() {
-        return imageVoList;
-    }
-    public void setImageVoList(List<ImageVo> imageVoList) {
-        this.imageVoList = imageVoList;
-    }
-    public List<TagVo> getTagVoList() {
-        return tagVoList;
-    }
-    public void setTagVoList(List<TagVo> tagVoList) {
-        this.tagVoList = tagVoList;
-    }
-    public List<CategoryVo> getCategoryVoList() {
-        return categoryVoList;
-    }
-    public void setCategoryVoList(List<CategoryVo> categoryVoList) {
-        this.categoryVoList = categoryVoList;
     }
 }

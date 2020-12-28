@@ -5,9 +5,6 @@ import io.github.jiashunx.miniblog.database.Database;
 import io.github.jiashunx.miniblog.model.*;
 import io.github.jiashunx.miniblog.util.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author jiashunx
  */
@@ -62,44 +59,11 @@ public class ConfigService implements IService<ConfigVo>, ICacheService<ConfigVo
         cache.setJwtSecretKey(configVo.getJwtSecretKey());
         cache.setLastBootTimeMillis(configVo.getLastBootTimeMillis());
         cache.setLastBootTimeStr(configVo.getLastBootTimeStr());
-        List<ImageVo> imageVoList = new ArrayList<>();
-        List<ImageVo> $imageVoList = configVo.getImageVoList();
-        if ($imageVoList != null && !$imageVoList.isEmpty()) {
-            for (ImageVo imageVo: $imageVoList) {
-                imageVoList.add(imageVo.clone());
-            }
-        }
-        cache.setImageVoList(imageVoList);
-        List<TagVo> tagVoList = new ArrayList<>();
-        List<TagVo> $tagVoList = configVo.getTagVoList();
-        if ($tagVoList != null && !$tagVoList.isEmpty()) {
-            for (TagVo tagVo: $tagVoList) {
-                tagVoList.add(tagVo.clone());
-            }
-        }
-        cache.setTagVoList(tagVoList);
-        List<CategoryVo> categoryVoList = new ArrayList<>();
-        List<CategoryVo> $categoryVoList = configVo.getCategoryVoList();
-        if ($categoryVoList != null && !$categoryVoList.isEmpty()) {
-            for (CategoryVo categoryVo: $categoryVoList) {
-                $categoryVoList.add(categoryVo.clone());
-            }
-        }
-        cache.setCategoryVoList(categoryVoList);
         return cache;
     }
 
     private ConfigVo initialize(ConfigVo vo) {
         vo.setJwtHelper(new MRestJWTHelper(vo.getJwtSecretKey()));
-        if (vo.getImageVoList() == null) {
-            vo.setImageVoList(new ArrayList<>());
-        }
-        if (vo.getTagVoList() == null) {
-            vo.setTagVoList(new ArrayList<>());
-        }
-        if (vo.getCategoryVoList() == null) {
-            vo.setCategoryVoList(new ArrayList<>());
-        }
         return vo;
     }
 
