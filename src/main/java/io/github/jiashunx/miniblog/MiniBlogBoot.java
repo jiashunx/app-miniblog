@@ -70,9 +70,10 @@ public class MiniBlogBoot {
 
     public void start() {
         new MRestServer("mini-blog")
-                .contextPath(getContextPath())
                 .listenPort(getListenPort())
+                .context(getContextPath())
                 .filter(new MRestFilter[]{ new AuthFilter(this) })
+                .getRestServer()
                 .start();
     }
 

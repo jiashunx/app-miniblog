@@ -1,6 +1,5 @@
 package io.github.jiashunx.miniblog.database;
 
-import io.github.jiashunx.masker.rest.framework.model.DiskFileResource;
 import io.github.jiashunx.masker.rest.framework.serialize.MRestSerializer;
 import io.github.jiashunx.masker.rest.framework.util.FileUtils;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
@@ -77,8 +76,8 @@ public class Database {
         try {
             fileLock.write(filePath, (File target) -> {
                 FileUtils.newFile(target.getAbsolutePath());
-                try (FileOutputStream outputStream = new FileOutputStream(target)) {
-                    IOUtils.copy(inputStream, outputStream);
+                try {
+                    IOUtils.write(inputStream, target);
                 } catch (Throwable throwable) {
                     if (logger.isErrorEnabled()) {
                         logger.error("persistent file: {} failed", filePath, throwable);
