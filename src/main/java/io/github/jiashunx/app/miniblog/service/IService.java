@@ -1,6 +1,6 @@
-package io.github.jiashunx.miniblog.service;
+package io.github.jiashunx.app.miniblog.service;
 
-import io.github.jiashunx.miniblog.model.IVo;
+import io.github.jiashunx.app.miniblog.model.IVo;
 
 /**
  * @author jiashunx

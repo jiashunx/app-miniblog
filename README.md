@@ -1,4 +1,4 @@
-# mini-blog
+# app-miniblog
 
 ## 简介
 

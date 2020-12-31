@@ -1,4 +1,4 @@
-package io.github.jiashunx.miniblog.database;
+package io.github.jiashunx.app.miniblog.database;
 
 import io.github.jiashunx.masker.rest.framework.serialize.MRestSerializer;
 import io.github.jiashunx.masker.rest.framework.util.FileUtils;

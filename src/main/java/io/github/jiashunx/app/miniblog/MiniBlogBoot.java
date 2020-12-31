@@ -1,15 +1,15 @@
-package io.github.jiashunx.miniblog;
+package io.github.jiashunx.app.miniblog;
 
 import io.github.jiashunx.masker.rest.framework.MRestServer;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.masker.rest.framework.util.MRestUtils;
-import io.github.jiashunx.miniblog.console.AuthFilter;
-import io.github.jiashunx.miniblog.database.Database;
-import io.github.jiashunx.miniblog.model.ConfigVo;
-import io.github.jiashunx.miniblog.model.LoginUserVo;
-import io.github.jiashunx.miniblog.service.ConfigService;
-import io.github.jiashunx.miniblog.util.BlogUtils;
-import io.github.jiashunx.miniblog.util.Constants;
+import io.github.jiashunx.app.miniblog.console.AuthFilter;
+import io.github.jiashunx.app.miniblog.database.Database;
+import io.github.jiashunx.app.miniblog.model.ConfigVo;
+import io.github.jiashunx.app.miniblog.model.LoginUserVo;
+import io.github.jiashunx.app.miniblog.service.ConfigService;
+import io.github.jiashunx.app.miniblog.util.BlogUtils;
+import io.github.jiashunx.app.miniblog.util.Constants;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

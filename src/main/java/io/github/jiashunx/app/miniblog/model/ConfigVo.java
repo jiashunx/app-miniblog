@@ -1,10 +1,8 @@
-package io.github.jiashunx.miniblog.model;
+package io.github.jiashunx.app.miniblog.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
-import io.github.jiashunx.miniblog.cache.CacheVo;
-
-import java.util.List;
+import io.github.jiashunx.app.miniblog.cache.CacheVo;
 
 /**
  * 博客配置总入口

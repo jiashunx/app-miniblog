@@ -1,9 +1,10 @@
-package io.github.jiashunx.miniblog.service;
+package io.github.jiashunx.app.miniblog.service;
 
+import io.github.jiashunx.app.miniblog.model.ConfigVo;
+import io.github.jiashunx.app.miniblog.model.LoginUserVo;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
-import io.github.jiashunx.miniblog.database.Database;
-import io.github.jiashunx.miniblog.model.*;
-import io.github.jiashunx.miniblog.util.Constants;
+import io.github.jiashunx.app.miniblog.database.Database;
+import io.github.jiashunx.app.miniblog.util.Constants;
 
 /**
  * @author jiashunx

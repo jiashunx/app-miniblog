@@ -1,4 +1,4 @@
-package io.github.jiashunx.miniblog.console;
+package io.github.jiashunx.app.miniblog.console;
 
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
@@ -6,9 +6,9 @@ import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.masker.rest.framework.util.StringUtils;
-import io.github.jiashunx.miniblog.MiniBlogBoot;
-import io.github.jiashunx.miniblog.model.LoginUserVo;
-import io.github.jiashunx.miniblog.service.ConfigService;
+import io.github.jiashunx.app.miniblog.MiniBlogBoot;
+import io.github.jiashunx.app.miniblog.model.LoginUserVo;
+import io.github.jiashunx.app.miniblog.service.ConfigService;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.cookie.Cookie;

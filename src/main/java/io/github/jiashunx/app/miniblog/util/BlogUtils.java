@@ -1,4 +1,4 @@
-package io.github.jiashunx.miniblog.util;
+package io.github.jiashunx.app.miniblog.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

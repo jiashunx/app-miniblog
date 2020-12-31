@@ -1,4 +1,4 @@
-package io.github.jiashunx.miniblog.cache;
+package io.github.jiashunx.app.miniblog.cache;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

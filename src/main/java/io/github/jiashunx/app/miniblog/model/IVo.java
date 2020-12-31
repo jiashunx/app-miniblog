@@ -1,4 +1,4 @@
-package io.github.jiashunx.miniblog.model;
+package io.github.jiashunx.app.miniblog.model;
 
 /**
  * @author jiashunx
