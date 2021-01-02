@@ -2,11 +2,11 @@
 
 ## 简介
 
-基于[masker-rest][1] 实现的高性能极简(丑)个人博客。使用文件进行数据读写，不依赖任何第三方数据库，开箱即用；服务端进行数据渲染，利于SEO。
+基于[masker-rest][1] 实现的高性能极简(丑)个人博客。使用sqlite进行数据读写，不依赖其他数据库，开箱即用，部署简单；服务端进行数据渲染，利于SEO。
 
 ## 技术栈
 
-JDK8、[masker-rest][1]、jQuery、JFinal Enjoy(模板引擎)
+JDK8、[masker-rest][1]、[tools-sqlite3][2]（sqlite工具包）、jQuery、JFinal Enjoy（模板引擎）
 
 ## 计划实现功能：
 
@@ -24,15 +24,5 @@ JDK8、[masker-rest][1]、jQuery、JFinal Enjoy(模板引擎)
   - 标签及对应文章查询
   - 分类及对应文章查询
 
-### 磁盘文件层次结构设计
-
-   - /root (根目录)
-      - /config.mb (总的配置文件)
-      - /blogs (博客MarkDown文件存放目录)
-         - file0name (递增)
-         - file1name
-      - /images (图片文件存放目录)
-         - image0name (递增)
-         - image1name
-
 [1]: https://github.com/jiashunx/masker-rest
+[2]: https://github.com/jiashunx/tools-sqlite3

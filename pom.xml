@@ -17,9 +17,9 @@
       <version>1.6.0</version>
     </dependency>
     <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>sqlite-jdbc</artifactId>
-      <version>3.18.0</version>
+      <groupId>io.github.jiashunx</groupId>
+      <artifactId>tools-sqlite3</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.fujion.webjars</groupId>
