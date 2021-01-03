@@ -4,10 +4,6 @@ import io.github.jiashunx.masker.rest.framework.MRestServer;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.masker.rest.framework.util.MRestUtils;
 import io.github.jiashunx.app.miniblog.console.AuthFilter;
-import io.github.jiashunx.app.miniblog.database.Database;
-import io.github.jiashunx.app.miniblog.model.ConfigVo;
-import io.github.jiashunx.app.miniblog.model.LoginUserVo;
-import io.github.jiashunx.app.miniblog.service.ConfigService;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.app.miniblog.util.Constants;
 import org.apache.commons.cli.*;
@@ -31,9 +27,6 @@ public class MiniBlogBoot {
 
     private final String contextPath;
     private final int listenPort;
-    private final Database database;
-    private final ConfigService configService;
-
     public MiniBlogBoot(String[] args) throws ParseException {
         CommandLineParser commandLineParser = new BasicParser();
         Options options = new Options();
@@ -47,22 +40,13 @@ public class MiniBlogBoot {
         this.contextPath = commandLine.hasOption("context") ? commandLine.getOptionValue("context") : "/";
         this.listenPort = Integer.parseInt(commandLine.hasOption("port") ? commandLine.getOptionValue("port") : "8080");
         String rootPath = BlogUtils.formatPath(commandLine.hasOption("path") ? commandLine.getOptionValue("path") : MRestUtils.getUserDirPath());
-        this.database = new Database(rootPath);
-        this.configService = new ConfigService(database);
         String authUsername = commandLine.hasOption("auser") ? commandLine.getOptionValue("auser") : Constants.DEFAULT_AUTH_USERNAME;
         String authPassword = Base64.getEncoder().encodeToString((commandLine.hasOption("apwd") ? commandLine.getOptionValue("apwd") : Constants.DEFAULT_AUTH_PASSWORD).getBytes());
-        ConfigVo configVo = this.configService.get();
         if (!authUsername.equals(Constants.DEFAULT_AUTH_USERNAME)
                 ||!authPassword.equals(Constants.DEFAULT_AUTH_PASSWORD_BASE64)) {
             // 只有当手工指定了用户名密码的情况下才使用新的用户名密码.
-            configVo.setLoginUserVo(new LoginUserVo(authUsername, authPassword));
+            // TODO
         }
-        long lastBootTimeMillis = System.currentTimeMillis();
-        configVo.setLastBootTimeMillis(lastBootTimeMillis);
-        configVo.setLastBootTimeStr(BlogUtils.format(lastBootTimeMillis, BlogUtils.yyyyMMddHHmmssSSS));
-        // 进行配置回写
-        this.configService.save();
-
         if (logger.isInfoEnabled()) {
             logger.info("blog service start: {}", this);
         }
@@ -82,7 +66,6 @@ public class MiniBlogBoot {
         return "MiniBlogBoot{" +
                 "contextPath=" + contextPath +
                 ", listenPort=" + listenPort +
-                ", database='" + database + '\'' +
                 '}';
     }
 
@@ -91,11 +74,5 @@ public class MiniBlogBoot {
     }
     public String getContextPath() {
         return contextPath;
-    }
-    public Database getDatabase() {
-        return database;
-    }
-    public ConfigService getConfigService() {
-        return configService;
     }
 }
