@@ -1,12 +1,12 @@
 package io.github.jiashunx.app.miniblog.console;
 
+import io.github.jiashunx.app.miniblog.service.ArgumentService;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.masker.rest.framework.util.StringUtils;
-import io.github.jiashunx.app.miniblog.MiniBlogBoot;
 import io.github.jiashunx.app.miniblog.model.LoginUserVo;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -24,10 +24,10 @@ public class AuthFilter implements MRestFilter {
     private static final String COOKIE_KEY = "MINI-BLOG";
     private static final long COOKIE_TIMEOUT_MILLIS = 60*60*1000L;
 
-    private final MiniBlogBoot blogBoot;
+    private final ArgumentService argumentService;
 
-    public AuthFilter(MiniBlogBoot blogBoot) {
-        this.blogBoot = Objects.requireNonNull(blogBoot);
+    public AuthFilter(ArgumentService argumentService) {
+        this.argumentService = Objects.requireNonNull(argumentService);
     }
 
     @Override
@@ -37,10 +37,10 @@ public class AuthFilter implements MRestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        MRestJWTHelper jwtHelper = null;
+        MRestJWTHelper jwtHelper = new MRestJWTHelper(argumentService.getJwtSecretKey());
         if (requestUrl.equals("/console/login") && HttpMethod.POST.equals(request.getMethod())) {
             LoginUserVo userVo = request.parseBodyToObj(LoginUserVo.class);
-            LoginUserVo loginUserVo = null;
+            LoginUserVo loginUserVo = argumentService.getLoginUserVo();
             if (loginUserVo.getUsername().equals(userVo.getUsername()) && loginUserVo.getPassword().equals(userVo.getPassword())) {
                 String jwtToken = jwtHelper.newToken();
                 Cookie jwtCookie = new DefaultCookie(COOKIE_KEY, jwtToken);
