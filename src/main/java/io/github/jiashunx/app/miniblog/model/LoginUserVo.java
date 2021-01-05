@@ -1,11 +1,19 @@
 package io.github.jiashunx.app.miniblog.model;
 
+import io.github.jiashunx.tools.sqlite3.mapping.SQLite3Column;
+import io.github.jiashunx.tools.sqlite3.mapping.SQLite3Id;
+import io.github.jiashunx.tools.sqlite3.mapping.SQLite3Table;
+
 /**
  * @author jiashunx
  */
+@SQLite3Table(tableName = "MB_USER")
 public class LoginUserVo implements Cloneable {
 
+    @SQLite3Id
+    @SQLite3Column(columnName = "USERNAME")
     private String username;
+    @SQLite3Column(columnName = "PASSWORD")
     private String password;
 
     public LoginUserVo() {}

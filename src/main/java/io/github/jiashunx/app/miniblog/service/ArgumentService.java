@@ -3,16 +3,19 @@ package io.github.jiashunx.app.miniblog.service;
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
 import io.github.jiashunx.app.miniblog.model.LoginUserVo;
 import io.github.jiashunx.masker.rest.framework.util.MRestUtils;
+import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
+import io.github.jiashunx.tools.sqlite3.table.SQLPackage;
 import org.apache.commons.cli.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * @author jiashunx
  */
-public class ArgumentService {
+public class ArgumentService implements IService {
 
     private static final String DEFAULT_CONTEXT_PATH = "/";
     private static final int DEFAULT_LISTEN_PORT = 8080;
@@ -20,9 +23,11 @@ public class ArgumentService {
     private static final String DEFAULT_AUTH_PWD ="admin";
     private static final String DEFAULT_JWT_SECRET_KEY = "zxcvmnblkjhgfdsaqwertyupoi";
 
+    private final ServiceBus serviceBus;
     private final CommandLine commandLine;
 
-    public ArgumentService(String[] args) throws MiniBlogException {
+    public ArgumentService(ServiceBus serviceBus, String[] args) throws MiniBlogException {
+        this.serviceBus = Objects.requireNonNull(serviceBus);
         CommandLineParser commandLineParser = new BasicParser();
         Options options = new Options();
         // --ctx context-path
@@ -41,6 +46,14 @@ public class ArgumentService {
             throw new MiniBlogException(String.format(
                     "parse command line failed, args: %s", Arrays.asList(args)), e);
         }
+    }
+
+    @Override
+    public void init() {
+        SQLite3JdbcTemplate jdbcTemplate = serviceBus.getDatabaseService().getJdbcTemplate();
+        SQLPackage sqlPackage = serviceBus.getDatabaseService().getSqlPackage();
+        jdbcTemplate.executeUpdate(sqlPackage.getDML("DML0001").getContent());
+        jdbcTemplate.insert(getLoginUserVo());
     }
 
     public String getContextPath() {

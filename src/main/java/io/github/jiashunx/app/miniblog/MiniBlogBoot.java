@@ -20,6 +20,7 @@ public class MiniBlogBoot {
 
     public MiniBlogBoot(String[] args) throws MiniBlogException {
         this.serviceBus = new ServiceBus(args);
+        this.serviceBus.init();
     }
 
     public void start() {
