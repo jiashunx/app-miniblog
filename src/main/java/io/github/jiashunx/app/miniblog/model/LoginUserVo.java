@@ -16,6 +16,8 @@ public class LoginUserVo implements Cloneable {
     @SQLite3Column(columnName = "PASSWORD")
     private String password;
 
+    private boolean defaultUser;
+
     public LoginUserVo() {}
 
     public LoginUserVo(String username, String password) {
@@ -54,5 +56,13 @@ public class LoginUserVo implements Cloneable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isDefaultUser() {
+        return defaultUser;
+    }
+
+    public void setDefaultUser(boolean defaultUser) {
+        this.defaultUser = defaultUser;
     }
 }
