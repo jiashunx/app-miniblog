@@ -1,6 +1,7 @@
 package io.github.jiashunx.app.miniblog.console;
 
 import io.github.jiashunx.app.miniblog.service.ArgumentService;
+import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
@@ -23,22 +24,27 @@ public class AuthFilter implements MRestFilter {
     private static final String COOKIE_PATH = "/";
     private static final String COOKIE_KEY = "MINI-BLOG";
     private static final long COOKIE_TIMEOUT_MILLIS = 60*60*1000L;
+    private static final String CONSOLE_LOGIN_URL = "/console/login";
+    private static final String LOGIN_URL = "/login.html";
+    private static final String CONSOLE_URL_PREFIX = "/console/";
+    private static final String WEBJARS_URL_PREFIX = "/webjars/";
 
-    private final ArgumentService argumentService;
+    private final ServiceBus serviceBus;
 
-    public AuthFilter(ArgumentService argumentService) {
-        this.argumentService = Objects.requireNonNull(argumentService);
+    public AuthFilter(ServiceBus serviceBus) {
+        this.serviceBus = Objects.requireNonNull(serviceBus);
     }
 
     @Override
     public void doFilter(MRestRequest request, MRestResponse response, MRestFilterChain filterChain) {
         String requestUrl = request.getUrl();
-        if (!requestUrl.startsWith("/console") || requestUrl.startsWith("/webjars/")) {
+        if (!requestUrl.startsWith(CONSOLE_URL_PREFIX) || requestUrl.startsWith(WEBJARS_URL_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
+        ArgumentService argumentService = serviceBus.getArgumentService();
         MRestJWTHelper jwtHelper = new MRestJWTHelper(argumentService.getJwtSecretKey());
-        if (requestUrl.equals("/console/login") && HttpMethod.POST.equals(request.getMethod())) {
+        if (requestUrl.equals(CONSOLE_LOGIN_URL) && HttpMethod.POST.equals(request.getMethod())) {
             LoginUserVo userVo = request.parseBodyToObj(LoginUserVo.class);
             LoginUserVo loginUserVo = argumentService.getLoginUserVo();
             if (loginUserVo.getUsername().equals(userVo.getUsername()) && loginUserVo.getPassword().equals(userVo.getPassword())) {
@@ -57,7 +63,7 @@ public class AuthFilter implements MRestFilter {
         String jwtToken = cookie == null ? null : cookie.value();
         if (StringUtils.isEmpty(jwtToken)
                 || StringUtils.isNotEmpty(jwtToken) && (jwtHelper.isTokenTimeout(jwtToken) || !jwtHelper.isTokenValid(jwtToken))) {
-            response.redirect("/login.html");
+            response.redirect(LOGIN_URL);
             return;
         } else {
             String newToken = jwtHelper.updateToken(jwtToken);
