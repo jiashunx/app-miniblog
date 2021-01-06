@@ -13,7 +13,7 @@ public class DatabaseService implements IService {
 
     private final SQLPackage sqlPackage;
 
-    public DatabaseService() {
+    DatabaseService() {
         String dbFilePath = System.getProperty("user.home") + "/.miniblog/blog.db";
         jdbcTemplate = new SQLite3JdbcTemplate(dbFilePath);
         sqlPackage = SQLite3SQLHelper.loadSQLPackageFromClasspath("miniblog/sql.xml");

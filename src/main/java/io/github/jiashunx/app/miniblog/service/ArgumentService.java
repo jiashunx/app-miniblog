@@ -22,7 +22,7 @@ public class ArgumentService implements IService {
 
     private final CommandLine commandLine;
 
-    public ArgumentService(String[] args) throws MiniBlogException {
+    ArgumentService(String[] args) throws MiniBlogException {
         CommandLineParser commandLineParser = new BasicParser();
         Options options = new Options();
         // --ctx context-path

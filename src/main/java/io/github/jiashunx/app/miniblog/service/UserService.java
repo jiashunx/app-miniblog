@@ -16,7 +16,7 @@ public class UserService implements IService {
 
     private volatile LoginUserVo loginUserVo;
 
-    public UserService(ServiceBus serviceBus) {
+    UserService(ServiceBus serviceBus) {
         this.serviceBus = Objects.requireNonNull(serviceBus);
     }
 
