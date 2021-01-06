@@ -41,17 +41,28 @@ public class FileService implements IService {
     }
 
     public FileVo insert(FileVo fileVo) {
-        if (StringUtils.isEmpty(fileVo.getFileName())) {
-            throw new NullPointerException("file name is empty");
+        return insert(Collections.singletonList(fileVo)).get(0);
+    }
+
+    public List<FileVo> insert(List<FileVo> fileVoList) {
+        if (fileVoList == null) {
+            throw new NullPointerException();
         }
-        if (StringUtils.isBlank(fileVo.getFileId())) {
-            fileVo.setFileId(UUID.randomUUID().toString());
-        }
+        Map<String, FileVo> voMap = new HashMap<>();
+        fileVoList.forEach(fileVo -> {
+            if (StringUtils.isEmpty(fileVo.getFileName())) {
+                throw new NullPointerException("file name is empty");
+            }
+            if (StringUtils.isBlank(fileVo.getFileId())) {
+                fileVo.setFileId(UUID.randomUUID().toString());
+            }
+            voMap.put(fileVo.getFileId(), fileVo);
+        });
         synchronized (fileVoMap) {
-            jdbcTemplate.insert(fileVo);
-            fileVoMap.put(fileVo.getFileId(), fileVo);
+            jdbcTemplate.insert(fileVoList);
+            fileVoMap.putAll(voMap);
         }
-        return fileVo;
+        return fileVoList;
     }
 
     public FileVo deleteOne(String fileId) {

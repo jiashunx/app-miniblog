@@ -31,6 +31,7 @@ public class MiniBlogBoot {
                 .addDefaultClasspathResource()
                 .filter(new MRestFilter[]{ new AuthFilter(serviceBus) })
                 .get("/console/file-manage/listAll", fileManageController::listAll)
+                .fileupload("/console/file-manage/save", fileManageController::save)
                 .getRestServer()
                 .start();
     }

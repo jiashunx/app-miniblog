@@ -5,17 +5,29 @@
     <title>文件管理</title>
 </head>
 <body>
+    <p>
+        <button id="btn-upload-ctl" type="button">上传</button>
+    </p>
+    <div hidden id="div-upload">
+        <form id="form-upload">
+            <input type="file" id="file000" name="file000" multiple="multiple">
+        </form>
+        <button type="button" id="btn-upload">保存</button>
+    </div>
     <script type="text/javascript" src="../mb-common.js"></script>
     <script type="text/javascript" src="/webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
     <script>
         (function () {
 
             let PageController = function () {
-
+                this.$BtnUpload = $("#btn-upload-ctl");
+                this.$UploadDiv = $("#div-upload");
+                this.$UploadForm = $("#form-upload");
+                this.$UploadBtn = $("#btn-upload");
             };
 
             PageController.prototype = {
-                init: function () {
+                Initialize: function () {
                     $.ajax({
                         url: "../console/file-manage/listAll",
                         type: "GET",
@@ -25,10 +37,33 @@
                         }),
                         error: _MB_defaultXHRErrorHandler
                     });
+                    return this;
+                },
+                BindEvent: function () {
+                    let _this = this;
+                    _this.$BtnUpload.click(function () {
+                        _this.$UploadDiv.show();
+                    });
+                    _this.$UploadBtn.click(function () {
+                        $.ajax({
+                            url: "/console/file-manage/save",
+                            type: 'POST',
+                            data: new FormData(_this.$UploadForm[0]),
+                            cache: false,
+                            processData: false,
+                            contentType: false,
+                            success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
+                                alert("upload choosen files success.");
+                                window.location.reload();
+                            }),
+                            error: _MB_defaultXHRErrorHandler
+                        });
+                    });
+                    return this;
                 }
             };
 
-            new PageController().init();
+            new PageController().Initialize().BindEvent();
 
         })();
     </script>
