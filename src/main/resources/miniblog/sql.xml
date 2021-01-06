@@ -45,6 +45,7 @@
             <column name="FILE_NAME" type="NVARCHAR(2560)" />
             <column name="FILE_BYTE_SIZE" type="INTEGER" />
             <column name="FILE_CONTENT" type="BLOB" />
+            <column name="CREATE_TIME" type="TIMESTAMP" />
         </table>
     </ddl>
 </table-metadata>
