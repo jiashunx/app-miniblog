@@ -15,9 +15,10 @@
         </sql>
         <sql id="DQL0003">
             <![CDATA[
-                SELECT F.FILE_ID, F.FILE_NAME, F.FILE_BYTE_SIZE
+                SELECT F.FILE_ID, F.FILE_NAME, F.FILE_BYTE_SIZE, F.CREATE_TIME
                 FROM MB_FILE F
                 WHERE 1=1
+                ORDER BY F.CREATE_TIME DESC
             ]]>
         </sql>
     </dql>

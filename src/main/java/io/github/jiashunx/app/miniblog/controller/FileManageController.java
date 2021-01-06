@@ -13,10 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author jiashunx
@@ -49,6 +46,7 @@ public class FileManageController {
                 IOUtils.copy(inputStream, baos);
                 fileVo.setFileBytes(baos.toByteArray());
                 fileVo.setFileByteSize(fileVo.getFileBytes().length);
+                fileVo.setCreateTime(new Date());
                 fileVoList.add(fileVo);
             }
         } catch (Throwable throwable) {
