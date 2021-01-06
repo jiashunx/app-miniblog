@@ -5,6 +5,7 @@ import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.app.miniblog.service.UserService;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
+import io.github.jiashunx.masker.rest.framework.filter.Filter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
@@ -20,6 +21,7 @@ import java.util.Objects;
 /**
  * @author jiashunx
  */
+@Filter(order = Integer.MIN_VALUE)
 public class AuthFilter implements MRestFilter {
 
     private static final String COOKIE_PATH = "/";

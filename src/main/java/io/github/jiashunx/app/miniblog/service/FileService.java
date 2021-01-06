@@ -90,7 +90,9 @@ public class FileService implements IService {
             synchronized (fileVoMap) {
                 fileVo = fileVoMap.get(fileId);
                 if (fileVo == null) {
-                    fileVo = jdbcTemplate.queryForObj(databaseService.getDQL(Constants.DQL_QUERY_FILE_BY_ID), FileVo.class);
+                    fileVo = jdbcTemplate.queryForObj(databaseService.getDQL(Constants.DQL_QUERY_FILE_BY_ID), statement -> {
+                        statement.setString(1, fileId);
+                    }, FileVo.class);
                     if (fileVo == null) {
                         fileVo = emptyFileVo;
                     }

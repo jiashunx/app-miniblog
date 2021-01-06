@@ -29,7 +29,7 @@ public class MiniBlogBoot {
                 .listenPort(serviceBus.getArgumentService().getListenPort())
                 .context(serviceBus.getArgumentService().getContextPath())
                 .addDefaultClasspathResource()
-                .filter(new MRestFilter[]{ new AuthFilter(serviceBus) })
+                .filter(new MRestFilter[]{ new AuthFilter(serviceBus), fileManageController })
                 .get("/console/file-manage/listAll", fileManageController::listAll)
                 .fileupload("/console/file-manage/save", fileManageController::save)
                 .getRestServer()
