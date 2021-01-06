@@ -7,6 +7,19 @@
                 SELECT * FROM MB_USER;
             ]]>
         </sql>
+        <sql id="DQL0002">
+            <![CDATA[
+                SELECT F.FILE_ID, F.FILE_NAME, F.FILE_BYTE_SIZE, F.FILE_CONTENT
+                FROM MB_FILE F WHERE F.FILE_ID=?
+            ]]>
+        </sql>
+        <sql id="DQL0003">
+            <![CDATA[
+                SELECT F.FILE_ID, F.FILE_NAME, F.FILE_BYTE_SIZE
+                FROM MB_FILE F
+                WHERE 1=1
+            ]]>
+        </sql>
     </dql>
     <!-- 数据操作SQL -->
     <dml>
@@ -15,12 +28,23 @@
                 DELETE FROM MB_USER WHERE 1=1
             ]]>
         </sql>
+        <sql id="DML0002">
+            <![CDATA[
+                DELETE FROM MB_FILE F WHERE F.FILE_ID=?
+            ]]>
+        </sql>
     </dml>
     <!-- 数据定义SQL -->
     <ddl>
         <table name="MB_USER">
-            <column name="USERNAME" type="VARCHAR" primary="true" />
-            <column name="PASSWORD" type="VARCHAR" />
+            <column name="USERNAME" type="VARCHAR(256)" primary="true" />
+            <column name="PASSWORD" type="VARCHAR(2560)" />
+        </table>
+        <table name="MB_FILE">
+            <column name="FILE_ID" type="VARCHAR(36)" primary="true" />
+            <column name="FILE_NAME" type="NVARCHAR(2560)" />
+            <column name="FILE_BYTE_SIZE" type="INTEGER" />
+            <column name="FILE_CONTENT" type="BLOB" />
         </table>
     </ddl>
 </table-metadata>
