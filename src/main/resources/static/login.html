@@ -12,6 +12,7 @@
     <input id="password" type="password" />
     <button id="btn-login">登陆</button>
 </div>
+<script type="text/javascript" src="./mb-common.js"></script>
 <script type="text/javascript" src="./webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
 <script>
     (function () {
@@ -32,16 +33,14 @@
                             password: btoa(_this.$InputPassword.val())
                         }),
                         contentType: "application/json",
-                        success: function (result, status, xhr) {
+                        success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
                             if (xhr.status === 200 && result === "success") {
                                 window.location.href = "./console/index.html";
                             } else {
-                                this.error(xhr);
+                                _MB_defaultXHRErrorHandler(xhr);
                             }
-                        },
-                        error: function (xhr) {
-                            alert("Login Failed, Response Status Code: " + xhr.status + ", Response Status Text: " + xhr.statusText);
-                        }
+                        }),
+                        error: _MB_defaultXHRErrorHandler
                     })
                 })
             }
