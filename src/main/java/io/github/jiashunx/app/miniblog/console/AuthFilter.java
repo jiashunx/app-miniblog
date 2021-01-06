@@ -2,6 +2,7 @@ package io.github.jiashunx.app.miniblog.console;
 
 import io.github.jiashunx.app.miniblog.service.ArgumentService;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
+import io.github.jiashunx.app.miniblog.service.UserService;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
@@ -46,8 +47,7 @@ public class AuthFilter implements MRestFilter {
         MRestJWTHelper jwtHelper = new MRestJWTHelper(argumentService.getJwtSecretKey());
         if (requestUrl.equals(CONSOLE_LOGIN_URL) && HttpMethod.POST.equals(request.getMethod())) {
             LoginUserVo userVo = request.parseBodyToObj(LoginUserVo.class);
-            LoginUserVo loginUserVo = argumentService.getLoginUserVo();
-            if (loginUserVo.getUsername().equals(userVo.getUsername()) && loginUserVo.getPassword().equals(userVo.getPassword())) {
+            if (serviceBus.getUserService().checkValidation(userVo.getUsername(), userVo.getPassword())) {
                 String jwtToken = jwtHelper.newToken();
                 Cookie jwtCookie = new DefaultCookie(COOKIE_KEY, jwtToken);
                 jwtCookie.setPath(COOKIE_PATH);

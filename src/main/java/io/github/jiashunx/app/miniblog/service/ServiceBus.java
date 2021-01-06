@@ -12,14 +12,17 @@ public class ServiceBus implements IService {
 
     private final ArgumentService argumentService;
     private final DatabaseService databaseService;
+    private final UserService userService;
 
     private final List<IService> serviceList = new LinkedList<>();
 
     public ServiceBus(String[] args) throws MiniBlogException {
-        this.argumentService = new ArgumentService(this, args);
+        this.argumentService = new ArgumentService(args);
         this.databaseService = new DatabaseService();
+        this.userService = new UserService(this);
         serviceList.add(databaseService);
         serviceList.add(argumentService);
+        serviceList.add(userService);
     }
 
     @Override
@@ -33,5 +36,9 @@ public class ServiceBus implements IService {
 
     public DatabaseService getDatabaseService() {
         return databaseService;
+    }
+
+    public UserService getUserService() {
+        return userService;
     }
 }

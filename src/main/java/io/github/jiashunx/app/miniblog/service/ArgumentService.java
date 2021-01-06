@@ -2,16 +2,12 @@ package io.github.jiashunx.app.miniblog.service;
 
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
 import io.github.jiashunx.app.miniblog.model.LoginUserVo;
-import io.github.jiashunx.app.miniblog.util.Constants;
 import io.github.jiashunx.masker.rest.framework.util.MRestUtils;
-import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
 import org.apache.commons.cli.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author jiashunx
@@ -24,11 +20,9 @@ public class ArgumentService implements IService {
     private static final String DEFAULT_AUTH_PWD ="admin";
     private static final String DEFAULT_JWT_SECRET_KEY = "zxcvmnblkjhgfdsaqwertyupoi";
 
-    private final ServiceBus serviceBus;
     private final CommandLine commandLine;
 
-    public ArgumentService(ServiceBus serviceBus, String[] args) throws MiniBlogException {
-        this.serviceBus = Objects.requireNonNull(serviceBus);
+    public ArgumentService(String[] args) throws MiniBlogException {
         CommandLineParser commandLineParser = new BasicParser();
         Options options = new Options();
         // --ctx context-path
@@ -50,21 +44,7 @@ public class ArgumentService implements IService {
     }
 
     @Override
-    public void init() {
-        DatabaseService databaseService = serviceBus.getDatabaseService();
-        SQLite3JdbcTemplate jdbcTemplate = databaseService.getJdbcTemplate();
-        List<LoginUserVo> userVoList = jdbcTemplate.queryForList(
-                databaseService.getDQL(Constants.DQL_QUERY_ALL_USER), LoginUserVo.class);
-        LoginUserVo loginUserVo = null;
-        if (userVoList != null && !userVoList.isEmpty()) {
-            loginUserVo = userVoList.get(0);
-            jdbcTemplate.executeUpdate(databaseService.getDML(Constants.DML_DELETE_ALL_USER));
-        }
-        if (loginUserVo == null || !getLoginUserVo().isDefaultUser()) {
-            loginUserVo = getLoginUserVo();
-        }
-        jdbcTemplate.insert(loginUserVo);
-    }
+    public void init() {}
 
     public String getContextPath() {
         if (commandLine.hasOption("ctx")) {
@@ -97,10 +77,6 @@ public class ArgumentService implements IService {
             loginUserVo.setDefaultUser(true);
         }
         return loginUserVo;
-    }
-
-    public synchronized void setLoginUserVo(LoginUserVo loginUserVo) {
-        this.loginUserVo = Objects.requireNonNull(loginUserVo);
     }
 
     private String getAuthUsername() {
