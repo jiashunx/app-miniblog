@@ -44,10 +44,11 @@ public class AuthFilter implements MRestFilter {
             return;
         }
         ArgumentService argumentService = serviceBus.getArgumentService();
+        UserService userService = serviceBus.getUserService();
         MRestJWTHelper jwtHelper = new MRestJWTHelper(argumentService.getJwtSecretKey());
         if (requestUrl.equals(CONSOLE_LOGIN_URL) && HttpMethod.POST.equals(request.getMethod())) {
             LoginUserVo userVo = request.parseBodyToObj(LoginUserVo.class);
-            if (serviceBus.getUserService().checkValidation(userVo.getUsername(), userVo.getPassword())) {
+            if (userService.checkValidation(userVo.getUsername(), userVo.getPassword())) {
                 String jwtToken = jwtHelper.newToken();
                 Cookie jwtCookie = new DefaultCookie(COOKIE_KEY, jwtToken);
                 jwtCookie.setPath(COOKIE_PATH);

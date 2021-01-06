@@ -1,7 +1,6 @@
 package io.github.jiashunx.app.miniblog;
 
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
-import io.github.jiashunx.app.miniblog.service.ArgumentService;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.masker.rest.framework.MRestServer;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
@@ -20,14 +19,13 @@ public class MiniBlogBoot {
 
     public MiniBlogBoot(String[] args) throws MiniBlogException {
         this.serviceBus = new ServiceBus(args);
-        this.serviceBus.init();
     }
 
     public void start() {
-        ArgumentService argumentService = serviceBus.getArgumentService();
+        serviceBus.init();
         new MRestServer("mini-blog")
-                .listenPort(argumentService.getListenPort())
-                .context(argumentService.getContextPath())
+                .listenPort(serviceBus.getArgumentService().getListenPort())
+                .context(serviceBus.getArgumentService().getContextPath())
                 .addDefaultClasspathResource()
                 .filter(new MRestFilter[]{ new AuthFilter(serviceBus) })
                 .getRestServer()
