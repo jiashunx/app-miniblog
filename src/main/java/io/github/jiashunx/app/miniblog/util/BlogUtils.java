@@ -1,5 +1,7 @@
 package io.github.jiashunx.app.miniblog.util;
 
+import io.github.jiashunx.masker.rest.framework.util.FileUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +11,23 @@ import java.util.Map;
  * @author jiashunx
  */
 public class BlogUtils {
+
+    private static final String homePath;
+    private static final String tempPath;
+    static {
+        homePath = FileUtils.newDirectory(System.getProperty("user.home") + "/.miniblog")
+                .getAbsolutePath().replace("\\", "/");
+        tempPath = FileUtils.newDirectory(homePath + "/temp")
+                .getAbsolutePath().replace("\\", "/");
+    }
+
+    public static String getHomePath() {
+        return homePath;
+    }
+
+    public static String getTempPath() {
+        return tempPath;
+    }
 
     public static String formatPath(String path) {
         String _path = String.valueOf(path).replace("\\", "/");
