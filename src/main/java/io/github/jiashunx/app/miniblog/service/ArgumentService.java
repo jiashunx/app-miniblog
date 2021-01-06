@@ -56,7 +56,7 @@ public class ArgumentService implements IService {
         List<LoginUserVo> userVoList = jdbcTemplate.queryForList(
                 databaseService.getDQL(Constants.DQL_QUERY_ALL_USER), LoginUserVo.class);
         LoginUserVo loginUserVo = null;
-        if (userVoList != null || !userVoList.isEmpty()) {
+        if (userVoList != null && !userVoList.isEmpty()) {
             loginUserVo = userVoList.get(0);
             jdbcTemplate.executeUpdate(databaseService.getDML(Constants.DML_DELETE_ALL_USER));
         }
