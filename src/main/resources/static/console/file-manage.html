@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件管理</title>
+</head>
+<body>
+    <script type="text/javascript" src="../mb-common.js"></script>
+    <script type="text/javascript" src="/webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
+    <script>
+        (function () {
+
+            let PageController = function () {
+
+            };
+
+            PageController.prototype = {
+                init: function () {
+                    $.ajax({
+                        url: "../console/file-manage/listAll",
+                        type: "GET",
+                        dataType: "json",
+                        success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
+                            console.log(result);
+                        }),
+                        error: _MB_defaultXHRErrorHandler
+                    });
+                }
+            };
+
+            new PageController().init();
+
+        })();
+    </script>
+</body>
+</html>

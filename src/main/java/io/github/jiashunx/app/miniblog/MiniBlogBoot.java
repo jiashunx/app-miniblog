@@ -1,5 +1,6 @@
 package io.github.jiashunx.app.miniblog;
 
+import io.github.jiashunx.app.miniblog.controller.FileManageController;
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.masker.rest.framework.MRestServer;
@@ -23,11 +24,13 @@ public class MiniBlogBoot {
 
     public void start() {
         serviceBus.init();
+        FileManageController fileManageController = new FileManageController(serviceBus.getFileService());
         new MRestServer("mini-blog")
                 .listenPort(serviceBus.getArgumentService().getListenPort())
                 .context(serviceBus.getArgumentService().getContextPath())
                 .addDefaultClasspathResource()
                 .filter(new MRestFilter[]{ new AuthFilter(serviceBus) })
+                .get("/console/file-manage/listAll", fileManageController::listAll)
                 .getRestServer()
                 .start();
     }
