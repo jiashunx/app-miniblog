@@ -65,7 +65,7 @@ public class FileService implements IService {
     }
 
     public void delete(List<String> fileIdList) {
-        jdbcTemplate.batchInsert(
+        jdbcTemplate.batchUpdate(
                 databaseService.getDML(Constants.DML_DELETE_FILE_BY_ID)
                 , fileIdList.size()
                 , (index, statement) -> {
