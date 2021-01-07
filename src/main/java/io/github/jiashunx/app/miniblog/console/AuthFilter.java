@@ -1,5 +1,6 @@
 package io.github.jiashunx.app.miniblog.console;
 
+import io.github.jiashunx.app.miniblog.controller.FileManageController;
 import io.github.jiashunx.app.miniblog.service.ArgumentService;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.app.miniblog.service.UserService;
@@ -31,6 +32,11 @@ public class AuthFilter implements MRestFilter {
     private static final String LOGIN_URL = "/login.html";
     private static final String CONSOLE_URL_PREFIX = "/console/";
     private static final String WEBJARS_URL_PREFIX = "/webjars/";
+    private static final String[] IGNORE_URL_PREFIXES = new String[]{
+            WEBJARS_URL_PREFIX
+            , FileManageController.FILE_DOWNLOAD_URL_PREFIX
+            , FileManageController.FILE_OVERVIEW_URL_PREFIX
+    };
 
     private final ServiceBus serviceBus;
 
@@ -41,9 +47,15 @@ public class AuthFilter implements MRestFilter {
     @Override
     public void doFilter(MRestRequest request, MRestResponse response, MRestFilterChain filterChain) {
         String requestUrl = request.getUrl();
-        if (!requestUrl.startsWith(CONSOLE_URL_PREFIX) || requestUrl.startsWith(WEBJARS_URL_PREFIX)) {
+        if (!requestUrl.startsWith(CONSOLE_URL_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
+        }
+        for (String prefix: IGNORE_URL_PREFIXES) {
+            if (requestUrl.startsWith(prefix)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
         ArgumentService argumentService = serviceBus.getArgumentService();
         UserService userService = serviceBus.getUserService();

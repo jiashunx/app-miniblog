@@ -26,8 +26,8 @@ public class FileManageController implements MRestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(FileManageController.class);
 
-    private static final String FILE_OVERVIEW_URL_PREFIX = "/console/file-manage/file-overview/";
-    private static final String FILE_DOWNLOAD_URL_PREFIX = "/console/file-manage/file-download/";
+    public static final String FILE_OVERVIEW_URL_PREFIX = "/console/file-manage/file-overview/";
+    public static final String FILE_DOWNLOAD_URL_PREFIX = "/console/file-manage/file-download/";
 
     private final FileService fileService;
 
