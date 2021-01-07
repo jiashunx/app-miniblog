@@ -1,7 +1,11 @@
 package io.github.jiashunx.app.miniblog.util;
 
+import com.jfinal.kit.Kv;
+import com.jfinal.template.Engine;
+import com.jfinal.template.Template;
 import io.github.jiashunx.masker.rest.framework.util.FileUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +31,15 @@ public class BlogUtils {
 
     public static String getTempPath() {
         return tempPath;
+    }
+
+    public static byte[] render(String template, Kv kv) {
+        Engine engine = Engine.use();
+        engine.setDevMode(true);
+        Template $template = engine.getTemplateByString(template);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        $template.render(kv, baos);
+        return baos.toByteArray();
     }
 
     public static String formatPath(String path) {

@@ -31,7 +31,7 @@
         </sql>
         <sql id="DML0002">
             <![CDATA[
-                DELETE FROM MB_FILE F WHERE F.FILE_ID=?
+                DELETE FROM MB_FILE WHERE FILE_ID=?
             ]]>
         </sql>
     </dml>

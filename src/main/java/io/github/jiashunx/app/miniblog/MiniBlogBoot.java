@@ -30,8 +30,9 @@ public class MiniBlogBoot {
                 .context(serviceBus.getArgumentService().getContextPath())
                 .addDefaultClasspathResource()
                 .filter(new MRestFilter[]{ new AuthFilter(serviceBus), fileManageController })
-                .get("/console/file-manage/listAll", fileManageController::listAll)
+                .get("/console/file-manage.html", fileManageController::fileManageHtml)
                 .fileupload("/console/file-manage/save", fileManageController::save)
+                .post("/console/file-manage/delete", fileManageController::delete)
                 .getRestServer()
                 .start();
     }

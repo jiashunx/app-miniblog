@@ -1,5 +1,6 @@
 package io.github.jiashunx.app.miniblog.controller;
 
+import com.jfinal.kit.Kv;
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
 import io.github.jiashunx.app.miniblog.model.FileVo;
 import io.github.jiashunx.app.miniblog.service.FileService;
@@ -7,11 +8,13 @@ import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestFileUploadRequest;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
+import io.github.jiashunx.masker.rest.framework.cons.Constants;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
 import io.github.jiashunx.masker.rest.framework.model.MRestFileUpload;
 import io.github.jiashunx.masker.rest.framework.util.FileUtils;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
+import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +78,27 @@ public class FileManageController implements MRestFilter {
         }
     }
 
-    public List<FileVo> listAll() {
-        return fileService.listAll();
+    private static final String FILE_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/file-manage.html");
+
+    public void fileManageHtml(MRestRequest request, MRestResponse response) {
+        List<FileVo> fileVoList = fileService.listAll();
+        List<Map<String, Object>> mapList = new ArrayList<>(fileVoList.size());
+        for (FileVo fileVo: fileVoList) {
+            Map<String, Object> objectMap = new HashMap<>();
+            objectMap.put("fileId", fileVo.getFileId());
+            objectMap.put("fileName", fileVo.getFileName());
+            objectMap.put("createTime", fileVo.getCreateTime() == null ? "undefined" : BlogUtils.format(fileVo.getCreateTime(), BlogUtils.yyyyMMddHHmmssSSS));
+            objectMap.put("fileByteSize", fileVo.getFileByteSize());
+            mapList.add(objectMap);
+        }
+        Kv kv = new Kv();
+        kv.put("fileVoList", mapList);
+        response.write(BlogUtils.render(FILE_MANAGE_HTML, kv)
+                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
+    }
+
+    public void delete(MRestRequest request) {
+        fileService.deleteOne(request.getParameter("fileId"));
     }
 
     public void save(MRestRequest request, MRestResponse response) {
