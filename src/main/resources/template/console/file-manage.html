@@ -18,12 +18,13 @@
         #for(fileVo: fileVoList)
         <li>
             <label style="width: 200px;">#(fileVo.createTime)</label>
-            <a style="width: 200px;" href="../console/file-manage/file-download/#(fileVo.fileId)">#(fileVo.fileName)</a>
+            <a style="width: 200px;" href="../console/file-manage/download/#(fileVo.fileId)">#(fileVo.fileName)</a>
             <button class="btn-del" fileId="#(fileVo.fileId)" type="button">删除</button>
         </li>
         #end
     </ul>
-    <script type="text/javascript" src="../mb-common.js"></script>
+    <!-- 此文件实际映射路径：/console/file-manage/index.html -->
+    <script type="text/javascript" src="../../mb-common.js"></script>
     <script type="text/javascript" src="/webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
     <script>
         (function () {
@@ -56,7 +57,7 @@
                     });
                     _this.$UploadBtn.click(function () {
                         $.ajax({
-                            url: "/console/file-manage/save",
+                            url: "../../console/file-manage/save",
                             type: 'POST',
                             data: new FormData(_this.$UploadForm[0]),
                             cache: false,
@@ -71,7 +72,7 @@
                     });
                     _this.$BtnDel.click(function () {
                         $.ajax({
-                            url: "../console/file-manage/delete?fileId=" + $(this).attr("fileId"),
+                            url: "../../console/file-manage/delete?fileId=" + $(this).attr("fileId"),
                             type: "POST",
                             success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
                                 alert("delete file success");

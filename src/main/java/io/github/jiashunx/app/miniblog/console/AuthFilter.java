@@ -1,9 +1,9 @@
 package io.github.jiashunx.app.miniblog.console;
 
-import io.github.jiashunx.app.miniblog.controller.FileManageController;
 import io.github.jiashunx.app.miniblog.service.ArgumentService;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.app.miniblog.service.UserService;
+import io.github.jiashunx.app.miniblog.servlet.FileManageServlet;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.filter.Filter;
@@ -34,8 +34,8 @@ public class AuthFilter implements MRestFilter {
     private static final String WEBJARS_URL_PREFIX = "/webjars/";
     private static final String[] IGNORE_URL_PREFIXES = new String[]{
             WEBJARS_URL_PREFIX
-            , FileManageController.FILE_DOWNLOAD_URL_PREFIX
-            , FileManageController.FILE_OVERVIEW_URL_PREFIX
+            , FileManageServlet.FILE_DOWNLOAD_URL_PREFIX
+            , FileManageServlet.FILE_OVERVIEW_URL_PREFIX
     };
 
     private final ServiceBus serviceBus;

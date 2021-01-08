@@ -1,8 +1,8 @@
 package io.github.jiashunx.app.miniblog;
 
-import io.github.jiashunx.app.miniblog.controller.FileManageController;
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
+import io.github.jiashunx.app.miniblog.servlet.FileManageServlet;
 import io.github.jiashunx.masker.rest.framework.MRestServer;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.app.miniblog.console.AuthFilter;
@@ -24,15 +24,12 @@ public class MiniBlogBoot {
 
     public void start() {
         serviceBus.init();
-        FileManageController fileManageController = new FileManageController(serviceBus.getFileService());
         new MRestServer("mini-blog")
                 .listenPort(serviceBus.getArgumentService().getListenPort())
                 .context(serviceBus.getArgumentService().getContextPath())
                 .addDefaultClasspathResource()
-                .filter(new MRestFilter[]{ new AuthFilter(serviceBus), fileManageController })
-                .get("/console/file-manage.html", fileManageController::fileManageHtml)
-                .fileupload("/console/file-manage/save", fileManageController::save)
-                .post("/console/file-manage/delete", fileManageController::delete)
+                .filter(new MRestFilter[]{ new AuthFilter(serviceBus) })
+                .servlet(new FileManageServlet(serviceBus.getFileService()))
                 .getRestServer()
                 .start();
     }
