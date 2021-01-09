@@ -2,7 +2,7 @@ package io.github.jiashunx.app.miniblog.servlet;
 
 import com.jfinal.kit.Kv;
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
-import io.github.jiashunx.app.miniblog.model.FileVo;
+import io.github.jiashunx.app.miniblog.model.entity.FileEntity;
 import io.github.jiashunx.app.miniblog.service.FileService;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestFileUploadRequest;
@@ -74,12 +74,12 @@ public class FileManageServlet implements MRestServlet {
             return;
         }
         String fileId = request.getUrl().substring(FILE_OVERVIEW_URL_PREFIX.length());
-        FileVo fileVo = fileService.findOne(fileId);
-        if (fileVo == null) {
+        FileEntity fileEntity = fileService.findOne(fileId);
+        if (fileEntity == null) {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
             return;
         }
-        response.write(HttpResponseStatus.OK, fileVo.getFileBytes());
+        response.write(HttpResponseStatus.OK, fileEntity.getFileBytes());
     }
 
     private void download(MRestRequest request, MRestResponse response) {
@@ -88,20 +88,20 @@ public class FileManageServlet implements MRestServlet {
             return;
         }
         String fileId = request.getUrl().substring(FILE_DOWNLOAD_URL_PREFIX.length());
-        FileVo fileVo = fileService.findOne(fileId);
-        if (fileVo == null) {
+        FileEntity fileEntity = fileService.findOne(fileId);
+        if (fileEntity == null) {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
             return;
         }
         String tempFilePath = BlogUtils.getTempPath()
-                + "/" + System.currentTimeMillis() + "_" + fileVo.getFileName();
+                + "/" + System.currentTimeMillis() + "_" + fileEntity.getFileName();
         FileUtils.newFile(tempFilePath);
         File tempFile = new File(tempFilePath);
         try {
-            IOUtils.copy(new ByteArrayInputStream(fileVo.getFileBytes()), tempFile);
+            IOUtils.copy(new ByteArrayInputStream(fileEntity.getFileBytes()), tempFile);
         } catch (IOException exception) {
             throw new MiniBlogException(String.format("download file[id=%s, name=%s] failed."
-                    , fileVo.getFileId(), fileVo.getFileName()), exception);
+                    , fileEntity.getFileId(), fileEntity.getFileName()), exception);
         }
         response.write(tempFile, f -> {
             FileUtils.deleteFile(tempFile);
@@ -113,14 +113,14 @@ public class FileManageServlet implements MRestServlet {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
         }
-        List<FileVo> fileVoList = fileService.listAll();
-        List<Map<String, Object>> mapList = new ArrayList<>(fileVoList.size());
-        for (FileVo fileVo: fileVoList) {
+        List<FileEntity> fileEntityList = fileService.listAll();
+        List<Map<String, Object>> mapList = new ArrayList<>(fileEntityList.size());
+        for (FileEntity fileEntity : fileEntityList) {
             Map<String, Object> objectMap = new HashMap<>();
-            objectMap.put("fileId", fileVo.getFileId());
-            objectMap.put("fileName", fileVo.getFileName());
-            objectMap.put("createTime", fileVo.getCreateTime() == null ? "undefined" : BlogUtils.format(fileVo.getCreateTime(), BlogUtils.yyyyMMddHHmmssSSS));
-            objectMap.put("fileByteSize", fileVo.getFileByteSize());
+            objectMap.put("fileId", fileEntity.getFileId());
+            objectMap.put("fileName", fileEntity.getFileName());
+            objectMap.put("createTime", fileEntity.getCreateTime() == null ? "undefined" : BlogUtils.format(fileEntity.getCreateTime(), BlogUtils.yyyyMMddHHmmssSSS));
+            objectMap.put("fileByteSize", fileEntity.getFileByteSize());
             mapList.add(objectMap);
         }
         Kv kv = new Kv();
@@ -134,21 +134,21 @@ public class FileManageServlet implements MRestServlet {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
         }
-        List<FileVo> fileVoList = new LinkedList<>();
+        List<FileEntity> fileEntityList = new LinkedList<>();
         try {
             MRestFileUploadRequest fileUploadRequest = (MRestFileUploadRequest) request;
             List<MRestFileUpload> fileUploadList = fileUploadRequest.getFileUploadList();
             for (MRestFileUpload fileUpload: fileUploadList) {
                 InputStream inputStream = fileUpload.getFileInputStream();
-                FileVo fileVo = new FileVo();
-                fileVo.setFileId(UUID.randomUUID().toString());
-                fileVo.setFileName(fileUpload.getFilename());
+                FileEntity fileEntity = new FileEntity();
+                fileEntity.setFileId(UUID.randomUUID().toString());
+                fileEntity.setFileName(fileUpload.getFilename());
                 ByteArrayOutputStream baos = new ByteArrayOutputStream(inputStream.available());
                 IOUtils.copy(inputStream, baos);
-                fileVo.setFileBytes(baos.toByteArray());
-                fileVo.setFileByteSize(fileVo.getFileBytes().length);
-                fileVo.setCreateTime(new Date());
-                fileVoList.add(fileVo);
+                fileEntity.setFileBytes(baos.toByteArray());
+                fileEntity.setFileByteSize(fileEntity.getFileBytes().length);
+                fileEntity.setCreateTime(new Date());
+                fileEntityList.add(fileEntity);
             }
         } catch (Throwable throwable) {
             if (logger.isErrorEnabled()) {
@@ -156,7 +156,7 @@ public class FileManageServlet implements MRestServlet {
             }
             response.writeStatusPageAsHtml(HttpResponseStatus.INTERNAL_SERVER_ERROR);
         }
-        fileService.insert(fileVoList);
+        fileService.insert(fileEntityList);
         response.write(HttpResponseStatus.OK);
     }
 

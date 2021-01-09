@@ -1,4 +1,4 @@
-package io.github.jiashunx.app.miniblog.model;
+package io.github.jiashunx.app.miniblog.model.entity;
 
 import io.github.jiashunx.tools.sqlite3.mapping.SQLite3Column;
 import io.github.jiashunx.tools.sqlite3.mapping.SQLite3Id;
@@ -8,7 +8,7 @@ import io.github.jiashunx.tools.sqlite3.mapping.SQLite3Table;
  * @author jiashunx
  */
 @SQLite3Table(tableName = "MB_USER")
-public class LoginUserVo implements Cloneable {
+public class LoginUserEntity implements Cloneable {
 
     @SQLite3Id
     @SQLite3Column(columnName = "USERNAME")
@@ -18,17 +18,17 @@ public class LoginUserVo implements Cloneable {
 
     private boolean defaultUser;
 
-    public LoginUserVo() {}
+    public LoginUserEntity() {}
 
-    public LoginUserVo(String username, String password) {
+    public LoginUserEntity(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
     @Override
-    public LoginUserVo clone() {
+    public LoginUserEntity clone() {
         try {
-            return (LoginUserVo) super.clone();
+            return (LoginUserEntity) super.clone();
         } catch (CloneNotSupportedException e) {
             return null;
         }

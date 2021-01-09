@@ -2,7 +2,7 @@
 <table-metadata id="miniblog">
     <!-- 数据查询SQL -->
     <dql>
-        <sql id="DQL0001" desc="" class="io.github.jiashunx.app.miniblog.model.LoginUserVo">
+        <sql id="DQL0001" desc="" class="io.github.jiashunx.app.miniblog.model.entity.LoginUserEntity">
             <![CDATA[
                 SELECT * FROM MB_USER;
             ]]>

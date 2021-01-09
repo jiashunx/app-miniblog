@@ -11,7 +11,7 @@ import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
 import io.github.jiashunx.masker.rest.framework.util.MRestJWTHelper;
 import io.github.jiashunx.masker.rest.framework.util.StringUtils;
-import io.github.jiashunx.app.miniblog.model.LoginUserVo;
+import io.github.jiashunx.app.miniblog.model.entity.LoginUserEntity;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.cookie.Cookie;
@@ -61,7 +61,7 @@ public class AuthFilter implements MRestFilter {
         UserService userService = serviceBus.getUserService();
         MRestJWTHelper jwtHelper = new MRestJWTHelper(argumentService.getJwtSecretKey());
         if (requestUrl.equals(CONSOLE_LOGIN_URL) && HttpMethod.POST.equals(request.getMethod())) {
-            LoginUserVo userVo = request.parseBodyToObj(LoginUserVo.class);
+            LoginUserEntity userVo = request.parseBodyToObj(LoginUserEntity.class);
             if (userService.checkValidation(userVo.getUsername(), userVo.getPassword())) {
                 String jwtToken = jwtHelper.newToken();
                 Cookie jwtCookie = new DefaultCookie(COOKIE_KEY, jwtToken);

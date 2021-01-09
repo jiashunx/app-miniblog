@@ -1,6 +1,6 @@
 package io.github.jiashunx.app.miniblog.service;
 
-import io.github.jiashunx.app.miniblog.model.FileVo;
+import io.github.jiashunx.app.miniblog.model.entity.FileEntity;
 import io.github.jiashunx.app.miniblog.util.Constants;
 import io.github.jiashunx.masker.rest.framework.util.StringUtils;
 import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
@@ -25,54 +25,54 @@ public class FileService implements IService {
         // do nothing.
     }
 
-    private final FileVo emptyFileVo = new FileVo();
-    private final Map<String, FileVo> fileVoMap = new HashMap<>();
+    private final FileEntity emptyFileEntity = new FileEntity();
+    private final Map<String, FileEntity> fileVoMap = new HashMap<>();
 
-    public List<FileVo> listAll() {
-        return jdbcTemplate.queryForList(databaseService.getDQL(Constants.DQL_QUERY_FILE_ALL), FileVo.class);
+    public List<FileEntity> listAll() {
+        return jdbcTemplate.queryForList(databaseService.getDQL(Constants.DQL_QUERY_FILE_ALL), FileEntity.class);
     }
 
-    public FileVo update(FileVo fileVo) {
+    public FileEntity update(FileEntity fileEntity) {
         synchronized (fileVoMap) {
-            jdbcTemplate.update(fileVo);
-            fileVoMap.put(fileVo.getFileId(), fileVo);
+            jdbcTemplate.update(fileEntity);
+            fileVoMap.put(fileEntity.getFileId(), fileEntity);
         }
-        return fileVo;
+        return fileEntity;
     }
 
-    public FileVo insert(FileVo fileVo) {
-        return insert(Collections.singletonList(fileVo)).get(0);
+    public FileEntity insert(FileEntity fileEntity) {
+        return insert(Collections.singletonList(fileEntity)).get(0);
     }
 
-    public List<FileVo> insert(List<FileVo> fileVoList) {
-        if (fileVoList == null) {
+    public List<FileEntity> insert(List<FileEntity> fileEntityList) {
+        if (fileEntityList == null) {
             throw new NullPointerException();
         }
-        Map<String, FileVo> voMap = new HashMap<>();
-        fileVoList.forEach(fileVo -> {
-            if (StringUtils.isEmpty(fileVo.getFileName())) {
+        Map<String, FileEntity> voMap = new HashMap<>();
+        fileEntityList.forEach(fileEntity -> {
+            if (StringUtils.isEmpty(fileEntity.getFileName())) {
                 throw new NullPointerException("file name is empty");
             }
-            if (StringUtils.isBlank(fileVo.getFileId())) {
-                fileVo.setFileId(UUID.randomUUID().toString());
+            if (StringUtils.isBlank(fileEntity.getFileId())) {
+                fileEntity.setFileId(UUID.randomUUID().toString());
             }
-            voMap.put(fileVo.getFileId(), fileVo);
+            voMap.put(fileEntity.getFileId(), fileEntity);
         });
         synchronized (fileVoMap) {
-            jdbcTemplate.insert(fileVoList);
+            jdbcTemplate.insert(fileEntityList);
             fileVoMap.putAll(voMap);
         }
-        return fileVoList;
+        return fileEntityList;
     }
 
-    public FileVo deleteOne(String fileId) {
-        FileVo fileVo = findOne(fileId);
-        if (fileVo != null) {
+    public FileEntity deleteOne(String fileId) {
+        FileEntity fileEntity = findOne(fileId);
+        if (fileEntity != null) {
             jdbcTemplate.executeUpdate(databaseService.getDML(Constants.DML_DELETE_FILE_BY_ID), statement -> {
                 statement.setString(1, fileId);
             });
         }
-        return fileVo;
+        return fileEntity;
     }
 
     public void delete(List<String> fileIdList) {
@@ -84,26 +84,26 @@ public class FileService implements IService {
         });
     }
 
-    public FileVo findOne(String fileId) {
-        FileVo fileVo = fileVoMap.get(fileId);
-        if (fileVo == null) {
+    public FileEntity findOne(String fileId) {
+        FileEntity fileEntity = fileVoMap.get(fileId);
+        if (fileEntity == null) {
             synchronized (fileVoMap) {
-                fileVo = fileVoMap.get(fileId);
-                if (fileVo == null) {
-                    fileVo = jdbcTemplate.queryForObj(databaseService.getDQL(Constants.DQL_QUERY_FILE_BY_ID), statement -> {
+                fileEntity = fileVoMap.get(fileId);
+                if (fileEntity == null) {
+                    fileEntity = jdbcTemplate.queryForObj(databaseService.getDQL(Constants.DQL_QUERY_FILE_BY_ID), statement -> {
                         statement.setString(1, fileId);
-                    }, FileVo.class);
-                    if (fileVo == null) {
-                        fileVo = emptyFileVo;
+                    }, FileEntity.class);
+                    if (fileEntity == null) {
+                        fileEntity = emptyFileEntity;
                     }
-                    fileVoMap.put(fileId, fileVo);
+                    fileVoMap.put(fileId, fileEntity);
                 }
             }
         }
-        if (fileVo == emptyFileVo) {
-            fileVo = null;
+        if (fileEntity == emptyFileEntity) {
+            fileEntity = null;
         }
-        return fileVo;
+        return fileEntity;
     }
 
 }

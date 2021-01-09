@@ -1,7 +1,7 @@
 package io.github.jiashunx.app.miniblog.service;
 
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
-import io.github.jiashunx.app.miniblog.model.LoginUserVo;
+import io.github.jiashunx.app.miniblog.model.entity.LoginUserEntity;
 import io.github.jiashunx.masker.rest.framework.util.MRestUtils;
 import org.apache.commons.cli.*;
 
@@ -63,20 +63,20 @@ public class ArgumentService implements IService {
         return DEFAULT_LISTEN_PORT;
     }
 
-    private volatile LoginUserVo loginUserVo;
+    private volatile LoginUserEntity loginUserEntity;
 
-    public synchronized LoginUserVo getLoginUserVo() {
-        if (this.loginUserVo != null) {
-            return loginUserVo;
+    public synchronized LoginUserEntity getLoginUserEntity() {
+        if (this.loginUserEntity != null) {
+            return loginUserEntity;
         }
         String username = getAuthUsername();
         String password = getAuthPassword();
         String base64Password = Base64.getEncoder().encodeToString(password.getBytes(StandardCharsets.UTF_8));
-        loginUserVo = new LoginUserVo(username, base64Password);
+        loginUserEntity = new LoginUserEntity(username, base64Password);
         if (DEFAULT_AUTH_USER.equals(username) && DEFAULT_AUTH_PWD.equals(password)) {
-            loginUserVo.setDefaultUser(true);
+            loginUserEntity.setDefaultUser(true);
         }
-        return loginUserVo;
+        return loginUserEntity;
     }
 
     private String getAuthUsername() {
