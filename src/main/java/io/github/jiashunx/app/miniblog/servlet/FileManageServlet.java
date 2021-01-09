@@ -15,6 +15,7 @@ import io.github.jiashunx.masker.rest.framework.servlet.Servlet;
 import io.github.jiashunx.masker.rest.framework.util.FileUtils;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,10 @@ public class FileManageServlet implements MRestServlet {
     }
 
     private void overview(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.GET) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
+        }
         String fileId = request.getUrl().substring(FILE_OVERVIEW_URL_PREFIX.length());
         FileVo fileVo = fileService.findOne(fileId);
         if (fileVo == null) {
@@ -78,6 +83,10 @@ public class FileManageServlet implements MRestServlet {
     }
 
     private void download(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.GET) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
+        }
         String fileId = request.getUrl().substring(FILE_DOWNLOAD_URL_PREFIX.length());
         FileVo fileVo = fileService.findOne(fileId);
         if (fileVo == null) {
@@ -100,6 +109,10 @@ public class FileManageServlet implements MRestServlet {
     }
 
     private void index(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.GET) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
+        }
         List<FileVo> fileVoList = fileService.listAll();
         List<Map<String, Object>> mapList = new ArrayList<>(fileVoList.size());
         for (FileVo fileVo: fileVoList) {
@@ -117,6 +130,10 @@ public class FileManageServlet implements MRestServlet {
     }
 
     private void save(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.POST) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
+        }
         List<FileVo> fileVoList = new LinkedList<>();
         try {
             MRestFileUploadRequest fileUploadRequest = (MRestFileUploadRequest) request;
@@ -144,6 +161,10 @@ public class FileManageServlet implements MRestServlet {
     }
 
     private void delete(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.POST) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
+        }
         fileService.deleteOne(request.getParameter("fileId"));
         response.write(HttpResponseStatus.OK);
     }
