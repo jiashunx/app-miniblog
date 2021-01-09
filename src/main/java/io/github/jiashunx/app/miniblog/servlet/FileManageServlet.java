@@ -25,15 +25,15 @@ import java.util.*;
 /**
  * @author jiashunx
  */
-@Servlet(urlPattern = "/console/file-manage/*")
+@Servlet(urlPattern = "/console/file/*")
 public class FileManageServlet implements MRestServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(FileManageServlet.class);
 
-    private static final String FILE_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/file-manage.html");
+    private static final String FILE_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/file-index.html");
 
-    public static final String FILE_OVERVIEW_URL_PREFIX = "/console/file-manage/overview/";
-    public static final String FILE_DOWNLOAD_URL_PREFIX = "/console/file-manage/download/";
+    public static final String FILE_OVERVIEW_URL_PREFIX = "/console/file/overview/";
+    public static final String FILE_DOWNLOAD_URL_PREFIX = "/console/file/download/";
 
     private final FileService fileService;
 
@@ -53,13 +53,13 @@ public class FileManageServlet implements MRestServlet {
             return;
         }
         switch (requestURL) {
-            case "/console/file-manage/index.html":
+            case "/console/file/index.html":
                 index(request, response);
                 break;
-            case "/console/file-manage/save":
+            case "/console/file/save":
                 save(request, response);
                 break;
-            case "/console/file-manage/delete":
+            case "/console/file/delete":
                 delete(request, response);
                 break;
             default:

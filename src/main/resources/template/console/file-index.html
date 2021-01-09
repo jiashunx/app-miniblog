@@ -5,6 +5,7 @@
     <title>文件管理</title>
 </head>
 <body>
+    <button type="button" id="btn-back">返回首页</button>
     <p>
         <button id="btn-upload-ctl" type="button">上传</button>
     </p>
@@ -18,18 +19,19 @@
         #for(fileVo: fileVoList)
         <li>
             <label style="width: 200px;">#(fileVo.createTime)</label>
-            <a style="width: 200px;" href="../console/file-manage/download/#(fileVo.fileId)">#(fileVo.fileName)</a>
+            <a style="width: 200px;" href="../console/file/download/#(fileVo.fileId)">#(fileVo.fileName)</a>
             <button class="btn-del" fileId="#(fileVo.fileId)" type="button">删除</button>
         </li>
         #end
     </ul>
-    <!-- 此文件实际映射路径：/console/file-manage/index.html -->
+    <!-- 此文件实际映射路径：/console/file/index.html -->
     <script type="text/javascript" src="../../mb-common.js"></script>
-    <script type="text/javascript" src="/webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../../webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
     <script>
         (function () {
 
             let PageController = function () {
+                this.$BtnBack = $("#btn-back");
                 this.$BtnUpload = $("#btn-upload-ctl");
                 this.$UploadDiv = $("#div-upload");
                 this.$UploadForm = $("#form-upload");
@@ -40,7 +42,7 @@
             PageController.prototype = {
                 Initialize: function () {
                     /*$.ajax({
-                        url: "../console/file-manage/listAll",
+                        url: "../console/file/listAll",
                         type: "GET",
                         dataType: "json",
                         success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
@@ -52,12 +54,15 @@
                 },
                 BindEvent: function () {
                     let _this = this;
+                    _this.$BtnBack.click(function () {
+                        window.location.href = "../index.html";
+                    });
                     _this.$BtnUpload.click(function () {
                         _this.$UploadDiv.show();
                     });
                     _this.$UploadBtn.click(function () {
                         $.ajax({
-                            url: "../../console/file-manage/save",
+                            url: "../../console/file/save",
                             type: 'POST',
                             data: new FormData(_this.$UploadForm[0]),
                             cache: false,
@@ -72,7 +77,7 @@
                     });
                     _this.$BtnDel.click(function () {
                         $.ajax({
-                            url: "../../console/file-manage/delete?fileId=" + $(this).attr("fileId"),
+                            url: "../../console/file/delete?fileId=" + $(this).attr("fileId"),
                             type: "POST",
                             success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
                                 alert("delete file success");
