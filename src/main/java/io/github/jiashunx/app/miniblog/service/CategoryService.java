@@ -1,10 +1,10 @@
 package io.github.jiashunx.app.miniblog.service;
 
 import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
+import io.github.jiashunx.app.miniblog.util.Constants;
 import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author jiashunx
@@ -24,16 +24,36 @@ public class CategoryService implements IService {
 
     }
 
+    private final CategoryEntity emptyEntity = new CategoryEntity();
+    private final Map<String, CategoryEntity> entityMap = new HashMap<>();
+
     public List<CategoryEntity> listAll() {
-        return null;
+        synchronized (entityMap) {
+            List<CategoryEntity> entities = new ArrayList<>(entityMap.values());
+            if (entities.isEmpty()) {
+                entities = jdbcTemplate.queryForList(databaseService.getDQL(Constants.DQL_QUERY_CATEGORY_ALL), CategoryEntity.class);
+            }
+            for (CategoryEntity entity: entities) {
+                entityMap.put(entity.getCategoryId(), entity);
+            }
+            return new ArrayList<>(entityMap.values());
+        }
     }
 
     public CategoryEntity update(CategoryEntity entity) {
-        return null;
+        synchronized (entityMap) {
+            jdbcTemplate.update(entity);
+            entityMap.put(entity.getCategoryId(), entity);
+        }
+        return entity;
     }
 
     public CategoryEntity insert(CategoryEntity entity) {
-        return null;
+        synchronized (entityMap) {
+            jdbcTemplate.insert(entity);
+            entityMap.put(entity.getCategoryId(), entity);
+        }
+        return entity;
     }
 
     public CategoryEntity deleteOne(String categoryId) {
