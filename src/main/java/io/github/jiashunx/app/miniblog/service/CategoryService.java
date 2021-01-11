@@ -1,15 +1,15 @@
 package io.github.jiashunx.app.miniblog.service;
 
 import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
-import io.github.jiashunx.app.miniblog.util.Constants;
 import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
+import io.github.jiashunx.tools.sqlite3.service.SQLite3Service;
 
 import java.util.*;
 
 /**
  * @author jiashunx
  */
-public class CategoryService extends DefaultService<CategoryEntity> implements IService {
+public class CategoryService extends SQLite3Service<CategoryEntity, String> implements IService {
 
     private final DatabaseService databaseService;
     private final SQLite3JdbcTemplate jdbcTemplate;
