@@ -74,7 +74,7 @@ public class FileManageServlet implements MRestServlet {
             return;
         }
         String fileId = request.getUrl().substring(FILE_OVERVIEW_URL_PREFIX.length());
-        FileEntity fileEntity = fileService.findOne(fileId);
+        FileEntity fileEntity = fileService.find(fileId);
         if (fileEntity == null) {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
             return;
@@ -88,7 +88,7 @@ public class FileManageServlet implements MRestServlet {
             return;
         }
         String fileId = request.getUrl().substring(FILE_DOWNLOAD_URL_PREFIX.length());
-        FileEntity fileEntity = fileService.findOne(fileId);
+        FileEntity fileEntity = fileService.find(fileId);
         if (fileEntity == null) {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
             return;
@@ -165,7 +165,7 @@ public class FileManageServlet implements MRestServlet {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
         }
-        fileService.deleteOne(request.getParameter("fileId"));
+        fileService.deleteById(request.getParameter("fileId"));
         response.write(HttpResponseStatus.OK);
     }
 
