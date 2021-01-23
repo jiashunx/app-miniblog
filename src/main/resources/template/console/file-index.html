@@ -19,7 +19,7 @@
         #for(fileVo: fileVoList)
         <li>
             <label style="width: 200px;">#(fileVo.createTime)</label>
-            <a style="width: 200px;" href="../console/file/download/#(fileVo.fileId)">#(fileVo.fileName)</a>
+            <a style="width: 200px;" href="../../console/file/download/#(fileVo.fileId)">#(fileVo.fileName)</a>
             <button class="btn-del" fileId="#(fileVo.fileId)" type="button">删除</button>
         </li>
         #end
