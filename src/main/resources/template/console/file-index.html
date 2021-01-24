@@ -15,15 +15,30 @@
         </form>
         <button type="button" id="btn-upload">保存</button>
     </div>
-    <ul>
-        #for(fileVo: fileVoList)
-        <li>
-            <label style="width: 200px;">#(fileVo.createTime)</label>
-            <a style="width: 200px;" href="../../console/file/download/#(fileVo.fileId)">#(fileVo.fileName)</a>
-            <button class="btn-del" fileId="#(fileVo.fileId)" type="button">删除</button>
-        </li>
-        #end
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <td>文件名</td>
+                <td>创建时间</td>
+                <td>文件大小（Byte）</td>
+                <td>操作</td>
+            </tr>
+        </thead>
+        <tbody>
+            #for(fileVo: fileVoList)
+                <tr>
+                    <td>#(fileVo.fileName)</td>
+                    <td>#(fileVo.createTime)</td>
+                    <td>#(fileVo.fileByteSize)</td>
+                    <td>
+                        <a style="width: 200px;" href="../../console/file/download/#(fileVo.fileId)">下载</a>
+                        <a style="width: 200px;" href="../../console/file/overview/#(fileVo.fileId)" target="_blank">预览</a>
+                        <button class="btn-del" fileId="#(fileVo.fileId)" type="button">删除</button>
+                    </td>
+                </tr>
+            #end
+        </tbody>
+    </table>
     <!-- 此文件实际映射路径：/console/file/index.html -->
     <script type="text/javascript" src="../../mb-common.js"></script>
     <script type="text/javascript" src="../../webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
