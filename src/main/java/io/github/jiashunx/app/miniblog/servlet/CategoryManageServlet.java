@@ -1,6 +1,10 @@
 package io.github.jiashunx.app.miniblog.servlet;
 
+import com.jfinal.kit.Kv;
+import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
+import io.github.jiashunx.app.miniblog.model.entity.FileEntity;
 import io.github.jiashunx.app.miniblog.service.CategoryService;
+import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.cons.Constants;
@@ -49,7 +53,18 @@ public class CategoryManageServlet implements MRestServlet {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
         }
-        response.write(CATEGORY_MANAGE_HTML.getBytes(StandardCharsets.UTF_8)
+        List<CategoryEntity> entityList = categoryService.listAll();
+        List<Map<String, Object>> mapList = new ArrayList<>(entityList.size());
+        for (CategoryEntity entity : entityList) {
+            Map<String, Object> objectMap = new HashMap<>();
+            objectMap.put("categoryId", entity.getCategoryId());
+            objectMap.put("categoryName", entity.getCategoryName());
+            objectMap.put("createTime", BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMddHHmmssSSS));
+            mapList.add(objectMap);
+        }
+        Kv kv = new Kv();
+        kv.put("categoryVoList", mapList);
+        response.write(BlogUtils.render(CATEGORY_MANAGE_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 

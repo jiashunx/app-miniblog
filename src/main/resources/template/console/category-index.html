@@ -5,6 +5,56 @@
     <title>分类管理</title>
 </head>
 <body>
+    <button type="button" id="btn-back">返回首页</button>
+    <div>
+        <label>分类名称：</label>
+        <input style="width: 200px;" id="input-category-name" />
+        <button id="btn-submit">新建</button>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <td>创建时间</td>
+            <td>分类ID</td>
+            <td>分类名称</td>
+        </tr>
+        </thead>
+        <tbody>
+        #for(categoryVo: categoryVoList)
+        <tr>
+            <td>#(categoryVo.createTime)</td>
+            <td>#(categoryVo.categoryId)</td>
+            <td>#(categoryVo.categoryName)</td>
+        </tr>
+        #end
+        </tbody>
+    </table>
+    <!-- 此文件实际映射路径：/console/file/category.html -->
+    <script type="text/javascript" src="../../mb-common.js"></script>
+    <script type="text/javascript" src="../../webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
+    <script>
+        (function () {
 
+            let PageController = function () {
+                this.$BtnBack = $("#btn-back");
+            };
+
+            PageController.prototype = {
+                Initialize: function () {
+                    return this;
+                },
+                BindEvent: function () {
+                    let _this = this;
+                    _this.$BtnBack.click(function () {
+                        window.location.href = "../index.html";
+                    });
+                    return this;
+                }
+            };
+
+            new PageController().Initialize().BindEvent();
+
+        })();
+    </script>
 </body>
 </html>
