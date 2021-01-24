@@ -43,8 +43,44 @@ public class CategoryManageServlet implements MRestServlet {
             case "/console/category/index.html":
                 index(request, response);
                 break;
+            case "/console/category/create":
+                create(request, response);
+                break;
+            case "/console/category/update":
+                update(request, response);
+                break;
+            case "/console/category/delete":
+                delete(request, response);
+                break;
             default:
                 break;
+        }
+    }
+
+    private void create(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.POST) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
+        }
+        CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
+        entity.setCategoryId(UUID.randomUUID().toString());
+        entity.setCategoryName(String.valueOf(entity.getCategoryName()));
+        entity.setCreateTime(new Date());
+        categoryService.insert(entity);
+        response.write(HttpResponseStatus.OK);
+    }
+
+    private void update(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.POST) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
+        }
+    }
+
+    private void delete(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.POST) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
         }
     }
 

@@ -7,8 +7,9 @@
 <body>
     <button type="button" id="btn-back">返回首页</button>
     <div>
+        <button id="btn-reset">重置</button>
         <label>分类名称：</label>
-        <input style="width: 200px;" id="input-category-name" />
+        <input categoryId="" style="width: 200px;" id="input-category" />
         <button id="btn-submit">新建</button>
     </div>
     <table>
@@ -17,6 +18,7 @@
             <td>创建时间</td>
             <td>分类ID</td>
             <td>分类名称</td>
+            <td>操作</td>
         </tr>
         </thead>
         <tbody>
@@ -24,7 +26,12 @@
         <tr>
             <td>#(categoryVo.createTime)</td>
             <td>#(categoryVo.categoryId)</td>
-            <td>#(categoryVo.categoryName)</td>
+            <td>
+                <a categoryId="#(categoryVo.categoryId)" categoryName="#(categoryVo.createTime)" class="a-category-name" href="">
+                    #(categoryVo.categoryName)
+                </a>
+            </td>
+            <td></td>
         </tr>
         #end
         </tbody>
@@ -35,8 +42,18 @@
     <script>
         (function () {
 
+            let FORM_STATE = {
+                NEW: 0,
+                UPDATE: 1
+            }
+
             let PageController = function () {
+                this.formState = FORM_STATE.NEW;
                 this.$BtnBack = $("#btn-back");
+                this.$BtnReset = $("#btn-reset");
+                this.$InputCategory = $("#input-category");
+                this.$ACategoryName = $(".a-category-name");
+                this.$BtnSubmit = $("#btn-submit");
             };
 
             PageController.prototype = {
@@ -45,8 +62,50 @@
                 },
                 BindEvent: function () {
                     let _this = this;
+                    _this.$BtnReset.click(function () {
+                        _this.$InputCategory.attr("categoryId", "");
+                        _this.$InputCategory.val("");
+                        _this.formState = FORM_STATE.NEW;
+                        _this.$BtnSubmit.text("新建");
+                    });
                     _this.$BtnBack.click(function () {
                         window.location.href = "../index.html";
+                    });
+                    _this.$ACategoryName.click(function () {
+                        let _categoryId = $(this).attr("categoryId");
+                        let _categoryName = $(this).attr("categoryName");
+                        _this.$InputCategory.attr("categoryId", _categoryId);
+                        _this.$InputCategory.val(_categoryName);
+                        _this.formState = FORM_STATE.UPDATE;
+                        _this.$BtnSubmit.text("更新");
+                        return false;
+                    });
+                    _this.$BtnSubmit.click(function () {
+                        let formData = {
+                            categoryId: _this.$InputCategory.attr("categoryId"),
+                            categoryName: _this.$InputCategory.val()
+                        }
+                        let url = "";
+                        switch (_this.formState) {
+                            case FORM_STATE.NEW:
+                                url = "../../console/category/create";
+                                break;
+                            case FORM_STATE.UPDATE:
+                                url = "../../console/category/update";
+                                break;
+                        }
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(formData),
+                            success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
+                                _this.$BtnReset.click();
+                                alert("create category success");
+                                window.location.reload();
+                            }),
+                            error: _MB_defaultXHRErrorHandler
+                        });
                     });
                     return this;
                 }
