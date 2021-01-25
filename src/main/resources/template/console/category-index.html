@@ -27,11 +27,13 @@
             <td>#(categoryVo.createTime)</td>
             <td>#(categoryVo.categoryId)</td>
             <td>
-                <a categoryId="#(categoryVo.categoryId)" categoryName="#(categoryVo.createTime)" class="a-category-name" href="">
+                <a categoryId="#(categoryVo.categoryId)" categoryName="#(categoryVo.categoryName)" class="a-category-name" href="">
                     #(categoryVo.categoryName)
                 </a>
             </td>
-            <td></td>
+            <td>
+                <button categoryId="#(categoryVo.categoryId)" class="btn-del">删除</button>
+            </td>
         </tr>
         #end
         </tbody>
@@ -54,6 +56,7 @@
                 this.$InputCategory = $("#input-category");
                 this.$ACategoryName = $(".a-category-name");
                 this.$BtnSubmit = $("#btn-submit");
+                this.$BtnDel = $(".btn-del");
             };
 
             PageController.prototype = {
@@ -101,7 +104,22 @@
                             data: JSON.stringify(formData),
                             success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
                                 _this.$BtnReset.click();
-                                alert("create category success");
+                                alert("create or update category success");
+                                window.location.reload();
+                            }),
+                            error: _MB_defaultXHRErrorHandler
+                        });
+                    });
+                    _this.$BtnDel.click(function () {
+                        $.ajax({
+                            url: "../../console/category/delete",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                categoryId: $(this).attr("categoryId")
+                            }),
+                            success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
+                                alert("delete category success");
                                 window.location.reload();
                             }),
                             error: _MB_defaultXHRErrorHandler

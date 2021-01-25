@@ -75,6 +75,12 @@ public class CategoryManageServlet implements MRestServlet {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
         }
+        CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
+        CategoryEntity storedEntity = categoryService.find(entity.getCategoryId());
+        // may throw NullPointerException
+        storedEntity.setCategoryName(entity.getCategoryName());
+        categoryService.update(storedEntity);
+        response.write(HttpResponseStatus.OK);
     }
 
     private void delete(MRestRequest request, MRestResponse response) {
@@ -82,6 +88,9 @@ public class CategoryManageServlet implements MRestServlet {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
         }
+        CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
+        categoryService.deleteById(entity.getCategoryId());
+        response.write(HttpResponseStatus.OK);
     }
 
     private void index(MRestRequest request, MRestResponse response) {
