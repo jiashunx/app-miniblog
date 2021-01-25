@@ -67,7 +67,6 @@ public class CategoryManageServlet implements MRestServlet {
         entity.setCategoryName(String.valueOf(entity.getCategoryName()));
         entity.setCreateTime(new Date());
         categoryService.insert(entity);
-        response.write(HttpResponseStatus.OK);
     }
 
     private void update(MRestRequest request, MRestResponse response) {
@@ -80,7 +79,6 @@ public class CategoryManageServlet implements MRestServlet {
         // may throw NullPointerException
         storedEntity.setCategoryName(entity.getCategoryName());
         categoryService.update(storedEntity);
-        response.write(HttpResponseStatus.OK);
     }
 
     private void delete(MRestRequest request, MRestResponse response) {
@@ -90,7 +88,6 @@ public class CategoryManageServlet implements MRestServlet {
         }
         CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
         categoryService.deleteById(entity.getCategoryId());
-        response.write(HttpResponseStatus.OK);
     }
 
     private void index(MRestRequest request, MRestResponse response) {
