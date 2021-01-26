@@ -15,6 +15,7 @@ public class ServiceBus implements IService {
     private final UserService userService;
     private final FileService fileService;
     private final CategoryService categoryService;
+    private final TagService tagService;
 
     private final List<IService> serviceList = new LinkedList<>();
 
@@ -24,11 +25,13 @@ public class ServiceBus implements IService {
         this.userService = new UserService(this);
         this.fileService = new FileService(this);
         this.categoryService = new CategoryService(this);
+        this.tagService = new TagService(this);
         serviceList.add(databaseService);
         serviceList.add(argumentService);
         serviceList.add(userService);
         serviceList.add(fileService);
         serviceList.add(categoryService);
+        serviceList.add(tagService);
     }
 
     @Override
@@ -54,5 +57,9 @@ public class ServiceBus implements IService {
 
     public CategoryService getCategoryService() {
         return categoryService;
+    }
+
+    public TagService getTagService() {
+        return tagService;
     }
 }

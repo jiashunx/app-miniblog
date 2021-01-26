@@ -2,7 +2,6 @@ package io.github.jiashunx.app.miniblog.servlet;
 
 import com.jfinal.kit.Kv;
 import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
-import io.github.jiashunx.app.miniblog.model.entity.FileEntity;
 import io.github.jiashunx.app.miniblog.service.CategoryService;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
@@ -14,10 +13,7 @@ import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -25,8 +21,6 @@ import java.util.*;
  */
 @Servlet(urlPattern = "/console/category/*")
 public class CategoryManageServlet implements MRestServlet {
-
-    private static final Logger logger = LoggerFactory.getLogger(CategoryManageServlet.class);
 
     private static final String CATEGORY_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/category-index.html");
 
