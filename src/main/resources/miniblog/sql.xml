@@ -7,46 +7,12 @@
                 SELECT * FROM MB_USER;
             ]]>
         </sql>
-        <sql id="DQL0002">
-            <![CDATA[
-                SELECT F.FILE_ID, F.FILE_NAME, F.FILE_BYTE_SIZE, F.FILE_CONTENT
-                FROM MB_FILE F WHERE F.FILE_ID=?
-            ]]>
-        </sql>
-        <sql id="DQL0003">
-            <![CDATA[
-                SELECT F.FILE_ID, F.FILE_NAME, F.FILE_BYTE_SIZE, F.CREATE_TIME
-                FROM MB_FILE F
-                WHERE 1=1
-                ORDER BY F.CREATE_TIME DESC
-            ]]>
-        </sql>
-        <sql id="DQL0101">
-            <![CDATA[
-                SELECT * FROM MB_CATEGORY WHERE CATEGORY_ID=?
-            ]]>
-        </sql>
-        <sql id="DQL0102">
-            <![CDATA[
-                SELECT * FROM MB_CATEGORY ORDER BY CREATE_TIME DESC
-            ]]>
-        </sql>
     </dql>
     <!-- 数据操作SQL -->
     <dml>
         <sql id="DML0001" desc="">
             <![CDATA[
                 DELETE FROM MB_USER WHERE 1=1
-            ]]>
-        </sql>
-        <sql id="DML0002">
-            <![CDATA[
-                DELETE FROM MB_FILE WHERE FILE_ID=?
-            ]]>
-        </sql>
-        <sql id="DML0101">
-            <![CDATA[
-                DELETE FROM MB_CATEGORY WHERE CATEGORY_ID=?
             ]]>
         </sql>
     </dml>
@@ -66,6 +32,11 @@
         <table name="MB_CATEGORY">
             <column name="CATEGORY_ID" type="VARCHAR(36)" primary="true" />
             <column name="CATEGORY_NAME" type="NVARCHAR(2560)" />
+            <column name="CREATE_TIME" type="TIMESTAMP" />
+        </table>
+        <table name="MB_TAG">
+            <column name="TAG_ID" type="VARCHAR(36)" primary="true" />
+            <column name="TAG_NAME" type="NVARCHAR(2560)" />
             <column name="CREATE_TIME" type="TIMESTAMP" />
         </table>
     </ddl>
