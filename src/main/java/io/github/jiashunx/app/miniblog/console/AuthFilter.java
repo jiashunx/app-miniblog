@@ -29,7 +29,7 @@ public class AuthFilter implements MRestFilter {
     private static final String COOKIE_KEY = "MINI-BLOG";
     private static final long COOKIE_TIMEOUT_MILLIS = 60*60*1000L;
     private static final String CONSOLE_LOGIN_URL = "/console/login";
-    private static final String LOGIN_URL = "/login.html";
+    private static final String CONSOLE_LOGIN_URL_HTML = "/console/login.html";
     private static final String CONSOLE_URL_PREFIX = "/console/";
     private static final String WEBJARS_URL_PREFIX = "/webjars/";
     private static final String[] IGNORE_URL_PREFIXES = new String[]{
@@ -47,7 +47,7 @@ public class AuthFilter implements MRestFilter {
     @Override
     public void doFilter(MRestRequest request, MRestResponse response, MRestFilterChain filterChain) {
         String requestUrl = request.getUrl();
-        if (!requestUrl.startsWith(CONSOLE_URL_PREFIX)) {
+        if (!requestUrl.startsWith(CONSOLE_URL_PREFIX) || requestUrl.equals(CONSOLE_LOGIN_URL_HTML)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -78,7 +78,7 @@ public class AuthFilter implements MRestFilter {
         String jwtToken = cookie == null ? null : cookie.value();
         if (StringUtils.isEmpty(jwtToken)
                 || StringUtils.isNotEmpty(jwtToken) && (jwtHelper.isTokenTimeout(jwtToken) || !jwtHelper.isTokenValid(jwtToken))) {
-            response.redirect(LOGIN_URL);
+            response.redirect(CONSOLE_LOGIN_URL_HTML);
             return;
         } else {
             String newToken = jwtHelper.updateToken(jwtToken);

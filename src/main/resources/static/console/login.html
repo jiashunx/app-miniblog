@@ -12,8 +12,8 @@
     <input id="password" type="password" />
     <button id="btn-login">登陆</button>
 </div>
-<script type="text/javascript" src="./mb-common.js"></script>
-<script type="text/javascript" src="./webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../mb-common.js"></script>
+<script type="text/javascript" src="../webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
 <script>
     (function () {
         let PageController = function () {
@@ -26,7 +26,7 @@
                 let _this = this;
                 _this.$BtnLogin.click(function () {
                     $.ajax({
-                        url: "./console/login",
+                        url: "../console/login",
                         type: "POST",
                         data: JSON.stringify({
                             username: _this.$InputUsername.val(),
@@ -35,7 +35,7 @@
                         contentType: "application/json",
                         success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
                             if (xhr.status === 200 && result === "success") {
-                                window.location.href = "./console/index.html";
+                                window.location.href = "../console/index.html";
                             } else {
                                 _MB_defaultXHRErrorHandler(xhr);
                             }
