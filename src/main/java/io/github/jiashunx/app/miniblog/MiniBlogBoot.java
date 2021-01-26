@@ -34,6 +34,9 @@ public class MiniBlogBoot {
                 .servlet(new FileManageServlet(serviceBus.getFileService()))
                 .servlet(new CategoryManageServlet(serviceBus.getCategoryService()))
                 .servlet(new TagManageServlet(serviceBus.getTagService()))
+                .get("/", (request, response) -> {
+                    response.redirect("/console/index.html");
+                })
                 .getRestServer()
                 .start();
     }
