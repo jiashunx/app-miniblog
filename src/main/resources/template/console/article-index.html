@@ -10,8 +10,8 @@
     <!-- 此文件实际映射路径：/console/tag/index.html -->
     <script type="text/javascript" src="../../mb-common.js"></script>
     <script type="text/javascript" src="../../webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
-    <link href="../../quill/quill.bubble.css" rel="stylesheet">
-    <link href="../../quill/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../quill/quill.bubble.css">
+    <link rel="stylesheet" href="../../quill/quill.snow.css">
     <script type="text/javascript" src="../../quill/quill.min.js"></script>
     <script>
         (function () {
@@ -27,7 +27,7 @@
                 BindEvent: function () {
                     let _this = this;
                     _this.$BtnBack.click(function () {
-                        window.location.href = "../index.html";
+                        window.location.href = "../../console/index.html";
                     });
                     return this;
                 }

@@ -56,21 +56,12 @@
 
             PageController.prototype = {
                 Initialize: function () {
-                    /*$.ajax({
-                        url: "../console/file/listAll",
-                        type: "GET",
-                        dataType: "json",
-                        success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
-                            console.log(result);
-                        }),
-                        error: _MB_defaultXHRErrorHandler
-                    });*/
                     return this;
                 },
                 BindEvent: function () {
                     let _this = this;
                     _this.$BtnBack.click(function () {
-                        window.location.href = "../index.html";
+                        window.location.href = "../../console/index.html";
                     });
                     _this.$BtnUpload.click(function () {
                         _this.$UploadDiv.show();
