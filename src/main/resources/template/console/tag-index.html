@@ -2,63 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>分类管理</title>
+    <title>标签管理</title>
 </head>
 <body>
     <button type="button" id="btn-back">返回首页</button>
     <div>
         <button id="btn-reset">重置</button>
-        <label>分类名称：</label>
-        <input categoryId="" style="width: 200px;" id="input-category" />
+        <label>标签名称：</label>
+        <input tagId="" style="width: 200px;" id="input-tag" />
         <button id="btn-submit">新建</button>
     </div>
     <table>
         <thead>
         <tr>
             <td>创建时间</td>
-            <td>分类ID</td>
-            <td>分类名称</td>
+            <td>标签ID</td>
+            <td>标签名称</td>
             <td>操作</td>
         </tr>
         </thead>
         <tbody>
-        #for(categoryVo: categoryVoList)
+        #for(tagVo: tagVoList)
         <tr>
-            <td>#(categoryVo.createTime)</td>
-            <td>#(categoryVo.categoryId)</td>
+            <td>#(tagVo.createTime)</td>
+            <td>#(tagVo.tagId)</td>
             <td>
-                <a categoryId="#(categoryVo.categoryId)" categoryName="#(categoryVo.categoryName)" class="a-category-name" href="">
-                    #(categoryVo.categoryName)
+                <a tagId="#(tagVo.tagId)" tagName="#(tagVo.tagName)" class="a-tag-name" href="">
+                    #(tagVo.tagName)
                 </a>
             </td>
             <td>
-                <button categoryId="#(categoryVo.categoryId)" class="btn-del">删除</button>
+                <button tagId="#(tagVo.tagId)" class="btn-del">删除</button>
             </td>
         </tr>
         #end
         </tbody>
     </table>
-    <!-- 此文件实际映射路径：/console/category/index.html -->
+    <!-- 此文件实际映射路径：/console/tag/index.html -->
     <script type="text/javascript" src="../../mb-common.js"></script>
     <script type="text/javascript" src="../../webjars/webjar-jquery/3.5.1/dist/jquery.min.js"></script>
     <script>
         (function () {
-
+    
             let FORM_STATE = {
                 NEW: 0,
                 UPDATE: 1
             }
-
+    
             let PageController = function () {
                 this.formState = FORM_STATE.NEW;
                 this.$BtnBack = $("#btn-back");
                 this.$BtnReset = $("#btn-reset");
-                this.$InputCategory = $("#input-category");
-                this.$ACategoryName = $(".a-category-name");
+                this.$InputTag = $("#input-tag");
+                this.$ATagName = $(".a-tag-name");
                 this.$BtnSubmit = $("#btn-submit");
                 this.$BtnDel = $(".btn-del");
             };
-
+    
             PageController.prototype = {
                 Initialize: function () {
                     return this;
@@ -66,35 +66,35 @@
                 BindEvent: function () {
                     let _this = this;
                     _this.$BtnReset.click(function () {
-                        _this.$InputCategory.attr("categoryId", "");
-                        _this.$InputCategory.val("");
+                        _this.$InputTag.attr("tagId", "");
+                        _this.$InputTag.val("");
                         _this.formState = FORM_STATE.NEW;
                         _this.$BtnSubmit.text("新建");
                     });
                     _this.$BtnBack.click(function () {
                         window.location.href = "../index.html";
                     });
-                    _this.$ACategoryName.click(function () {
-                        let _categoryId = $(this).attr("categoryId");
-                        let _categoryName = $(this).attr("categoryName");
-                        _this.$InputCategory.attr("categoryId", _categoryId);
-                        _this.$InputCategory.val(_categoryName);
+                    _this.$ATagName.click(function () {
+                        let _tagId = $(this).attr("tagId");
+                        let _tagName = $(this).attr("tagName");
+                        _this.$InputTag.attr("tagId", _tagId);
+                        _this.$InputTag.val(_tagName);
                         _this.formState = FORM_STATE.UPDATE;
                         _this.$BtnSubmit.text("更新");
                         return false;
                     });
                     _this.$BtnSubmit.click(function () {
                         let formData = {
-                            categoryId: _this.$InputCategory.attr("categoryId"),
-                            categoryName: _this.$InputCategory.val()
+                            tagId: _this.$InputTag.attr("tagId"),
+                            tagName: _this.$InputTag.val()
                         }
                         let url = "";
                         switch (_this.formState) {
                             case FORM_STATE.NEW:
-                                url = "../../console/category/create";
+                                url = "../../console/tag/create";
                                 break;
                             case FORM_STATE.UPDATE:
-                                url = "../../console/category/update";
+                                url = "../../console/tag/update";
                                 break;
                         }
                         $.ajax({
@@ -104,7 +104,7 @@
                             data: JSON.stringify(formData),
                             success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
                                 _this.$BtnReset.click();
-                                alert("create or update category success");
+                                alert("create or update tag success");
                                 window.location.reload();
                             }),
                             error: _MB_defaultXHRErrorHandler
@@ -112,14 +112,14 @@
                     });
                     _this.$BtnDel.click(function () {
                         $.ajax({
-                            url: "../../console/category/delete",
+                            url: "../../console/tag/delete",
                             type: "POST",
                             contentType: "application/json",
                             data: JSON.stringify({
-                                categoryId: $(this).attr("categoryId")
+                                tagId: $(this).attr("tagId")
                             }),
                             success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
-                                alert("delete category success");
+                                alert("delete tag success");
                                 window.location.reload();
                             }),
                             error: _MB_defaultXHRErrorHandler
@@ -128,9 +128,9 @@
                     return this;
                 }
             };
-
+    
             new PageController().Initialize().BindEvent();
-
+    
         })();
     </script>
 </body>
