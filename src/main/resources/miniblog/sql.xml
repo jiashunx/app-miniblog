@@ -39,5 +39,13 @@
             <column name="TAG_NAME" type="NVARCHAR(2560)" />
             <column name="CREATE_TIME" type="TIMESTAMP" />
         </table>
+        <table name="MB_ARTICLE">
+            <column name="ARTICLE_ID" type="VARCHAR(36)" primary="true" />
+            <column name="ARTICLE_NAME" type="NVARCHAR(2560)" />
+            <column name="ARTICLE_DESCRIPTION" type="NVARCHAR(2560)" />
+            <column name="ARTICLE_CONTENT" type="BLOB" />
+            <column name="CREATE_TIME" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_TIME" type="TIMESTAMP" />
+        </table>
     </ddl>
 </table-metadata>
