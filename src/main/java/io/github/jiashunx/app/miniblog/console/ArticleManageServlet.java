@@ -8,6 +8,7 @@ import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.cons.Constants;
 import io.github.jiashunx.masker.rest.framework.servlet.MRestServlet;
+import io.github.jiashunx.masker.rest.framework.servlet.Servlet;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.netty.handler.codec.http.HttpMethod;
@@ -18,6 +19,7 @@ import java.util.*;
 /**
  * @author jiashunx
  */
+@Servlet(urlPattern = "/console/article/*")
 public class ArticleManageServlet implements MRestServlet {
 
     private static final String ARTICLE_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/article-index.html");
