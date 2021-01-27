@@ -21,6 +21,7 @@ public class ConsoleServletHolder {
                 new FileManageServlet(serviceBus.getFileService())
                 , new CategoryManageServlet(serviceBus.getCategoryService())
                 , new TagManageServlet(serviceBus.getTagService())
+                , new ArticleManageServlet(serviceBus)
         };
     }
 
