@@ -3,7 +3,6 @@ package io.github.jiashunx.app.miniblog.console;
 import io.github.jiashunx.app.miniblog.service.ArgumentService;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.app.miniblog.service.UserService;
-import io.github.jiashunx.app.miniblog.servlet.FileManageServlet;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.filter.Filter;

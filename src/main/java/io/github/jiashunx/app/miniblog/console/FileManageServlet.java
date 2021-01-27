@@ -1,4 +1,4 @@
-package io.github.jiashunx.app.miniblog.servlet;
+package io.github.jiashunx.app.miniblog.console;
 
 import com.jfinal.kit.Kv;
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;

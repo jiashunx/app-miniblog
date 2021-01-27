@@ -1,13 +1,10 @@
 package io.github.jiashunx.app.miniblog;
 
+import io.github.jiashunx.app.miniblog.console.*;
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
-import io.github.jiashunx.app.miniblog.servlet.CategoryManageServlet;
-import io.github.jiashunx.app.miniblog.servlet.FileManageServlet;
-import io.github.jiashunx.app.miniblog.servlet.TagManageServlet;
 import io.github.jiashunx.masker.rest.framework.MRestServer;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
-import io.github.jiashunx.app.miniblog.console.AuthFilter;
 
 /**
  * @author jiashunx
@@ -31,10 +28,9 @@ public class MiniBlogBoot {
                 .context(serviceBus.getArgumentService().getContextPath())
                 .addDefaultClasspathResource()
                 .filter(new MRestFilter[]{ new AuthFilter(serviceBus) })
-                .servlet(new FileManageServlet(serviceBus.getFileService()))
-                .servlet(new CategoryManageServlet(serviceBus.getCategoryService()))
-                .servlet(new TagManageServlet(serviceBus.getTagService()))
+                .servlet(new ConsoleServletHolder(serviceBus).getConsoleServletArr())
                 .get("/", (request, response) -> {
+                    // TODO 后续调整为index.html
                     response.redirect("/console/index.html");
                 })
                 .getRestServer()
