@@ -17,6 +17,9 @@ public class ArticleEntity {
     @SQLite3Column(columnName = "ARTICLE_ID")
     private String articleId;
 
+    @SQLite3Column(columnName = "ARTICLE_ID_LOCATOR")
+    private String articleIdLocator;
+
     @SQLite3Column(columnName = "ARTICLE_NAME")
     private String articleName;
 
@@ -40,6 +43,14 @@ public class ArticleEntity {
 
     public void setArticleId(String articleId) {
         this.articleId = articleId;
+    }
+
+    public String getArticleIdLocator() {
+        return articleIdLocator;
+    }
+
+    public void setArticleIdLocator(String articleIdLocator) {
+        this.articleIdLocator = articleIdLocator;
     }
 
     public String getArticleName() {
