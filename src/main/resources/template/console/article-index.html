@@ -7,6 +7,32 @@
 <body>
     <button type="button" id="btn-back">返回首页</button>
 
+    <table>
+        <thead>
+            <tr>
+                <td>创建时间</td>
+                <td>更新时间</td>
+                <td>文章名称</td>
+                <td>文章定位ID</td>
+                <td>操作</td>
+            </tr>
+        </thead>
+        <tbody>
+            #for(articleVo: articleVoList)
+            <tr>
+                <td>#(articleVo.createTime)</td>
+                <td>#(articleVo.lastModifiedTime)</td>
+                <td>#(articleVo.articleName)</td>
+                <td>#(articleVo.articleIdLocator)</td>
+                <td>
+                    <button>编辑</button>
+                    <button>删除</button>
+                </td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+
     <!-- 此文件实际映射路径：/console/tag/index.html -->
     <script type="text/javascript" src="../../mb-common.js"></script>
     <script type="text/javascript" src="../../jquery.min.js"></script>

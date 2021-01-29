@@ -1,6 +1,8 @@
 package io.github.jiashunx.app.miniblog.console;
 
 import com.jfinal.kit.Kv;
+import io.github.jiashunx.app.miniblog.model.entity.ArticleEntity;
+import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
 import io.github.jiashunx.app.miniblog.service.ArticleService;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
@@ -47,6 +49,17 @@ public class ArticleManageServlet implements MRestServlet {
         if (request.getMethod() != HttpMethod.GET) {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
+        }
+        List<ArticleEntity> entityList = articleService.listAll();
+        List<Map<String, Object>> mapList = new ArrayList<>(entityList.size());
+        for (ArticleEntity entity : entityList) {
+            Map<String, Object> objectMap = new HashMap<>();
+            objectMap.put("articleId", entity.getArticleId());
+            objectMap.put("articleIdLocator", entity.getArticleIdLocator());
+            objectMap.put("articleName", entity.getArticleName());
+            objectMap.put("createTime", BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMddHHmmssSSS));
+            objectMap.put("lastModifiedTime", BlogUtils.format(entity.getLastModifiedTime(), BlogUtils.yyyyMMddHHmmssSSS));
+            mapList.add(objectMap);
         }
         Kv kv = new Kv();
         response.write(BlogUtils.render(ARTICLE_MANAGE_HTML, kv)
