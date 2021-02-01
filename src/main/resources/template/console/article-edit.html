@@ -6,17 +6,102 @@
 </head>
 <body>
     <button type="button" id="btn-back">返回文章管理</button>
+
+    <div>
+        <label>标题</label>
+        <input style="width: 500px;">
+    </div>
+
+    <div>
+        <label>内容</label>
+        <div id="standalone-container">
+            <div id="toolbar-container">
+                <span class="ql-formats">
+                    <select class="ql-font"></select>
+                    <select class="ql-size"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-script" value="sub"></button>
+                    <button class="ql-script" value="super"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-header" value="1"></button>
+                    <button class="ql-header" value="2"></button>
+                    <button class="ql-blockquote"></button>
+                    <button class="ql-code-block"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                    <button class="ql-indent" value="-1"></button>
+                    <button class="ql-indent" value="+1"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-direction" value="rtl"></button>
+                    <select class="ql-align"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                    <button class="ql-image"></button>
+                    <button class="ql-video"></button>
+                    <button class="ql-formula"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-clean"></button>
+                </span>
+            </div>
+            <div id="editor-container"></div>
+        </div>
+    </div>
+
+    <button type="button" id="btn-submit">提交</button>
+
+    <div id="div-show"></div>
+
+    <style>
+        body > #standalone-container {
+            margin: 50px auto;
+            /*max-width: 1024px;*/
+        }
+        #editor-container {
+            height: 512px;
+        }
+    </style>
     <!-- 此文件实际映射路径：/console/article/edit|new.html -->
     <script type="text/javascript" src="../../mb-common.js"></script>
     <script type="text/javascript" src="../../jquery.min.js"></script>
-    <link rel="stylesheet" href="../../quill/quill.bubble.css">
+    <link rel="stylesheet" href="../../quill/highlight.default.min.css">
+    <link rel="stylesheet" href="../../quill/katex.min.css">
+    <link rel="stylesheet" href="../../quill/quill.core.css">
     <link rel="stylesheet" href="../../quill/quill.snow.css">
+    <script type="text/javascript" src="../../quill/highlight.min.js"></script>
+    <script type="text/javascript" src="../../quill/katex.min.js"></script>
     <script type="text/javascript" src="../../quill/quill.min.js"></script>
     <script>
         (function () {
 
             let PageController = function () {
                 this.$BtnBack = $("#btn-back");
+                this.$BtnSubmit = $("#btn-submit");
+                this.quill = new Quill('#editor-container', {
+                    modules: {
+                        formula: true,
+                        syntax: true,
+                        toolbar: '#toolbar-container'
+                    },
+                    placeholder: 'Compose an epic...',
+                    theme: 'snow'
+                });
             };
 
             PageController.prototype = {
@@ -27,6 +112,11 @@
                     let _this = this;
                     _this.$BtnBack.click(function () {
                         window.location.href = "../../console/article/index.html";
+                    });
+                    _this.$BtnSubmit.click(function () {
+                        let html = _this.quill.container.firstChild.innerHTML;
+                        html = '<div class="ql-container ql-snow"><div class="ql-editor">'+html+"</div></div>";
+                        $("#div-show").html(html);
                     });
                     return this;
                 }
