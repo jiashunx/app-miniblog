@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>#(status)</title>
+</head>
+<body>
+    <button type="button" id="btn-back">返回文章管理</button>
+    <!-- 此文件实际映射路径：/console/article/edit|new.html -->
+    <script type="text/javascript" src="../../mb-common.js"></script>
+    <script type="text/javascript" src="../../jquery.min.js"></script>
+    <link rel="stylesheet" href="../../quill/quill.bubble.css">
+    <link rel="stylesheet" href="../../quill/quill.snow.css">
+    <script type="text/javascript" src="../../quill/quill.min.js"></script>
+    <script>
+        (function () {
+
+            let PageController = function () {
+                this.$BtnBack = $("#btn-back");
+            };
+
+            PageController.prototype = {
+                Initialize: function () {
+                    return this;
+                },
+                BindEvent: function () {
+                    let _this = this;
+                    _this.$BtnBack.click(function () {
+                        window.location.href = "../../console/article/index.html";
+                    });
+                    return this;
+                }
+            };
+
+            new PageController().Initialize().BindEvent();
+
+        })();
+    </script>
+</body>
+</html>

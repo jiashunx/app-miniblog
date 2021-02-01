@@ -2,7 +2,6 @@ package io.github.jiashunx.app.miniblog.console;
 
 import com.jfinal.kit.Kv;
 import io.github.jiashunx.app.miniblog.model.entity.ArticleEntity;
-import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
 import io.github.jiashunx.app.miniblog.service.ArticleService;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
@@ -25,6 +24,7 @@ import java.util.*;
 public class ArticleManageServlet implements MRestServlet {
 
     private static final String ARTICLE_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/article-index.html");
+    private static final String ARTICLE_EDIT_HTML = IOUtils.loadContentFromClasspath("template/console/article-edit.html");
 
     private final ArticleService articleService;
 
@@ -39,10 +39,39 @@ public class ArticleManageServlet implements MRestServlet {
             case "/console/article/index.html":
                 index(request, response);
                 break;
+            case "/console/article/create.html":
+                createArticle(request, response);
+                break;
+            case "/console/article/edit.html":
+                editArticle(request, response);
+                break;
             default:
                 response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
                 break;
         }
+    }
+
+    private void createArticle(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.GET) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
+        }
+        Kv kv = new Kv();
+        kv.put("status", "新建文章");
+        response.write(BlogUtils.render(ARTICLE_EDIT_HTML, kv)
+                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
+    }
+
+    private void editArticle(MRestRequest request, MRestResponse response) {
+        if (request.getMethod() != HttpMethod.GET) {
+            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
+            return;
+        }
+        // TODO 获取待编辑的数据
+        Kv kv = new Kv();
+        kv.put("status", "编辑文章");
+        response.write(BlogUtils.render(ARTICLE_EDIT_HTML, kv)
+                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
     private void index(MRestRequest request, MRestResponse response) {
@@ -62,6 +91,7 @@ public class ArticleManageServlet implements MRestServlet {
             mapList.add(objectMap);
         }
         Kv kv = new Kv();
+        kv.put("articleVoList", mapList);
         response.write(BlogUtils.render(ARTICLE_MANAGE_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }

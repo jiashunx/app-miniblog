@@ -6,7 +6,8 @@
 </head>
 <body>
     <button type="button" id="btn-back">返回首页</button>
-
+    <br>
+    <button type="button" id="btn-create">新建文章</button>
     <table>
         <thead>
             <tr>
@@ -33,7 +34,7 @@
         </tbody>
     </table>
 
-    <!-- 此文件实际映射路径：/console/tag/index.html -->
+    <!-- 此文件实际映射路径：/console/article/index.html -->
     <script type="text/javascript" src="../../mb-common.js"></script>
     <script type="text/javascript" src="../../jquery.min.js"></script>
     <link rel="stylesheet" href="../../quill/quill.bubble.css">
@@ -44,6 +45,7 @@
 
             let PageController = function () {
                 this.$BtnBack = $("#btn-back");
+                this.$BtnCreate = $("#btn-create");
             };
 
             PageController.prototype = {
@@ -54,6 +56,9 @@
                     let _this = this;
                     _this.$BtnBack.click(function () {
                         window.location.href = "../../console/index.html";
+                    });
+                    _this.$BtnCreate.click(function () {
+                        window.location.href = "../../console/article/create.html"
                     });
                     return this;
                 }
