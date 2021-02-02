@@ -7,8 +7,11 @@ import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.cons.Constants;
-import io.github.jiashunx.masker.rest.framework.servlet.MRestServlet;
+import io.github.jiashunx.masker.rest.framework.servlet.AbstractRestServlet;
 import io.github.jiashunx.masker.rest.framework.servlet.Servlet;
+import io.github.jiashunx.masker.rest.framework.servlet.mapping.GetMapping;
+import io.github.jiashunx.masker.rest.framework.servlet.mapping.PostMapping;
+import io.github.jiashunx.masker.rest.framework.servlet.mapping.RequestMapping;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.netty.handler.codec.http.HttpMethod;
@@ -20,7 +23,8 @@ import java.util.*;
  * @author jiashunx
  */
 @Servlet(urlPattern = "/console/tag/*")
-public class TagManageServlet implements MRestServlet {
+@RequestMapping(url = "/console/tag")
+public class TagManageServlet extends AbstractRestServlet {
 
     private static final String TAG_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/tag-index.html");
 
@@ -30,32 +34,8 @@ public class TagManageServlet implements MRestServlet {
         this.tagService = Objects.requireNonNull(tagService);
     }
 
-    @Override
-    public void service(MRestRequest request, MRestResponse response) {
-        String requestUrl = request.getUrl();
-        switch (requestUrl) {
-            case "/console/tag/index.html":
-                index(request, response);
-                break;
-            case "/console/tag/create":
-                create(request, response);
-                break;
-            case "/console/tag/update":
-                update(request, response);
-                break;
-            case "/console/tag/delete":
-                delete(request, response);
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void create(MRestRequest request, MRestResponse response) {
-        if (request.getMethod() != HttpMethod.POST) {
-            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
-            return;
-        }
+    @PostMapping(url = "/create")
+    public void create(MRestRequest request, MRestResponse response) {
         TagEntity entity = request.parseBodyToObj(TagEntity.class);
         entity.setTagId(UUID.randomUUID().toString());
         entity.setTagName(String.valueOf(entity.getTagName()));
@@ -63,11 +43,8 @@ public class TagManageServlet implements MRestServlet {
         tagService.insert(entity);
     }
 
+    @PostMapping(url = "/update")
     private void update(MRestRequest request, MRestResponse response) {
-        if (request.getMethod() != HttpMethod.POST) {
-            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
-            return;
-        }
         TagEntity entity = request.parseBodyToObj(TagEntity.class);
         TagEntity storedEntity = tagService.find(entity.getTagId());
         // may throw NullPointerException
@@ -75,6 +52,7 @@ public class TagManageServlet implements MRestServlet {
         tagService.update(storedEntity);
     }
 
+    @PostMapping(url = "/delete")
     private void delete(MRestRequest request, MRestResponse response) {
         if (request.getMethod() != HttpMethod.POST) {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
@@ -84,11 +62,8 @@ public class TagManageServlet implements MRestServlet {
         tagService.deleteById(entity.getTagId());
     }
 
+    @GetMapping(url = "/index.html")
     private void index(MRestRequest request, MRestResponse response) {
-        if (request.getMethod() != HttpMethod.GET) {
-            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
-            return;
-        }
         List<TagEntity> entityList = tagService.listAll();
         List<Map<String, Object>> mapList = new ArrayList<>(entityList.size());
         for (TagEntity entity : entityList) {

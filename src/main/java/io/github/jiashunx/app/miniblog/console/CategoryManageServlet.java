@@ -7,8 +7,11 @@ import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.cons.Constants;
-import io.github.jiashunx.masker.rest.framework.servlet.MRestServlet;
+import io.github.jiashunx.masker.rest.framework.servlet.AbstractRestServlet;
 import io.github.jiashunx.masker.rest.framework.servlet.Servlet;
+import io.github.jiashunx.masker.rest.framework.servlet.mapping.GetMapping;
+import io.github.jiashunx.masker.rest.framework.servlet.mapping.PostMapping;
+import io.github.jiashunx.masker.rest.framework.servlet.mapping.RequestMapping;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.netty.handler.codec.http.HttpMethod;
@@ -20,7 +23,8 @@ import java.util.*;
  * @author jiashunx
  */
 @Servlet(urlPattern = "/console/category/*")
-public class CategoryManageServlet implements MRestServlet {
+@RequestMapping(url = "/console/category")
+public class CategoryManageServlet extends AbstractRestServlet {
 
     private static final String CATEGORY_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/category-index.html");
 
@@ -30,32 +34,8 @@ public class CategoryManageServlet implements MRestServlet {
         this.categoryService = Objects.requireNonNull(categoryService);
     }
 
-    @Override
-    public void service(MRestRequest request, MRestResponse response) {
-        String requestUrl = request.getUrl();
-        switch (requestUrl) {
-            case "/console/category/index.html":
-                index(request, response);
-                break;
-            case "/console/category/create":
-                create(request, response);
-                break;
-            case "/console/category/update":
-                update(request, response);
-                break;
-            case "/console/category/delete":
-                delete(request, response);
-                break;
-            default:
-                break;
-        }
-    }
-
+    @PostMapping(url = "/create")
     private void create(MRestRequest request, MRestResponse response) {
-        if (request.getMethod() != HttpMethod.POST) {
-            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
-            return;
-        }
         CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
         entity.setCategoryId(UUID.randomUUID().toString());
         entity.setCategoryName(String.valueOf(entity.getCategoryName()));
@@ -63,11 +43,8 @@ public class CategoryManageServlet implements MRestServlet {
         categoryService.insert(entity);
     }
 
+    @PostMapping(url = "/update")
     private void update(MRestRequest request, MRestResponse response) {
-        if (request.getMethod() != HttpMethod.POST) {
-            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
-            return;
-        }
         CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
         CategoryEntity storedEntity = categoryService.find(entity.getCategoryId());
         // may throw NullPointerException
@@ -75,6 +52,7 @@ public class CategoryManageServlet implements MRestServlet {
         categoryService.update(storedEntity);
     }
 
+    @PostMapping(url = "/delete")
     private void delete(MRestRequest request, MRestResponse response) {
         if (request.getMethod() != HttpMethod.POST) {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
@@ -84,11 +62,8 @@ public class CategoryManageServlet implements MRestServlet {
         categoryService.deleteById(entity.getCategoryId());
     }
 
+    @GetMapping(url = "/index.html")
     private void index(MRestRequest request, MRestResponse response) {
-        if (request.getMethod() != HttpMethod.GET) {
-            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
-            return;
-        }
         List<CategoryEntity> entityList = categoryService.listAll();
         List<Map<String, Object>> mapList = new ArrayList<>(entityList.size());
         for (CategoryEntity entity : entityList) {
