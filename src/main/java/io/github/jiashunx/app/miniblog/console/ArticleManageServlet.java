@@ -37,6 +37,7 @@ public class ArticleManageServlet extends AbstractRestServlet {
     public void createArticle(MRestRequest request, MRestResponse response) {
         Kv kv = new Kv();
         kv.put("status", "新建文章");
+        kv.put("status_code", "new");
         response.write(BlogUtils.render(ARTICLE_EDIT_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
@@ -46,6 +47,7 @@ public class ArticleManageServlet extends AbstractRestServlet {
         // TODO 获取待编辑的数据
         Kv kv = new Kv();
         kv.put("status", "编辑文章");
+        kv.put("status_code", "edit");
         response.write(BlogUtils.render(ARTICLE_EDIT_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
