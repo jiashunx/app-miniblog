@@ -44,7 +44,7 @@ public class TagManageServlet extends AbstractRestServlet {
     }
 
     @PostMapping(url = "/update")
-    private void update(MRestRequest request, MRestResponse response) {
+    public void update(MRestRequest request, MRestResponse response) {
         TagEntity entity = request.parseBodyToObj(TagEntity.class);
         TagEntity storedEntity = tagService.find(entity.getTagId());
         // may throw NullPointerException
@@ -53,7 +53,7 @@ public class TagManageServlet extends AbstractRestServlet {
     }
 
     @PostMapping(url = "/delete")
-    private void delete(MRestRequest request, MRestResponse response) {
+    public void delete(MRestRequest request, MRestResponse response) {
         if (request.getMethod() != HttpMethod.POST) {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
@@ -63,7 +63,7 @@ public class TagManageServlet extends AbstractRestServlet {
     }
 
     @GetMapping(url = "/index.html")
-    private void index(MRestRequest request, MRestResponse response) {
+    public void index(MRestRequest request, MRestResponse response) {
         List<TagEntity> entityList = tagService.listAll();
         List<Map<String, Object>> mapList = new ArrayList<>(entityList.size());
         for (TagEntity entity : entityList) {

@@ -35,7 +35,7 @@ public class CategoryManageServlet extends AbstractRestServlet {
     }
 
     @PostMapping(url = "/create")
-    private void create(MRestRequest request, MRestResponse response) {
+    public void create(MRestRequest request, MRestResponse response) {
         CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
         entity.setCategoryId(UUID.randomUUID().toString());
         entity.setCategoryName(String.valueOf(entity.getCategoryName()));
@@ -44,7 +44,7 @@ public class CategoryManageServlet extends AbstractRestServlet {
     }
 
     @PostMapping(url = "/update")
-    private void update(MRestRequest request, MRestResponse response) {
+    public void update(MRestRequest request, MRestResponse response) {
         CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
         CategoryEntity storedEntity = categoryService.find(entity.getCategoryId());
         // may throw NullPointerException
@@ -53,7 +53,7 @@ public class CategoryManageServlet extends AbstractRestServlet {
     }
 
     @PostMapping(url = "/delete")
-    private void delete(MRestRequest request, MRestResponse response) {
+    public void delete(MRestRequest request, MRestResponse response) {
         if (request.getMethod() != HttpMethod.POST) {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
             return;
@@ -63,7 +63,7 @@ public class CategoryManageServlet extends AbstractRestServlet {
     }
 
     @GetMapping(url = "/index.html")
-    private void index(MRestRequest request, MRestResponse response) {
+    public void index(MRestRequest request, MRestResponse response) {
         List<CategoryEntity> entityList = categoryService.listAll();
         List<Map<String, Object>> mapList = new ArrayList<>(entityList.size());
         for (CategoryEntity entity : entityList) {

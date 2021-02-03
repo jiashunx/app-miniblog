@@ -5,6 +5,7 @@ import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.app.miniblog.service.UserService;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
+import io.github.jiashunx.masker.rest.framework.cons.Constants;
 import io.github.jiashunx.masker.rest.framework.filter.Filter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
@@ -80,6 +81,14 @@ public class AuthFilter implements MRestFilter {
             response.redirect(CONSOLE_LOGIN_URL_HTML);
             return;
         } else {
+            // 校验请求的server标识
+            Cookie cookie1 = request.getCookie(Constants.HTTP_HEADER_SERVER_IDENTIFIER);
+            if (cookie1 != null) {
+                if (!request.getRestContext().getRestServer().getIdentifier().equals(cookie1.value())) {
+                    response.redirect(CONSOLE_LOGIN_URL_HTML);
+                    return;
+                }
+            }
             String newToken = jwtHelper.updateToken(jwtToken);
             Cookie jwtCookie = new DefaultCookie(COOKIE_KEY, newToken);
             jwtCookie.setPath(COOKIE_PATH);
