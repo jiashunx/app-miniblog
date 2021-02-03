@@ -11,7 +11,6 @@ import io.github.jiashunx.masker.rest.framework.servlet.AbstractRestServlet;
 import io.github.jiashunx.masker.rest.framework.servlet.Servlet;
 import io.github.jiashunx.masker.rest.framework.servlet.mapping.GetMapping;
 import io.github.jiashunx.masker.rest.framework.servlet.mapping.PostMapping;
-import io.github.jiashunx.masker.rest.framework.servlet.mapping.RequestMapping;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.netty.handler.codec.http.HttpMethod;
@@ -23,7 +22,6 @@ import java.util.*;
  * @author jiashunx
  */
 @Servlet(urlPattern = "/console/category/*")
-@RequestMapping(url = "/console/category")
 public class CategoryManageServlet extends AbstractRestServlet {
 
     private static final String CATEGORY_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/category-index.html");
@@ -34,7 +32,7 @@ public class CategoryManageServlet extends AbstractRestServlet {
         this.categoryService = Objects.requireNonNull(categoryService);
     }
 
-    @PostMapping(url = "/create")
+    @PostMapping(url = "/console/category/create")
     public void create(MRestRequest request, MRestResponse response) {
         CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
         entity.setCategoryId(UUID.randomUUID().toString());
@@ -43,7 +41,7 @@ public class CategoryManageServlet extends AbstractRestServlet {
         categoryService.insert(entity);
     }
 
-    @PostMapping(url = "/update")
+    @PostMapping(url = "/console/category/update")
     public void update(MRestRequest request, MRestResponse response) {
         CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
         CategoryEntity storedEntity = categoryService.find(entity.getCategoryId());
@@ -52,7 +50,7 @@ public class CategoryManageServlet extends AbstractRestServlet {
         categoryService.update(storedEntity);
     }
 
-    @PostMapping(url = "/delete")
+    @PostMapping(url = "/console/category/delete")
     public void delete(MRestRequest request, MRestResponse response) {
         if (request.getMethod() != HttpMethod.POST) {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);

@@ -11,7 +11,6 @@ import io.github.jiashunx.masker.rest.framework.servlet.AbstractRestServlet;
 import io.github.jiashunx.masker.rest.framework.servlet.Servlet;
 import io.github.jiashunx.masker.rest.framework.servlet.mapping.GetMapping;
 import io.github.jiashunx.masker.rest.framework.servlet.mapping.PostMapping;
-import io.github.jiashunx.masker.rest.framework.servlet.mapping.RequestMapping;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.netty.handler.codec.http.HttpMethod;
@@ -23,7 +22,6 @@ import java.util.*;
  * @author jiashunx
  */
 @Servlet(urlPattern = "/console/tag/*")
-@RequestMapping(url = "/console/tag")
 public class TagManageServlet extends AbstractRestServlet {
 
     private static final String TAG_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/tag-index.html");
@@ -34,7 +32,7 @@ public class TagManageServlet extends AbstractRestServlet {
         this.tagService = Objects.requireNonNull(tagService);
     }
 
-    @PostMapping(url = "/create")
+    @PostMapping(url = "/console/tag/create")
     public void create(MRestRequest request, MRestResponse response) {
         TagEntity entity = request.parseBodyToObj(TagEntity.class);
         entity.setTagId(UUID.randomUUID().toString());
@@ -43,7 +41,7 @@ public class TagManageServlet extends AbstractRestServlet {
         tagService.insert(entity);
     }
 
-    @PostMapping(url = "/update")
+    @PostMapping(url = "/console/tag/update")
     public void update(MRestRequest request, MRestResponse response) {
         TagEntity entity = request.parseBodyToObj(TagEntity.class);
         TagEntity storedEntity = tagService.find(entity.getTagId());
@@ -52,7 +50,7 @@ public class TagManageServlet extends AbstractRestServlet {
         tagService.update(storedEntity);
     }
 
-    @PostMapping(url = "/delete")
+    @PostMapping(url = "/console/tag/delete")
     public void delete(MRestRequest request, MRestResponse response) {
         if (request.getMethod() != HttpMethod.POST) {
             response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
@@ -62,7 +60,7 @@ public class TagManageServlet extends AbstractRestServlet {
         tagService.deleteById(entity.getTagId());
     }
 
-    @GetMapping(url = "/index.html")
+    @GetMapping(url = "/console/tag/index.html")
     public void index(MRestRequest request, MRestResponse response) {
         List<TagEntity> entityList = tagService.listAll();
         List<Map<String, Object>> mapList = new ArrayList<>(entityList.size());
