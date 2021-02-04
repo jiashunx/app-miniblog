@@ -29,10 +29,8 @@ public class MiniBlogBoot {
                 .addDefaultClasspathResource()
                 .filter(new MRestFilter[]{ new AuthFilter(serviceBus) })
                 .servlet(new ConsoleServletHolder(serviceBus).getConsoleServletArr())
-                .get("/", (request, response) -> {
-                    // TODO 后续调整为index.html
-                    response.redirect("/console/index.html");
-                })
+                // TODO 后续调整为index.html
+                .setIndexUrl("/console/index.html")
                 .getRestServer()
                 .start();
     }

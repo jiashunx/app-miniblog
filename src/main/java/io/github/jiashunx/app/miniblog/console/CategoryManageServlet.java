@@ -13,8 +13,6 @@ import io.github.jiashunx.masker.rest.framework.servlet.mapping.GetMapping;
 import io.github.jiashunx.masker.rest.framework.servlet.mapping.PostMapping;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.*;
 
@@ -52,15 +50,11 @@ public class CategoryManageServlet extends AbstractRestServlet {
 
     @PostMapping(url = "/console/category/delete")
     public void delete(MRestRequest request, MRestResponse response) {
-        if (request.getMethod() != HttpMethod.POST) {
-            response.write(HttpResponseStatus.METHOD_NOT_ALLOWED);
-            return;
-        }
         CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
         categoryService.deleteById(entity.getCategoryId());
     }
 
-    @GetMapping(url = "/index.html")
+    @GetMapping(url = "/console/category/index.html")
     public void index(MRestRequest request, MRestResponse response) {
         List<CategoryEntity> entityList = categoryService.listAll();
         List<Map<String, Object>> mapList = new ArrayList<>(entityList.size());
