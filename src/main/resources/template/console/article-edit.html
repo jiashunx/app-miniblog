@@ -4,12 +4,20 @@
     <meta charset="UTF-8">
     <title>#(status)</title>
 </head>
-<body status="#(status_code)">
+<body>
     <button type="button" id="btn-back">返回文章管理</button>
 
     <div>
         <label>标题</label>
-        <input style="width: 500px;">
+        <input id="article-name" style="width: 500px;" value="#(articleName)">
+    </div>
+    <div>
+        <label>英文标识</label>
+        <input id="article-id-locator" style="width: 500px;" value="#(articleIdLocator)">
+    </div>
+    <div>
+        <label>描述</label>
+        <input id="article-description" style="width: 500px;" value="#(articleDescription)">
     </div>
 
     <div>
@@ -93,6 +101,9 @@
             let PageController = function () {
                 this.$BtnBack = $("#btn-back");
                 this.$BtnSubmit = $("#btn-submit");
+                this.$ArticleName = $("#article-name");
+                this.$ArticleIdLocator = $("#article-id-locator")
+                this.$ArticleDescription = $("#article-description");
                 this.quill = new Quill('#editor-container', {
                     modules: {
                         formula: true,
@@ -102,6 +113,8 @@
                     placeholder: 'Compose an epic...',
                     theme: 'snow'
                 });
+                this.quill.container.firstChild.innerHTML = "#(articleContent)";
+                this.articleId = "#(articleId)";
             };
 
             PageController.prototype = {
@@ -114,8 +127,23 @@
                         window.location.href = "../../console/article/index.html";
                     });
                     _this.$BtnSubmit.click(function () {
-                        let html = _this.quill.container.firstChild.innerHTML;
-                        html = '<div class="ql-container ql-snow"><div class="ql-editor">'+html+"</div></div>";
+                        $.ajax({
+                            url: "../../console/article/edit",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                articleId: _this.articleId,
+                                articleName: _this.$ArticleName.val(),
+                                articleContent: _this.quill.container.firstChild.innerHTML,
+                                articleIdLocator: _this.$ArticleIdLocator.val(),
+                                articleDescription: _this.$ArticleDescription.val()
+                            }),
+                            success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
+                                alert("create or update article success");
+                                _this.$BtnBack.click();
+                            }),
+                            error: _MB_defaultXHRErrorHandler
+                        });
                         $("#div-show").html(html);
                     });
                     return this;
