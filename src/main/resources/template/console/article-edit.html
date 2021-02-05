@@ -113,7 +113,8 @@
                     placeholder: 'Compose an epic...',
                     theme: 'snow'
                 });
-                this.quill.container.firstChild.innerHTML = "#(articleContent)";
+                // quill生成的html内容内部的字符串使用双引号
+                this.quill.container.firstChild.innerHTML = '#(articleContent)';
                 this.articleId = "#(articleId)";
             };
 

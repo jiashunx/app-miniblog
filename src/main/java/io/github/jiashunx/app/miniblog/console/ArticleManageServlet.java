@@ -71,29 +71,26 @@ public class ArticleManageServlet extends AbstractRestServlet {
 
     }
 
-    @GetMapping(url = "/console/article/create.html")
-    public void createArticle(MRestRequest request, MRestResponse response) {
-        Kv kv = new Kv();
-        kv.put("status", "新建文章");
-        kv.put("articleId", "");
-        kv.put("articleName", "");
-        kv.put("articleContent", "");
-        kv.put("articleIdLocator", "");
-        kv.put("articleDescription", "");
-        response.write(BlogUtils.render(ARTICLE_EDIT_HTML, kv)
-                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
-    }
-
     @GetMapping(url = "/console/article/edit.html")
     public void editArticle(MRestRequest request, MRestResponse response) {
-        // TODO 获取待编辑的数据
+        String articleId = request.getParameter("articleId");
         Kv kv = new Kv();
-        kv.put("status", "编辑文章");
-        kv.put("articleId", "");
-        kv.put("articleName", "");
-        kv.put("articleContent", "");
-        kv.put("articleIdLocator", "");
-        kv.put("articleDescription", "");
+        if (StringUtils.isBlank(articleId)) {
+            kv.put("status", "新建文章");
+            kv.put("articleId", "");
+            kv.put("articleName", "");
+            kv.put("articleContent", "");
+            kv.put("articleIdLocator", "");
+            kv.put("articleDescription", "");
+        } else {
+            ArticleEntity entity = articleService.find(articleId);
+            kv.put("status", "编辑文章");
+            kv.put("articleId", articleId);
+            kv.put("articleName", entity.getArticleName());
+            kv.put("articleContent", new String(entity.getArticleContent(), StandardCharsets.UTF_8));
+            kv.put("articleIdLocator", entity.getArticleIdLocator());
+            kv.put("articleDescription", entity.getArticleDescription());
+        }
         response.write(BlogUtils.render(ARTICLE_EDIT_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
