@@ -48,8 +48,16 @@
             <column name="CREATE_TIME" type="TIMESTAMP" />
             <column name="LAST_MODIFIED_TIME" type="TIMESTAMP" />
         </table>
+        <table name="MB_ARTICLE_CATEGORY">
+            <column name="ARTICLE_ID" type="VARCHAR(36)" primary="true" />
+            <column name="CATEGORY_ID" type="VARCHAR(36)" />
+        </table>
         <index name="ARTICLE_ID_LOCATOR" table="MB_ARTICLE" unique="true">
             <column name="ARTICLE_ID_LOCATOR" />
+        </index>
+        <index name="ARTICLE_CATEGORY" table="MB_ARTICLE_CATEGORY" unique="true">
+            <column name="ARTICLE_ID" />
+            <column name="CATEGORY_ID" />
         </index>
     </ddl>
 </table-metadata>

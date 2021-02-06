@@ -2,7 +2,9 @@ package io.github.jiashunx.app.miniblog.console;
 
 import com.jfinal.kit.Kv;
 import io.github.jiashunx.app.miniblog.model.entity.ArticleEntity;
+import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
 import io.github.jiashunx.app.miniblog.service.ArticleService;
+import io.github.jiashunx.app.miniblog.service.CategoryService;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
@@ -29,9 +31,11 @@ public class ArticleManageServlet extends AbstractRestServlet {
     private static final String ARTICLE_EDIT_HTML = IOUtils.loadContentFromClasspath("template/console/article-edit.html");
 
     private final ArticleService articleService;
+    private final CategoryService categoryService;
 
     public ArticleManageServlet(ServiceBus serviceBus) {
         this.articleService = Objects.requireNonNull(serviceBus.getArticleService());
+        this.categoryService = Objects.requireNonNull(serviceBus.getCategoryService());
     }
 
     @PostMapping(url = "/console/article/edit")
@@ -91,6 +95,15 @@ public class ArticleManageServlet extends AbstractRestServlet {
             kv.put("articleIdLocator", entity.getArticleIdLocator());
             kv.put("articleDescription", entity.getArticleDescription());
         }
+        List<CategoryEntity> categoryEntityList = categoryService.listAll();
+        List<Map<String, Object>> categoryVoList = new ArrayList<>(categoryEntityList.size());
+        categoryEntityList.forEach(categoryEntity -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("categoryId", categoryEntity.getCategoryId());
+            map.put("categoryName", categoryEntity.getCategoryName());
+            categoryVoList.add(map);
+        });
+        kv.put("categoryVoList", categoryVoList);
         response.write(BlogUtils.render(ARTICLE_EDIT_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }

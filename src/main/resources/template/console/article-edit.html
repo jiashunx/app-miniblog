@@ -19,6 +19,14 @@
         <label>描述</label>
         <input id="article-description" style="width: 500px;" value="#(articleDescription)">
     </div>
+    <div>
+        <label>分类</label>
+        <select id="select-category">
+            #for(categoryVo: categoryVoList)
+                <option value ="#(categoryVo.categoryId)">#(categoryVo.categoryName)</option>
+            #end
+        </select>
+    </div>
 
     <div>
         <label>内容</label>
@@ -101,6 +109,7 @@
             let PageController = function () {
                 this.$BtnBack = $("#btn-back");
                 this.$BtnSubmit = $("#btn-submit");
+                this.$SelectCategory = $("#select-category");
                 this.$ArticleName = $("#article-name");
                 this.$ArticleIdLocator = $("#article-id-locator")
                 this.$ArticleDescription = $("#article-description");
@@ -116,6 +125,9 @@
                 // quill生成的html内容内部的字符串使用双引号
                 this.quill.container.firstChild.innerHTML = '#(articleContent)';
                 this.articleId = "#(articleId)";
+                if (this.articleId) {
+                    this.$SelectCategory.val()
+                }
             };
 
             PageController.prototype = {
