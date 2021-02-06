@@ -72,7 +72,9 @@ public class ArticleManageServlet extends AbstractRestServlet {
 
     @PostMapping(url = "/console/article/delete")
     public void actionDelete(MRestRequest request, MRestResponse response) {
-
+        Map<String, Object> params = (Map<String, Object>) request.parseBodyToObj(Map.class);
+        String articleId = params.get("articleId").toString();
+        articleService.deleteById(articleId);
     }
 
     @GetMapping(url = "/console/article/edit.html")

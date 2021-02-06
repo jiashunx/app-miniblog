@@ -64,6 +64,21 @@
                     _this.$BtnEdit.click(function () {
                         window.location.href = "../../console/article/edit.html?articleId=" + $(this).parent().prev().html();
                     });
+                    _this.$BtnDelete.click(function () {
+                        $.ajax({
+                            url: "../../console/article/delete",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                articleId: $(this).parent().prev().html()
+                            }),
+                            success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
+                                alert("delete article success");
+                                window.location.reload();
+                            }),
+                            error: _MB_defaultXHRErrorHandler
+                        });
+                    });
                     return this;
                 }
             };
