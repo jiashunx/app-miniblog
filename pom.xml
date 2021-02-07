@@ -19,7 +19,7 @@
     <dependency>
       <groupId>io.github.jiashunx</groupId>
       <artifactId>tools-sqlite3</artifactId>
-      <version>1.1.4</version>
+      <version>1.1.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
