@@ -125,8 +125,9 @@
                 // quill生成的html内容内部的字符串使用双引号
                 this.quill.container.firstChild.innerHTML = '#(articleContent)';
                 this.articleId = "#(articleId)";
-                if (this.articleId) {
-                    this.$SelectCategory.val()
+                this.categoryId = "#(categoryId)";
+                if (this.categoryId) {
+                    this.$SelectCategory.val(this.categoryId);
                 }
             };
 
@@ -146,6 +147,7 @@
                             contentType: "application/json",
                             data: JSON.stringify({
                                 articleId: _this.articleId,
+                                categoryId: _this.$SelectCategory.val(),
                                 articleName: _this.$ArticleName.val(),
                                 articleContent: _this.quill.container.firstChild.innerHTML,
                                 articleIdLocator: _this.$ArticleIdLocator.val(),

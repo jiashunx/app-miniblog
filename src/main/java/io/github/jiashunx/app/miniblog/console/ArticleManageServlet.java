@@ -1,8 +1,10 @@
 package io.github.jiashunx.app.miniblog.console;
 
 import com.jfinal.kit.Kv;
+import io.github.jiashunx.app.miniblog.model.entity.ArticleCategoryEntity;
 import io.github.jiashunx.app.miniblog.model.entity.ArticleEntity;
 import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
+import io.github.jiashunx.app.miniblog.service.ArticleCategoryService;
 import io.github.jiashunx.app.miniblog.service.ArticleService;
 import io.github.jiashunx.app.miniblog.service.CategoryService;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
@@ -17,9 +19,11 @@ import io.github.jiashunx.masker.rest.framework.servlet.mapping.PostMapping;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.github.jiashunx.masker.rest.framework.util.StringUtils;
+import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author jiashunx
@@ -30,43 +34,64 @@ public class ArticleManageServlet extends AbstractRestServlet {
     private static final String ARTICLE_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/article-index.html");
     private static final String ARTICLE_EDIT_HTML = IOUtils.loadContentFromClasspath("template/console/article-edit.html");
 
+    private final SQLite3JdbcTemplate sqLite3JdbcTemplate;
     private final ArticleService articleService;
     private final CategoryService categoryService;
+    private final ArticleCategoryService articleCategoryService;
 
     public ArticleManageServlet(ServiceBus serviceBus) {
+        this.sqLite3JdbcTemplate = serviceBus.getDatabaseService().getJdbcTemplate();
         this.articleService = Objects.requireNonNull(serviceBus.getArticleService());
         this.categoryService = Objects.requireNonNull(serviceBus.getCategoryService());
+        this.articleCategoryService = Objects.requireNonNull(serviceBus.getArticleCategoryService());
     }
 
     @PostMapping(url = "/console/article/edit")
     public void actionEdit(MRestRequest request, MRestResponse response) {
         Map<String, Object> params = (Map<String, Object>) request.parseBodyToObj(Map.class);
         String articleId = params.get("articleId").toString();
+        String categoryId = params.get("categoryId").toString();
         String articleName = params.get("articleName").toString();
         String articleContent = params.get("articleContent").toString();
         String articleIdLocator = params.get("articleIdLocator").toString();
         String articleDescription = params.get("articleDescription").toString();
         // 新增
         if (StringUtils.isBlank(articleId)) {
-            ArticleEntity entity = new ArticleEntity();
-            entity.setArticleId(UUID.randomUUID().toString());
-            entity.setArticleName(articleName);
-            entity.setArticleContent(articleContent.getBytes(StandardCharsets.UTF_8));
-            entity.setArticleIdLocator(articleIdLocator);
-            entity.setArticleDescription(articleDescription);
-            entity.setCreateTime(new Date());
-            entity.setLastModifiedTime(entity.getCreateTime());
-            articleService.insert(entity);
+            ArticleEntity articleEntity = new ArticleEntity();
+            articleEntity.setArticleId(UUID.randomUUID().toString());
+            articleEntity.setArticleName(articleName);
+            articleEntity.setArticleContent(articleContent.getBytes(StandardCharsets.UTF_8));
+            articleEntity.setArticleIdLocator(articleIdLocator);
+            articleEntity.setArticleDescription(articleDescription);
+            articleEntity.setCreateTime(new Date());
+            articleEntity.setLastModifiedTime(articleEntity.getCreateTime());
+            ArticleCategoryEntity articleCategoryEntity = new ArticleCategoryEntity();
+            articleCategoryEntity.setArticleId(articleEntity.getArticleId());
+            articleCategoryEntity.setCategoryId(categoryId);
+            sqLite3JdbcTemplate.doTransaction(() -> {
+                articleService.insert(articleEntity);
+                articleCategoryService.insert(articleCategoryEntity);
+            });
         } else {
             // 更新
-            ArticleEntity entity = articleService.find(articleId);
-            entity.setArticleName(articleName);
-            entity.setArticleDescription(articleDescription);
-            entity.setArticleContent(articleContent.getBytes(StandardCharsets.UTF_8));
-            entity.setArticleIdLocator(articleIdLocator);
-            entity.setArticleDescription(articleDescription);
-            entity.setLastModifiedTime(new Date());
-            articleService.update(entity);
+            ArticleEntity articleEntity = articleService.find(articleId);
+            articleEntity.setArticleName(articleName);
+            articleEntity.setArticleDescription(articleDescription);
+            articleEntity.setArticleContent(articleContent.getBytes(StandardCharsets.UTF_8));
+            articleEntity.setArticleIdLocator(articleIdLocator);
+            articleEntity.setArticleDescription(articleDescription);
+            articleEntity.setLastModifiedTime(new Date());
+            ArticleCategoryEntity articleCategoryEntity = articleCategoryService.find(articleId);
+            if (articleCategoryEntity == null) {
+                articleCategoryEntity = new ArticleCategoryEntity();
+                articleCategoryEntity.setArticleId(articleId);
+            }
+            articleCategoryEntity.setCategoryId(categoryId);
+            AtomicReference<ArticleCategoryEntity> articleCategoryEntityRef = new AtomicReference<>(articleCategoryEntity);
+            sqLite3JdbcTemplate.doTransaction(() -> {
+                articleService.update(articleEntity);
+                articleCategoryService.update(articleCategoryEntityRef.get());
+            });
         }
     }
 
@@ -74,7 +99,10 @@ public class ArticleManageServlet extends AbstractRestServlet {
     public void actionDelete(MRestRequest request, MRestResponse response) {
         Map<String, Object> params = (Map<String, Object>) request.parseBodyToObj(Map.class);
         String articleId = params.get("articleId").toString();
-        articleService.deleteById(articleId);
+        sqLite3JdbcTemplate.doTransaction(() -> {
+            articleService.deleteById(articleId);
+            articleCategoryService.deleteById(articleId);
+        });
     }
 
     @GetMapping(url = "/console/article/edit.html")
@@ -88,6 +116,7 @@ public class ArticleManageServlet extends AbstractRestServlet {
             kv.put("articleContent", "");
             kv.put("articleIdLocator", "");
             kv.put("articleDescription", "");
+            kv.put("categoryId", "");
         } else {
             ArticleEntity entity = articleService.find(articleId);
             kv.put("status", "编辑文章");
@@ -96,6 +125,12 @@ public class ArticleManageServlet extends AbstractRestServlet {
             kv.put("articleContent", new String(entity.getArticleContent(), StandardCharsets.UTF_8));
             kv.put("articleIdLocator", entity.getArticleIdLocator());
             kv.put("articleDescription", entity.getArticleDescription());
+            ArticleCategoryEntity articleCategoryEntity = articleCategoryService.find(articleId);
+            String categoryId = "";
+            if (articleCategoryEntity != null) {
+                categoryId = articleCategoryEntity.getCategoryId();
+            }
+            kv.put("categoryId", categoryId);
         }
         List<CategoryEntity> categoryEntityList = categoryService.listAll();
         List<Map<String, Object>> categoryVoList = new ArrayList<>(categoryEntityList.size());
