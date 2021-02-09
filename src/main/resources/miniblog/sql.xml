@@ -52,12 +52,21 @@
             <column name="ARTICLE_ID" type="VARCHAR(36)" primary="true" />
             <column name="CATEGORY_ID" type="VARCHAR(36)" />
         </table>
+        <table name="MB_ARTICLE_TAG">
+            <column name="ARTICLE_TAG_ID" type="VARCHAR(36)" primary="true" />
+            <column name="ARTICLE_ID" type="VARCHAR(36)" />
+            <column name="TAG_ID" type="VARCHAR(36)" />
+        </table>
         <index name="ARTICLE_ID_LOCATOR" table="MB_ARTICLE" unique="true">
             <column name="ARTICLE_ID_LOCATOR" />
         </index>
         <index name="ARTICLE_CATEGORY" table="MB_ARTICLE_CATEGORY" unique="true">
             <column name="ARTICLE_ID" />
             <column name="CATEGORY_ID" />
+        </index>
+        <index name="ARTICLE_TAG" table="MB_ARTICLE_TAG" unique="true">
+            <column name="ARTICLE_ID" />
+            <column name="TAG_ID" />
         </index>
     </ddl>
 </table-metadata>
