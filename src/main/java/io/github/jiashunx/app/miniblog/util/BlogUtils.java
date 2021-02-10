@@ -33,12 +33,26 @@ public class BlogUtils {
         return tempPath;
     }
 
+    private static final ThreadLocal<Map<String, Template>> TEMPLATE_MAP = new ThreadLocal<>();
+    public static Template getTemplate(String templateString) {
+        Map<String, Template> templateMap = TEMPLATE_MAP.get();
+        if (templateMap == null) {
+            templateMap = new HashMap<>();
+            TEMPLATE_MAP.set(templateMap);
+        }
+        Template template = templateMap.get(templateString);
+        if (template == null) {
+            final Engine engine = Engine.use();
+            engine.setDevMode(true);
+            template = engine.getTemplateByString(templateString);
+            templateMap.put(templateString, template);
+        }
+        return template;
+    }
+
     public static byte[] render(String template, Kv kv) {
-        Engine engine = Engine.use();
-        engine.setDevMode(true);
-        Template $template = engine.getTemplateByString(template);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        $template.render(kv, baos);
+        getTemplate(template).render(kv, baos);
         return baos.toByteArray();
     }
 
@@ -56,13 +70,13 @@ public class BlogUtils {
         Map<String, SimpleDateFormat> formatMap = FORMAT_MAP.get();
         if (formatMap == null) {
             formatMap = new HashMap<>();
+            FORMAT_MAP.set(formatMap);
         }
         SimpleDateFormat sdf = formatMap.get(pattern);
         if (sdf == null) {
             sdf = new SimpleDateFormat(pattern);
             formatMap.put(pattern, sdf);
         }
-        FORMAT_MAP.set(formatMap);
         return sdf;
     }
 
