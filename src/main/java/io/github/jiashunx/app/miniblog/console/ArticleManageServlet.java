@@ -1,13 +1,8 @@
 package io.github.jiashunx.app.miniblog.console;
 
 import com.jfinal.kit.Kv;
-import io.github.jiashunx.app.miniblog.model.entity.ArticleCategoryEntity;
-import io.github.jiashunx.app.miniblog.model.entity.ArticleEntity;
-import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
-import io.github.jiashunx.app.miniblog.service.ArticleCategoryService;
-import io.github.jiashunx.app.miniblog.service.ArticleService;
-import io.github.jiashunx.app.miniblog.service.CategoryService;
-import io.github.jiashunx.app.miniblog.service.ServiceBus;
+import io.github.jiashunx.app.miniblog.model.entity.*;
+import io.github.jiashunx.app.miniblog.service.*;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
@@ -38,12 +33,16 @@ public class ArticleManageServlet extends AbstractRestServlet {
     private final ArticleService articleService;
     private final CategoryService categoryService;
     private final ArticleCategoryService articleCategoryService;
+    private final TagService tagService;
+    private final ArticleTagService articleTagService;
 
     public ArticleManageServlet(ServiceBus serviceBus) {
         this.sqLite3JdbcTemplate = serviceBus.getDatabaseService().getJdbcTemplate();
         this.articleService = Objects.requireNonNull(serviceBus.getArticleService());
         this.categoryService = Objects.requireNonNull(serviceBus.getCategoryService());
         this.articleCategoryService = Objects.requireNonNull(serviceBus.getArticleCategoryService());
+        this.tagService = Objects.requireNonNull(serviceBus.getTagService());
+        this.articleTagService = Objects.requireNonNull(serviceBus.getArticleTagService());
     }
 
     @PostMapping(url = "/console/article/edit")
@@ -134,13 +133,34 @@ public class ArticleManageServlet extends AbstractRestServlet {
         }
         List<CategoryEntity> categoryEntityList = categoryService.listAll();
         List<Map<String, Object>> categoryVoList = new ArrayList<>(categoryEntityList.size());
+        Map<String, Object> defaultCategory = new HashMap<>();
+        defaultCategory.put("categoryId", "");
+        defaultCategory.put("categoryName", "==请选择==");
+        defaultCategory.put("disabled", "disabled");
+        categoryVoList.add(defaultCategory);
         categoryEntityList.forEach(categoryEntity -> {
             Map<String, Object> map = new HashMap<>();
             map.put("categoryId", categoryEntity.getCategoryId());
             map.put("categoryName", categoryEntity.getCategoryName());
+            map.put("disabled", "disabled-no");
             categoryVoList.add(map);
         });
         kv.put("categoryVoList", categoryVoList);
+        List<TagEntity> tagEntityList = tagService.listAll();
+        List<Map<String, Object>> tagVoList = new ArrayList<>(tagEntityList.size());
+        Map<String, Object> defaultTag = new HashMap<>();
+        defaultTag.put("tagId", "");
+        defaultTag.put("tagName", "==请选择==");
+        defaultTag.put("disabled", "disabled");
+        tagVoList.add(defaultTag);
+        tagEntityList.forEach(tagEntity -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("tagId", tagEntity.getTagId());
+            map.put("tagName", tagEntity.getTagName());
+            map.put("disabled", "disabled-no");
+            tagVoList.add(map);
+        });
+        kv.put("tagVoList", tagVoList);
         response.write(BlogUtils.render(ARTICLE_EDIT_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }

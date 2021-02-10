@@ -23,7 +23,15 @@
         <label>分类</label>
         <select id="select-category">
             #for(categoryVo: categoryVoList)
-                <option value ="#(categoryVo.categoryId)">#(categoryVo.categoryName)</option>
+                <option value ="#(categoryVo.categoryId)" #(categoryVo.disabled)="true">#(categoryVo.categoryName)</option>
+            #end
+        </select>
+    </div>
+    <div>
+        <label>标签</label>
+        <select multip id="select-tag">
+            #for(tagVo: tagVoList)
+                <option value="#(tagVo.tagId)" #(tagVo.disabled)="true">#(tagVo.tagName)</option>
             #end
         </select>
     </div>
@@ -103,6 +111,7 @@
     <script type="text/javascript" src="../../quill/highlight.min.js"></script>
     <script type="text/javascript" src="../../quill/katex.min.js"></script>
     <script type="text/javascript" src="../../quill/quill.min.js"></script>
+    <script type="text/javascript" src="../../multi-select.js"></script>
     <script>
         (function () {
 
@@ -110,6 +119,7 @@
                 this.$BtnBack = $("#btn-back");
                 this.$BtnSubmit = $("#btn-submit");
                 this.$SelectCategory = $("#select-category");
+                this.SelectTagId = "select-tag";
                 this.$ArticleName = $("#article-name");
                 this.$ArticleIdLocator = $("#article-id-locator")
                 this.$ArticleDescription = $("#article-description");
@@ -126,9 +136,13 @@
                 this.quill.container.firstChild.innerHTML = '#(articleContent)';
                 this.articleId = "#(articleId)";
                 this.categoryId = "#(categoryId)";
+                this.$SelectCategory.val("");
+                selectMultip.register();
+                selectMultip.setVal("select-tag", [""]);
                 if (this.categoryId) {
                     this.$SelectCategory.val(this.categoryId);
                 }
+
             };
 
             PageController.prototype = {
