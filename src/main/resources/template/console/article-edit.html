@@ -136,13 +136,15 @@
                 this.quill.container.firstChild.innerHTML = '#(articleContent)';
                 this.articleId = "#(articleId)";
                 this.categoryId = "#(categoryId)";
+                this.tagIdList = '#(tagIdList)';
                 this.$SelectCategory.val("");
                 selectMultip.register();
-                selectMultip.setVal("select-tag", [""]);
                 if (this.categoryId) {
                     this.$SelectCategory.val(this.categoryId);
                 }
-
+                if (this.tagIdList) {
+                    selectMultip.setVal(this.SelectTagId, this.tagIdList);
+                }
             };
 
             PageController.prototype = {
@@ -162,6 +164,7 @@
                             data: JSON.stringify({
                                 articleId: _this.articleId,
                                 categoryId: _this.$SelectCategory.val(),
+                                tagIdList: selectMultip.getVal(_this.SelectTagId),
                                 articleName: _this.$ArticleName.val(),
                                 articleContent: _this.quill.container.firstChild.innerHTML,
                                 articleIdLocator: _this.$ArticleIdLocator.val(),

@@ -1,5 +1,5 @@
 /*
-*
+* https://blog.csdn.net/bokestudy/article/details/90177144
 * 方法名	参数	说明
 selectMultip.register()	无	将全局下所有具有multip属性的select标签注册成为具有多选功能的下拉选。
 selectMultip.reload(id, data,setData)

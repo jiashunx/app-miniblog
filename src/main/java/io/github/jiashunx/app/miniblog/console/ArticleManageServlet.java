@@ -19,6 +19,7 @@ import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * @author jiashunx
@@ -49,7 +50,8 @@ public class ArticleManageServlet extends AbstractRestServlet {
     public void actionEdit(MRestRequest request, MRestResponse response) {
         Map<String, Object> params = (Map<String, Object>) request.parseBodyToObj(Map.class);
         String articleId = params.get("articleId").toString();
-        String categoryId = params.get("categoryId").toString();
+        String categoryId = params.get("categoryId") == null ? "" : params.get("categoryId").toString();
+        String tagIdList = params.get("tagIdList").toString();
         String articleName = params.get("articleName").toString();
         String articleContent = params.get("articleContent").toString();
         String articleIdLocator = params.get("articleIdLocator").toString();
@@ -57,19 +59,28 @@ public class ArticleManageServlet extends AbstractRestServlet {
         // 新增
         if (StringUtils.isBlank(articleId)) {
             ArticleEntity articleEntity = new ArticleEntity();
-            articleEntity.setArticleId(UUID.randomUUID().toString());
+            String articleId0 = UUID.randomUUID().toString();
+            articleEntity.setArticleId(articleId0);
             articleEntity.setArticleName(articleName);
             articleEntity.setArticleContent(articleContent.getBytes(StandardCharsets.UTF_8));
             articleEntity.setArticleIdLocator(articleIdLocator);
             articleEntity.setArticleDescription(articleDescription);
             articleEntity.setCreateTime(new Date());
             articleEntity.setLastModifiedTime(articleEntity.getCreateTime());
-            ArticleCategoryEntity articleCategoryEntity = new ArticleCategoryEntity();
-            articleCategoryEntity.setArticleId(articleEntity.getArticleId());
-            articleCategoryEntity.setCategoryId(categoryId);
+            AtomicReference<ArticleCategoryEntity> articleCategoryEntityRef = new AtomicReference<>();
+            if (StringUtils.isNotBlank(categoryId)) {
+                ArticleCategoryEntity articleCategoryEntity = new ArticleCategoryEntity();
+                articleCategoryEntity.setArticleId(articleId0);
+                articleCategoryEntity.setCategoryId(categoryId);
+                articleCategoryEntityRef.set(articleCategoryEntity);
+            }
+
             sqLite3JdbcTemplate.doTransaction(() -> {
                 articleService.insert(articleEntity);
-                articleCategoryService.insert(articleCategoryEntity);
+                if (articleCategoryEntityRef.get() != null) {
+                    articleCategoryService.insert(articleCategoryEntityRef.get());
+                }
+                articleTagService.insert(parseArticleTags(articleId0, tagIdList));
             });
         } else {
             // 更新
@@ -80,18 +91,48 @@ public class ArticleManageServlet extends AbstractRestServlet {
             articleEntity.setArticleIdLocator(articleIdLocator);
             articleEntity.setArticleDescription(articleDescription);
             articleEntity.setLastModifiedTime(new Date());
-            ArticleCategoryEntity articleCategoryEntity = articleCategoryService.find(articleId);
-            if (articleCategoryEntity == null) {
-                articleCategoryEntity = new ArticleCategoryEntity();
-                articleCategoryEntity.setArticleId(articleId);
+            AtomicReference<ArticleCategoryEntity> articleCategoryEntityRef = new AtomicReference<>();
+            AtomicReference<Boolean> insertCategoryEntity = new AtomicReference<>(false);
+            AtomicReference<Boolean> updateCategoryEntity = new AtomicReference<>(false);
+            if (StringUtils.isNotBlank(categoryId)) {
+                ArticleCategoryEntity articleCategoryEntity = articleCategoryService.find(articleId);
+                if (articleCategoryEntity == null) {
+                    articleCategoryEntity = new ArticleCategoryEntity();
+                    articleCategoryEntity.setArticleId(articleId);
+                    insertCategoryEntity.set(true);
+                } else {
+                    updateCategoryEntity.set(true);
+                }
+                articleCategoryEntity.setCategoryId(categoryId);
+                articleCategoryEntityRef.set(articleCategoryEntity);
             }
-            articleCategoryEntity.setCategoryId(categoryId);
-            AtomicReference<ArticleCategoryEntity> articleCategoryEntityRef = new AtomicReference<>(articleCategoryEntity);
+            List<ArticleTagEntity> articleTagEntities0 = articleTagService.listArticleTags(articleId);
             sqLite3JdbcTemplate.doTransaction(() -> {
                 articleService.update(articleEntity);
-                articleCategoryService.update(articleCategoryEntityRef.get());
+                if (insertCategoryEntity.get()) {
+                    articleCategoryService.insert(articleCategoryEntityRef.get());
+                }
+                if (updateCategoryEntity.get()) {
+                    articleCategoryService.update(articleCategoryEntityRef.get());
+                }
+                articleTagService.delete(articleTagEntities0);
+                articleTagService.insert(parseArticleTags(articleId, tagIdList));
             });
         }
+    }
+
+    private List<ArticleTagEntity> parseArticleTags(String articleId, String tagIdList) {
+        List<ArticleTagEntity> articleTagEntities = new ArrayList<>();
+        Arrays.asList(tagIdList.split(",")).forEach(tagId -> {
+            if (StringUtils.isNotBlank(tagId)) {
+                ArticleTagEntity articleTagEntity = new ArticleTagEntity();
+                articleTagEntity.setArticleTagId(UUID.randomUUID().toString());
+                articleTagEntity.setArticleId(articleId);
+                articleTagEntity.setTagId(tagId);
+                articleTagEntities.add(articleTagEntity);
+            }
+        });
+        return articleTagEntities;
     }
 
     @PostMapping(url = "/console/article/delete")
@@ -116,6 +157,7 @@ public class ArticleManageServlet extends AbstractRestServlet {
             kv.put("articleIdLocator", "");
             kv.put("articleDescription", "");
             kv.put("categoryId", "");
+            kv.put("tagIdList", "");
         } else {
             ArticleEntity entity = articleService.find(articleId);
             kv.put("status", "编辑文章");
@@ -130,6 +172,9 @@ public class ArticleManageServlet extends AbstractRestServlet {
                 categoryId = articleCategoryEntity.getCategoryId();
             }
             kv.put("categoryId", categoryId);
+            List<String> articleIdList = articleTagService.listArticleTags(articleId)
+                    .stream().map(ArticleTagEntity::getTagId).collect(Collectors.toList());
+            kv.put("tagIdList", String.join(",", articleIdList));
         }
         List<CategoryEntity> categoryEntityList = categoryService.listAll();
         List<Map<String, Object>> categoryVoList = new ArrayList<>(categoryEntityList.size());
