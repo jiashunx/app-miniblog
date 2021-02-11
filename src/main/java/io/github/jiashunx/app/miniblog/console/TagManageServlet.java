@@ -1,7 +1,10 @@
 package io.github.jiashunx.app.miniblog.console;
 
 import com.jfinal.kit.Kv;
+import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
+import io.github.jiashunx.app.miniblog.model.entity.ArticleTagEntity;
 import io.github.jiashunx.app.miniblog.model.entity.TagEntity;
+import io.github.jiashunx.app.miniblog.service.ArticleTagService;
 import io.github.jiashunx.app.miniblog.service.TagService;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
@@ -27,9 +30,11 @@ public class TagManageServlet extends AbstractRestServlet {
     private static final String TAG_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/tag-index.html");
 
     private final TagService tagService;
+    private final ArticleTagService articleTagService;
 
-    public TagManageServlet(TagService tagService) {
+    public TagManageServlet(TagService tagService, ArticleTagService articleTagService) {
         this.tagService = Objects.requireNonNull(tagService);
+        this.articleTagService = Objects.requireNonNull(articleTagService);
     }
 
     @PostMapping(url = "/console/tag/create")
@@ -57,6 +62,10 @@ public class TagManageServlet extends AbstractRestServlet {
             return;
         }
         TagEntity entity = request.parseBodyToObj(TagEntity.class);
+        List<ArticleTagEntity> articleTagEntityList = articleTagService.listTagArticles(entity.getTagId());
+        if (!articleTagEntityList.isEmpty()) {
+            throw new MiniBlogException(String.format("there is %d articles linked to tag: %s", articleTagEntityList.size(), entity.getTagName()));
+        }
         tagService.deleteById(entity.getTagId());
     }
 
