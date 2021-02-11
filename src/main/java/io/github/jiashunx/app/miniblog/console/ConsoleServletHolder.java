@@ -19,7 +19,7 @@ public class ConsoleServletHolder {
     public MRestServlet[] getConsoleServletArr() {
         return new MRestServlet[] {
                 new FileManageServlet(serviceBus.getFileService())
-                , new CategoryManageServlet(serviceBus.getCategoryService())
+                , new CategoryManageServlet(serviceBus.getCategoryService(), serviceBus.getArticleCategoryService())
                 , new TagManageServlet(serviceBus.getTagService(), serviceBus.getArticleTagService())
                 , new ArticleManageServlet(serviceBus)
         };
