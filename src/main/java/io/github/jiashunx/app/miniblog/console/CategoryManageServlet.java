@@ -57,7 +57,7 @@ public class CategoryManageServlet extends AbstractRestServlet {
     public void delete(MRestRequest request, MRestResponse response) {
         CategoryEntity entity = request.parseBodyToObj(CategoryEntity.class);
         List<ArticleCategoryEntity> articleCategoryEntityList = articleCategoryService.listCategoryArticles(entity.getCategoryId());
-        if (articleCategoryEntityList.isEmpty()) {
+        if (!articleCategoryEntityList.isEmpty()) {
             throw new MiniBlogException(String.format("there is %d articles linked to category: %s", articleCategoryEntityList.size(), entity.getCategoryName()));
         }
         categoryService.deleteById(entity.getCategoryId());
