@@ -2,6 +2,7 @@ package io.github.jiashunx.app.miniblog;
 
 import io.github.jiashunx.app.miniblog.console.*;
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
+import io.github.jiashunx.app.miniblog.index.IndexServlet;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.masker.rest.framework.MRestServer;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
@@ -29,6 +30,7 @@ public class MiniBlogBoot {
                 .addDefaultClasspathResource()
                 .filter(new MRestFilter[]{ new AuthFilter(serviceBus) })
                 .servlet(new ConsoleServletHolder(serviceBus).getConsoleServletArr())
+                .servlet(new IndexServlet(serviceBus))
                 // TODO 后续调整为index.html
                 .setIndexUrl("/console/index.html")
                 .getRestServer()
