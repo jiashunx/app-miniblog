@@ -1,7 +1,5 @@
 package io.github.jiashunx.app.miniblog.model;
 
-import io.github.jiashunx.app.miniblog.model.entity.PageIndex;
-
 import java.util.List;
 
 /**
