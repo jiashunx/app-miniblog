@@ -5,6 +5,47 @@
     <title>#(title)</title>
 </head>
 <body>
-
+    <div class="container">
+        <header class="header">
+            <div class="blog-title"><a href="/" class="logo">MINI-BLOG</a>
+                <div class="subtitle"></div>
+            </div>
+            <nav class="navbar">
+                <ul class="menu">
+                    <li class="menu-item"><a href="/" class="menu-item-link" data-no-instant="">主页</a></li>
+                    <li class="menu-item"><a href="/links" class="menu-item-link" data-no-instant="">友链</a></li>
+                    <li class="menu-item"><a href="/atom.xml" class="menu-item-link" data-no-instant="">订阅</a></li>
+                    <li class="menu-item"><a href="/search" class="menu-item-link" data-no-instant="">搜索</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section class="archive"><h1 class="article-title">Posts</h1>
+            <ul class="post-archive">
+                <li class="post-item">
+                    <a class="post-title" href="文章url">文章名称</a>
+                    <time class="post-date">yyyy-MM-dd</time>
+                </li>
+            </ul>
+        </section>
+        <nav class="page-nav">
+            <a class="extend prev" rel="prev" href="/page/2/">« 上一页</a>
+            <a class="page-number"href="/">1</a>
+            <a class="page-number" href="/page/2/">2</a>
+            <span class="page-number current">3</span>
+            <a class="page-number" href="/page/4/">4</a>
+            <a class="page-number" href="/page/5/">5</a>
+            <span class="space">…</span>
+            <a class="page-number" href="/page/7/">7</a>
+            <a class="extend next" rel="next" href="/page/4/">下一页 »</a>
+        </nav>
+        <footer>
+            <span>© 2021 - now</span>
+            <span class="author">jiashunx</span>
+            <span style="float:right">
+                <a class="filing" class="github" href="https://github.com/jiashunx" target="_blank">GitHub</a>
+            </span>
+        </footer>
+    </div>
+    <link rel="stylesheet" href="/index/style.css">
 </body>
 </html>

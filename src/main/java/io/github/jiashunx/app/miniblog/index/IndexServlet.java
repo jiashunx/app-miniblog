@@ -10,11 +10,16 @@ import io.github.jiashunx.masker.rest.framework.servlet.mapping.GetMapping;
 /**
  * @author jiashunx
  */
-@Servlet(urlPattern = "/public/*")
+@Servlet(urlPattern = "/*")
 public class IndexServlet extends AbstractRestServlet {
 
     public IndexServlet(ServiceBus serviceBus) {
 
+    }
+
+    @GetMapping(url = "/")
+    public void root(MRestRequest request, MRestResponse response) {
+        index(request, response);
     }
 
     /**
