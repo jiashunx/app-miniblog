@@ -5,10 +5,10 @@ import java.util.List;
 /**
  * @author jiashunx
  */
-public class PageableModel {
+public class IndexModel {
 
     private boolean prevEnabled;
-    private List<PageIndex> pageIndexList;
+    private List<IndexPage> indexPageList;
     private boolean nextEnabled;
 
     public boolean isPrevEnabled() {
@@ -19,12 +19,12 @@ public class PageableModel {
         this.prevEnabled = prevEnabled;
     }
 
-    public List<PageIndex> getPageIndexList() {
-        return pageIndexList;
+    public List<IndexPage> getIndexPageList() {
+        return indexPageList;
     }
 
-    public void setPageIndexList(List<PageIndex> pageIndexList) {
-        this.pageIndexList = pageIndexList;
+    public void setIndexPageList(List<IndexPage> indexPageList) {
+        this.indexPageList = indexPageList;
     }
 
     public boolean isNextEnabled() {
