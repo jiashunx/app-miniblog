@@ -19,19 +19,26 @@ public class IndexServlet implements MRestServlet {
             case "/":
                 root(request, response);
                 break;
-            case "/public/index":
-                index(request, response);
-                break;
-            case "/public/timeline":
+            case "/timeline":
                 timeline(request, response);
                 break;
-            case "/public/categories":
+            case "/categories":
                 categories(request, response);
                 break;
-            case "/public/tags":
+            case "/tags":
                 tags(request, response);
                 break;
             default:
+                //    /2021/02/23/article-short-id
+                if (requestUrl.matches("^/\\d{4}/\\d{1,2}/\\d{1,2}/\\S+$")) {
+
+                } else if (requestUrl.matches("^/tag/\\S+$")) {
+                    //    /tags/tag-name
+                } else if (requestUrl.matches("^/categories/\\S+$")) {
+                    //    /categories/category-name
+                } else if (requestUrl.matches("^/page/\\d+$")) {
+                    //    /page/page-index
+                }
                 break;
         }
     }
@@ -41,14 +48,6 @@ public class IndexServlet implements MRestServlet {
     }
 
     public void root(MRestRequest request, MRestResponse response) {
-        index(request, response);
-    }
-
-    /**
-     * 首页数据页面
-     */
-    public void index(MRestRequest request, MRestResponse response) {
-
     }
 
     /**
