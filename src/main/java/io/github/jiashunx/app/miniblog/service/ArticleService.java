@@ -21,7 +21,7 @@ public class ArticleService extends SQLite3Service<ArticleEntity, String> implem
     @Override
     protected String getListAllSQL() {
         return SQLite3Utils.getClassTableModel(getEntityClass()).getSelectAllSQL(stringBuilder -> {
-            stringBuilder.append(" ORDER BY LAST_MODIFIED_TIME DESC");
+            stringBuilder.append(" ORDER BY CREATE_TIME DESC");
         });
     }
 
