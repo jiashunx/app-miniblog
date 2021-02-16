@@ -5,7 +5,6 @@ import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
 import io.github.jiashunx.app.miniblog.index.IndexServlet;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.masker.rest.framework.MRestServer;
-import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 
 /**
  * @author jiashunx
@@ -28,9 +27,8 @@ public class MiniBlogBoot {
                 .listenPort(serviceBus.getArgumentService().getListenPort())
                 .context(serviceBus.getArgumentService().getContextPath())
                 .addDefaultClasspathResource()
-                .filter(new MRestFilter[]{ new AuthFilter(serviceBus) })
+                .filter(new AuthFilter(serviceBus), new IndexServlet(serviceBus))
                 .servlet(new ConsoleServletHolder(serviceBus).getConsoleServletArr())
-                .servlet(new IndexServlet(serviceBus))
                 // TODO 后续调整为index.html
                 .setIndexUrl("/console/index.html")
                 .getRestServer()
