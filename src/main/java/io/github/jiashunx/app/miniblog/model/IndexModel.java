@@ -8,7 +8,7 @@ import java.util.List;
 public class IndexModel {
 
     private boolean prevEnabled;
-    private List<IndexPage> indexPageList;
+    private List<PageableIndex> pageableIndexList;
     private boolean nextEnabled;
 
     public boolean isPrevEnabled() {
@@ -19,12 +19,12 @@ public class IndexModel {
         this.prevEnabled = prevEnabled;
     }
 
-    public List<IndexPage> getIndexPageList() {
-        return indexPageList;
+    public List<PageableIndex> getPageableIndexList() {
+        return pageableIndexList;
     }
 
-    public void setIndexPageList(List<IndexPage> indexPageList) {
-        this.indexPageList = indexPageList;
+    public void setPageableIndexList(List<PageableIndex> pageableIndexList) {
+        this.pageableIndexList = pageableIndexList;
     }
 
     public boolean isNextEnabled() {

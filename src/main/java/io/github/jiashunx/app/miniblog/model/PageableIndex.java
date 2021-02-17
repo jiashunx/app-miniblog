@@ -3,7 +3,7 @@ package io.github.jiashunx.app.miniblog.model;
 /**
  * @author jiashunx
  */
-public class IndexPage {
+public class PageableIndex {
     /**
      * 分页是否忽略(...)
      */
