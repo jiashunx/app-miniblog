@@ -1,9 +1,11 @@
 package io.github.jiashunx.app.miniblog.index;
 
 import io.github.jiashunx.app.miniblog.model.IndexModel;
+import io.github.jiashunx.app.miniblog.model.IndexRow;
 import io.github.jiashunx.app.miniblog.model.PageableIndex;
 import io.github.jiashunx.app.miniblog.model.entity.ArticleEntity;
 import io.github.jiashunx.app.miniblog.service.*;
+import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.filter.Filter;
@@ -82,8 +84,21 @@ public class IndexServlet implements MRestFilter {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
             return;
         }
-
         IndexModel indexModel = new IndexModel();
+        List<IndexRow> indexRowList = new ArrayList<>();
+        int startIndex = (pageIndex - 1) * pageRowCount + 1;
+        int endIndex = pageIndex * pageRowCount;
+        if (endIndex > totalSize) {
+            endIndex = totalSize;
+        }
+        for (int index = startIndex; index < endIndex; index++) {
+            ArticleEntity entity = entityList.get(index);
+            IndexRow indexRow = new IndexRow();
+            indexRow.setTitle(entity.getArticleName());
+            indexRow.setCreateTime(BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMdd));
+            indexRowList.add(indexRow);
+        }
+        indexModel.setIndexRowList(indexRowList);
         indexModel.setPrevEnabled(pageIndex > 1);
         indexModel.setNextEnabled(pageIndex < pageSize);
         List<PageableIndex> pageableIndexList = new ArrayList<>();
