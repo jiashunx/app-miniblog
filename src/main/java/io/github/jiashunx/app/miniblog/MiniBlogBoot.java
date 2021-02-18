@@ -29,8 +29,6 @@ public class MiniBlogBoot {
                 .addDefaultClasspathResource()
                 .filter(new AuthFilter(serviceBus), new IndexServlet(serviceBus))
                 .servlet(new ConsoleServletHolder(serviceBus).getConsoleServletArr())
-                // TODO 后续调整为index.html
-                .setIndexUrl("/console/index.html")
                 .getRestServer()
                 .start();
     }
