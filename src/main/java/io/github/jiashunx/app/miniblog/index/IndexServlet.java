@@ -1,5 +1,7 @@
 package io.github.jiashunx.app.miniblog.index;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jfinal.kit.Kv;
 import io.github.jiashunx.app.miniblog.model.IndexModel;
 import io.github.jiashunx.app.miniblog.model.IndexRow;
 import io.github.jiashunx.app.miniblog.model.PageableIndex;
@@ -8,9 +10,12 @@ import io.github.jiashunx.app.miniblog.service.*;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
+import io.github.jiashunx.masker.rest.framework.cons.Constants;
 import io.github.jiashunx.masker.rest.framework.filter.Filter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
+import io.github.jiashunx.masker.rest.framework.util.IOUtils;
+import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
@@ -23,6 +28,8 @@ import java.util.Objects;
  */
 @Filter(urlPatterns = "/*", order = Integer.MAX_VALUE)
 public class IndexServlet implements MRestFilter {
+
+    private static final String INDEX_HTML = IOUtils.loadContentFromClasspath("template/index/index.html");
 
     private final SQLite3JdbcTemplate sqLite3JdbcTemplate;
     private final ArticleService articleService;
@@ -91,16 +98,27 @@ public class IndexServlet implements MRestFilter {
         if (endIndex > totalSize) {
             endIndex = totalSize;
         }
-        for (int index = startIndex; index < endIndex; index++) {
+        for (int index = startIndex - 1; index < endIndex; index++) {
             ArticleEntity entity = entityList.get(index);
             IndexRow indexRow = new IndexRow();
+            indexRow.setUrl(BlogUtils.format(entity.getCreateTime(), "/yyyy/mm/dd") + "/" + entity.getArticleIdLocator());
             indexRow.setTitle(entity.getArticleName());
             indexRow.setCreateTime(BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMdd));
             indexRowList.add(indexRow);
         }
         indexModel.setIndexRowList(indexRowList);
-        indexModel.setPrevEnabled(pageIndex > 1);
-        indexModel.setNextEnabled(pageIndex < pageSize);
+        if (pageIndex > 1) {
+            PageableIndex pageableIndex = new PageableIndex();
+            pageableIndex.setIndexNo(pageIndex - 1);
+            pageableIndex.setIndexUrl("/page/" + (pageIndex - 1));
+            indexModel.setPrevPageableIndex(pageableIndex);
+        }
+        if (pageIndex < pageSize) {
+            PageableIndex pageableIndex = new PageableIndex();
+            pageableIndex.setIndexNo(pageIndex + 1);
+            pageableIndex.setIndexUrl("/page/" + (pageIndex + 1));
+            indexModel.setNextPageableIndex(pageableIndex);
+        }
         List<PageableIndex> pageableIndexList = new ArrayList<>();
         PageableIndex currentPageableIndex = new PageableIndex();
         currentPageableIndex.setCurrent(true);
@@ -147,7 +165,13 @@ public class IndexServlet implements MRestFilter {
             }
         }
         indexModel.setPageableIndexList(pageableIndexList);
-
+        Kv kv = new Kv();
+        kv.put("indexRowList", indexModel.getIndexRowList());
+        kv.put("prevPageableIndex", indexModel.getPrevPageableIndex());
+        kv.put("pageableIndexList", indexModel.getPageableIndexList());
+        kv.put("nextPageableIndex", indexModel.getNextPageableIndex());
+        response.write(BlogUtils.render(INDEX_HTML, kv)
+                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
     /**

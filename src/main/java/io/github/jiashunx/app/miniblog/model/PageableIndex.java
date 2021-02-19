@@ -52,4 +52,12 @@ public class PageableIndex {
     public void setCurrent(boolean current) {
         this.current = current;
     }
+
+    public boolean getCurrent() {
+        return isCurrent();
+    }
+
+    public boolean getIgnore() {
+        return isIgnore();
+    }
 }

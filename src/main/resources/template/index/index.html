@@ -21,22 +21,30 @@
         </header>
         <section class="archive"><h1 class="article-title">Posts</h1>
             <ul class="post-archive">
-                <li class="post-item">
-                    <a class="post-title" href="文章url">文章名称</a>
-                    <time class="post-date">yyyy-MM-dd</time>
-                </li>
+                #for(indexRow: indexRowList)
+                    <li class="post-item">
+                        <a class="post-title" href="#(indexRow.url)">#(indexRow.title)</a>
+                        <time class="post-date">#(indexRow.createTime)</time>
+                    </li>
+                #end
             </ul>
         </section>
         <nav class="page-nav">
-            <a class="extend prev" rel="prev" href="/page/2/">« 上一页</a>
-            <a class="page-number"href="/">1</a>
-            <a class="page-number" href="/page/2/">2</a>
-            <span class="page-number current">3</span>
-            <a class="page-number" href="/page/4/">4</a>
-            <a class="page-number" href="/page/5/">5</a>
-            <span class="space">…</span>
-            <a class="page-number" href="/page/7/">7</a>
-            <a class="extend next" rel="next" href="/page/4/">下一页 »</a>
+            #if(prevPageableIndex != null)
+                <a class="extend prev" rel="prev" href="#(prevPageableIndex.indexUrl)">« 上一页</a>
+            #end
+            #for(pageableIndex: pageableIndexList)
+                #if(pageableIndex.current)
+                    <span class="page-number current">#(pageableIndex.indexNo)</span>
+                #else if(pageableIndex.ignore)
+                    <span class="space">…</span>
+                #else
+                    <a class="page-number" href="#(pageableIndex.indexUrl)">#(pageableIndex.indexNo)</a>
+                #end
+            #end
+            #if(nextPageableIndex != null)
+                <a class="extend next" rel="next" href="#(nextPageableIndex.indexUrl)">下一页 »</a>
+            #end
         </nav>
         <footer>
             <span>© 2021 - now</span>
