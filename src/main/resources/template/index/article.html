@@ -37,7 +37,10 @@
             <div class="post-copyright">
                 <div>
                     <strong>本文链接：</strong>
-                    <span title="#(title)">http://www.nosuchfield.com/2021/02/08/Build-Samba-service-on-Raspberry-Pi/</span>
+                    <span title="#(title)" id="article-url"></span>
+                    <script>
+                        document.getElementById("article-url").innerHTML = window.location.origin + "#(url)"
+                    </script>
                 </div>
                 <div>
                     <strong>版权声明：</strong>
