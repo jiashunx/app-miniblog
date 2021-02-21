@@ -35,23 +35,25 @@
                 #end
             </ul>
         </section>
-        <nav class="page-nav">
-            #if(prevPageableIndex != null)
+        #if (pageableIndexList != null)
+            <nav class="page-nav">
+                #if(prevPageableIndex != null)
                 <a class="extend prev" rel="prev" href="#(prevPageableIndex.indexUrl)">« 上一页</a>
-            #end
-            #for(pageableIndex: pageableIndexList)
-                #if(pageableIndex.current)
-                    <span class="page-number current">#(pageableIndex.indexNo)</span>
-                #else if(pageableIndex.ignore)
-                    <span class="space">…</span>
-                #else
-                    <a class="page-number" href="#(pageableIndex.indexUrl)">#(pageableIndex.indexNo)</a>
                 #end
-            #end
-            #if(nextPageableIndex != null)
+                #for(pageableIndex: pageableIndexList)
+                #if(pageableIndex.current)
+                <span class="page-number current">#(pageableIndex.indexNo)</span>
+                #else if(pageableIndex.ignore)
+                <span class="space">…</span>
+                #else
+                <a class="page-number" href="#(pageableIndex.indexUrl)">#(pageableIndex.indexNo)</a>
+                #end
+                #end
+                #if(nextPageableIndex != null)
                 <a class="extend next" rel="next" href="#(nextPageableIndex.indexUrl)">下一页 »</a>
-            #end
-        </nav>
+                #end
+            </nav>
+        #end
         <footer>
             <span>© 2021 - now</span>
             <span class="author">jiashunx</span>

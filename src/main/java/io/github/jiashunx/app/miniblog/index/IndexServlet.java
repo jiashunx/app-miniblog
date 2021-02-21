@@ -1,6 +1,5 @@
 package io.github.jiashunx.app.miniblog.index;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jfinal.kit.Kv;
 import io.github.jiashunx.app.miniblog.model.IndexModel;
 import io.github.jiashunx.app.miniblog.model.IndexRow;
