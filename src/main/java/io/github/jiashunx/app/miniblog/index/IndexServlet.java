@@ -30,6 +30,7 @@ import java.util.Objects;
 public class IndexServlet implements MRestFilter {
 
     private static final String INDEX_HTML = IOUtils.loadContentFromClasspath("template/index/index.html");
+    private static final String ARTICLE_HTML = IOUtils.loadContentFromClasspath("template/index/article.html");
 
     private final SQLite3JdbcTemplate sqLite3JdbcTemplate;
     private final ArticleService articleService;
@@ -66,10 +67,10 @@ public class IndexServlet implements MRestFilter {
             default:
                 //    /2021/02/23/article-short-id
                 if (requestUrl.matches("^/\\d{4}/\\d{1,2}/\\d{1,2}/\\S+$")) {
-
+                    locateArticle(request, response);
                 } else if (requestUrl.matches("^/tag/\\S+$")) {
                     //    /tags/tag-name
-                } else if (requestUrl.matches("^/categories/\\S+$")) {
+                } else if (requestUrl.matches("^/category/\\S+$")) {
                     //    /categories/category-name
                 } else if (requestUrl.matches("^/page/\\d+$")) {
                     //    /page/page-index
@@ -80,6 +81,26 @@ public class IndexServlet implements MRestFilter {
                 }
                 break;
         }
+    }
+
+    public void locateArticle(MRestRequest request, MRestResponse response) {
+        String requestUrl = request.getUrl();
+        int index = requestUrl.lastIndexOf("/");
+        String createTimeStr = requestUrl.substring(0, index);
+        String locatorId = requestUrl.substring(index + 1);
+        createTimeStr = createTimeStr.substring(1).replace("/", "-");
+        ArticleEntity entity = articleService.findByLocatorIdAndDate(createTimeStr, locatorId);
+        if (entity == null) {
+            response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
+            return;
+        }
+        Kv kv = new Kv();
+        kv.put("title", entity.getArticleName());
+        kv.put("createTime", createTimeStr);
+        kv.put("url", requestUrl);
+        kv.put("content", new String(entity.getArticleContent()));
+        response.write(BlogUtils.render(ARTICLE_HTML, kv)
+                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
     public void index(int pageIndex, MRestRequest request, MRestResponse response) {
@@ -101,7 +122,7 @@ public class IndexServlet implements MRestFilter {
         for (int index = startIndex - 1; index < endIndex; index++) {
             ArticleEntity entity = entityList.get(index);
             IndexRow indexRow = new IndexRow();
-            indexRow.setUrl(BlogUtils.format(entity.getCreateTime(), "/yyyy/mm/dd") + "/" + entity.getArticleIdLocator());
+            indexRow.setUrl("/" + BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMdd).replace("-", "/") + "/" + entity.getArticleIdLocator());
             indexRow.setTitle(entity.getArticleName());
             indexRow.setCreateTime(BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMdd));
             indexRowList.add(indexRow);
