@@ -68,5 +68,11 @@
             <column name="ARTICLE_ID" />
             <column name="TAG_ID" />
         </index>
+        <index name="TAG_NAME" table="MB_TAG" unique="true">
+            <column name="TAG_NAME" />
+        </index>
+        <index name="CATEGORY_NAME" table="MB_CATEGORY" unique="true">
+            <column name="CATEGORY_NAME" />
+        </index>
     </ddl>
 </table-metadata>
