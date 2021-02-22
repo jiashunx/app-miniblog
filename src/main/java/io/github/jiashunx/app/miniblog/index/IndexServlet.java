@@ -5,6 +5,7 @@ import io.github.jiashunx.app.miniblog.model.IndexModel;
 import io.github.jiashunx.app.miniblog.model.IndexRow;
 import io.github.jiashunx.app.miniblog.model.PageableIndex;
 import io.github.jiashunx.app.miniblog.model.entity.ArticleEntity;
+import io.github.jiashunx.app.miniblog.model.entity.ArticleTagEntity;
 import io.github.jiashunx.app.miniblog.service.*;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
@@ -18,9 +19,7 @@ import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author jiashunx
@@ -67,9 +66,9 @@ public class IndexServlet implements MRestFilter {
                 //    /2021/02/23/article-short-id
                 if (requestUrl.matches("^/\\d{4}/\\d{1,2}/\\d{1,2}/\\S+$")) {
                     locateArticle(request, response);
-                } else if (requestUrl.matches("^/tag/\\S+$")) {
+                } else if (requestUrl.matches("^/tags/\\S+$")) {
                     //    /tags/tag-name
-                } else if (requestUrl.matches("^/category/\\S+$")) {
+                } else if (requestUrl.matches("^/categories/\\S+$")) {
                     //    /categories/category-name
                 } else if (requestUrl.matches("^/page/\\d+$")) {
                     //    /page/page-index
@@ -93,11 +92,24 @@ public class IndexServlet implements MRestFilter {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
             return;
         }
+        List<ArticleTagEntity> articleTagEntityList = articleTagService.getArticleTagMap().get(entity.getArticleId());
+        List<Map<String, Object>> tagList = new ArrayList<>();
+        if (articleTagEntityList != null) {
+            articleTagEntityList.forEach(articleTagEntity -> {
+                String tagId = articleTagEntity.getTagId();
+                String tagName = tagService.find(tagId).getTagName();
+                Map<String, Object> map = new HashMap<>();
+                map.put("tagId", tagId);
+                map.put("tagName", tagName);
+                tagList.add(map);
+            });
+        }
         Kv kv = new Kv();
         kv.put("title", entity.getArticleName());
         kv.put("createTime", createTimeStr);
         kv.put("url", requestUrl);
         kv.put("content", new String(entity.getArticleContent()));
+        kv.put("tagList", tagList);
         response.write(BlogUtils.render(ARTICLE_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
