@@ -4,9 +4,7 @@ import com.jfinal.kit.Kv;
 import io.github.jiashunx.app.miniblog.model.IndexModel;
 import io.github.jiashunx.app.miniblog.model.IndexRow;
 import io.github.jiashunx.app.miniblog.model.PageableIndex;
-import io.github.jiashunx.app.miniblog.model.entity.ArticleEntity;
-import io.github.jiashunx.app.miniblog.model.entity.ArticleTagEntity;
-import io.github.jiashunx.app.miniblog.model.entity.TagEntity;
+import io.github.jiashunx.app.miniblog.model.entity.*;
 import io.github.jiashunx.app.miniblog.service.*;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
@@ -72,6 +70,7 @@ public class IndexServlet implements MRestFilter {
                     renderTagArticles(request, response);
                 } else if (requestUrl.matches("^/categories/\\S+$")) {
                     //    /categories/category-name
+                    renderCategoryArticles(request, response);
                 } else if (requestUrl.matches("^/page/\\d+$")) {
                     //    /page/page-index
                     int pageIndex = Integer.parseInt(requestUrl.substring(requestUrl.lastIndexOf("/") + 1));
@@ -81,6 +80,40 @@ public class IndexServlet implements MRestFilter {
                 }
                 break;
         }
+    }
+
+    public void renderCategoryArticles(MRestRequest request, MRestResponse response) {
+        String requestUrl = request.getUrl();
+        String categoryName = requestUrl.substring(requestUrl.lastIndexOf("/") + 1);
+        CategoryEntity categoryEntity = categoryService.findByCategoryName(categoryName);
+        if (categoryEntity == null) {
+            response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
+            return;
+        }
+        String categoryId = categoryEntity.getCategoryId();
+        List<ArticleCategoryEntity> articleCategoryEntityList = articleCategoryService.getCategoryArticleMap().get(categoryId);
+        List<ArticleEntity> articleEntityList = new ArrayList<>();
+        if (articleCategoryEntityList != null) {
+            articleCategoryEntityList.forEach(articleCategoryEntity -> {
+                ArticleEntity articleEntity = articleService.find(articleCategoryEntity.getArticleId());
+                if (articleEntity == null) {
+                    throw new NullPointerException();
+                }
+                articleEntityList.add(articleEntity);
+            });
+        }
+        List<IndexRow> indexRowList = new ArrayList<>();
+        for (ArticleEntity entity: articleEntityList) {
+            IndexRow indexRow = new IndexRow();
+            indexRow.setUrl("/" + BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMdd).replace("-", "/") + "/" + entity.getArticleIdLocator());
+            indexRow.setTitle(entity.getArticleName());
+            indexRow.setCreateTime(BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMdd));
+            indexRowList.add(indexRow);
+        }
+        Kv kv = new Kv();
+        kv.put("indexRowList", indexRowList);
+        response.write(BlogUtils.render(INDEX_HTML, kv)
+                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
     public void renderTagArticles(MRestRequest request, MRestResponse response) {

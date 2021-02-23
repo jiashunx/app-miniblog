@@ -1,8 +1,11 @@
 package io.github.jiashunx.app.miniblog.service;
 
 import io.github.jiashunx.app.miniblog.model.entity.CategoryEntity;
+import io.github.jiashunx.app.miniblog.model.entity.TagEntity;
 import io.github.jiashunx.tools.sqlite3.service.SQLite3Service;
 import io.github.jiashunx.tools.sqlite3.util.SQLite3Utils;
+
+import java.util.List;
 
 /**
  * @author jiashunx
@@ -16,6 +19,16 @@ public class CategoryService extends SQLite3Service<CategoryEntity, String> impl
     @Override
     public void init() {
 
+    }
+
+    public CategoryEntity findByCategoryName(String categoryName) {
+        List<CategoryEntity> entityList = listAll();
+        for (CategoryEntity entity: entityList) {
+            if (categoryName.equals(entity.getCategoryName())) {
+                return entity;
+            }
+        }
+        return null;
     }
 
     @Override
