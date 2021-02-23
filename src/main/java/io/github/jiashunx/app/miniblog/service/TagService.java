@@ -4,6 +4,8 @@ import io.github.jiashunx.app.miniblog.model.entity.TagEntity;
 import io.github.jiashunx.tools.sqlite3.service.SQLite3Service;
 import io.github.jiashunx.tools.sqlite3.util.SQLite3Utils;
 
+import java.util.List;
+
 /**
  * @author jiashunx
  */
@@ -16,6 +18,16 @@ public class TagService extends SQLite3Service<TagEntity, String> implements ISe
     @Override
     public void init() {
 
+    }
+
+    public TagEntity findByTagName(String tagName) {
+        List<TagEntity> entityList = listAll();
+        for (TagEntity entity: entityList) {
+            if (tagName.equals(entity.getTagName())) {
+                return entity;
+            }
+        }
+        return null;
     }
 
     @Override

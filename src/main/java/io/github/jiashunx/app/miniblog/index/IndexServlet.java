@@ -6,6 +6,7 @@ import io.github.jiashunx.app.miniblog.model.IndexRow;
 import io.github.jiashunx.app.miniblog.model.PageableIndex;
 import io.github.jiashunx.app.miniblog.model.entity.ArticleEntity;
 import io.github.jiashunx.app.miniblog.model.entity.ArticleTagEntity;
+import io.github.jiashunx.app.miniblog.model.entity.TagEntity;
 import io.github.jiashunx.app.miniblog.service.*;
 import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
@@ -68,6 +69,7 @@ public class IndexServlet implements MRestFilter {
                     locateArticle(request, response);
                 } else if (requestUrl.matches("^/tags/\\S+$")) {
                     //    /tags/tag-name
+                    renderTagArticles(request, response);
                 } else if (requestUrl.matches("^/categories/\\S+$")) {
                     //    /categories/category-name
                 } else if (requestUrl.matches("^/page/\\d+$")) {
@@ -79,6 +81,40 @@ public class IndexServlet implements MRestFilter {
                 }
                 break;
         }
+    }
+
+    public void renderTagArticles(MRestRequest request, MRestResponse response) {
+        String requestUrl = request.getUrl();
+        String tagName = requestUrl.substring(requestUrl.lastIndexOf("/") + 1);
+        TagEntity tagEntity = tagService.findByTagName(tagName);
+        if (tagEntity == null) {
+            response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
+            return;
+        }
+        String tagId = tagEntity.getTagId();
+        List<ArticleTagEntity> articleTagEntityList = articleTagService.getTagArticleMap().get(tagId);
+        List<ArticleEntity> articleEntityList = new ArrayList<>();
+        if (articleTagEntityList != null) {
+            articleTagEntityList.forEach(articleTagEntity -> {
+                ArticleEntity articleEntity = articleService.find(articleTagEntity.getArticleId());
+                if (articleEntity == null) {
+                    throw new NullPointerException();
+                }
+                articleEntityList.add(articleEntity);
+            });
+        }
+        List<IndexRow> indexRowList = new ArrayList<>();
+        for (ArticleEntity entity: articleEntityList) {
+            IndexRow indexRow = new IndexRow();
+            indexRow.setUrl("/" + BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMdd).replace("-", "/") + "/" + entity.getArticleIdLocator());
+            indexRow.setTitle(entity.getArticleName());
+            indexRow.setCreateTime(BlogUtils.format(entity.getCreateTime(), BlogUtils.yyyyMMdd));
+            indexRowList.add(indexRow);
+        }
+        Kv kv = new Kv();
+        kv.put("indexRowList", indexRowList);
+        response.write(BlogUtils.render(INDEX_HTML, kv)
+                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
     public void locateArticle(MRestRequest request, MRestResponse response) {
