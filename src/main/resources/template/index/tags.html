@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="generator" content="masker-rest">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>tags</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+    <meta name="keywords" content="TODO-keywords">
+    <link rel="stylesheet" href="/index/style.css">
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="blog-title"><a href="/" class="logo">MINI-BLOG</a>
+            <div class="subtitle"></div>
+        </div>
+        <nav class="navbar">
+            <ul class="menu">
+                <li class="menu-item"><a href="/" class="menu-item-link" data-no-instant="">主页</a></li>
+                <li class="menu-item"><a href="/categories" class="menu-item-link" data-no-instant="">分类</a></li>
+                <li class="menu-item"><a href="/tags" class="menu-item-link" data-no-instant="">标签</a></li>
+                <li class="menu-item"><a href="/search" class="menu-item-link" data-no-instant="">搜索</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="archive"><h1 class="article-title">Posts</h1>
+        <ul class="post-archive">
+            #for(tag: tagList)
+            <li class="post-item">
+                <a class="post-title" href="/tags/#(tag.tagName)">#(tag.tagName)</a>
+            </li>
+            #end
+        </ul>
+    </section>
+    <footer>
+        <span>© 2021 - now</span>
+        <span class="author">jiashunx</span>
+        <span style="float:right">
+                <a class="filing" class="github" href="https://github.com/jiashunx" target="_blank">GitHub</a>
+            </span>
+    </footer>
+</div>
+</body>
+</html>

@@ -28,6 +28,7 @@ public class IndexServlet implements MRestFilter {
 
     private static final String INDEX_HTML = IOUtils.loadContentFromClasspath("template/index/index.html");
     private static final String ARTICLE_HTML = IOUtils.loadContentFromClasspath("template/index/article.html");
+    private static final String TAG_HTML = IOUtils.loadContentFromClasspath("template/index/tags.html");
 
     private final SQLite3JdbcTemplate sqLite3JdbcTemplate;
     private final ArticleService articleService;
@@ -51,9 +52,6 @@ public class IndexServlet implements MRestFilter {
         switch (requestUrl) {
             case "/":
                 index(1, request, response);
-                break;
-            case "/timeline":
-                timeline(request, response);
                 break;
             case "/categories":
                 categories(request, response);
@@ -276,13 +274,6 @@ public class IndexServlet implements MRestFilter {
     }
 
     /**
-     * 时间轴页面
-     */
-    public void timeline(MRestRequest request, MRestResponse response) {
-
-    }
-
-    /**
      * 所有分类页面
      */
     public void categories(MRestRequest request, MRestResponse response) {
@@ -293,7 +284,17 @@ public class IndexServlet implements MRestFilter {
      * 所有tag页面
      */
     public void tags(MRestRequest request, MRestResponse response) {
-
+        List<TagEntity> entityList = tagService.listAll();
+        List<Map<String, Object>> tagList = new ArrayList<>();
+        for (TagEntity entity: entityList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("tagName", entity.getTagName());
+            tagList.add(map);
+        }
+        Kv kv = new Kv();
+        kv.put("tagList", tagList);
+        response.write(BlogUtils.render(TAG_HTML, kv)
+                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
 }
