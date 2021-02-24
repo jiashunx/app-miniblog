@@ -29,6 +29,7 @@ public class IndexServlet implements MRestFilter {
     private static final String INDEX_HTML = IOUtils.loadContentFromClasspath("template/index/index.html");
     private static final String ARTICLE_HTML = IOUtils.loadContentFromClasspath("template/index/article.html");
     private static final String TAG_HTML = IOUtils.loadContentFromClasspath("template/index/tags.html");
+    private static final String CATEGORY_HTML = IOUtils.loadContentFromClasspath("template/index/categories.html");
 
     private final SQLite3JdbcTemplate sqLite3JdbcTemplate;
     private final ArticleService articleService;
@@ -277,7 +278,17 @@ public class IndexServlet implements MRestFilter {
      * 所有分类页面
      */
     public void categories(MRestRequest request, MRestResponse response) {
-
+        List<CategoryEntity> entityList = categoryService.listAll();
+        List<Map<String, Object>> categoryList = new ArrayList<>();
+        for (CategoryEntity entity: entityList) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("categoryName", entity.getCategoryName());
+            categoryList.add(map);
+        }
+        Kv kv = new Kv();
+        kv.put("categoryList", categoryList);
+        response.write(BlogUtils.render(CATEGORY_HTML, kv)
+                , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
     /**
