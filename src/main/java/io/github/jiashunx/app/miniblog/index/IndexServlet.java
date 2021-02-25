@@ -189,7 +189,7 @@ public class IndexServlet implements MRestFilter {
         int totalSize = entityList.size();
         int pageRowCount = 20;
         int pageSize = (totalSize / pageRowCount) + ((totalSize % pageRowCount) > 0 ? 1 : 0);
-        if (pageIndex < 1 || pageIndex > pageSize) {
+        if (pageIndex < 1 || pageSize > 0 && pageIndex > pageSize) {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
             return;
         }
