@@ -44,6 +44,7 @@
             <column name="ARTICLE_ID_LOCATOR" type="VARCHAR(2560)" />
             <column name="ARTICLE_NAME" type="NVARCHAR(2560)" />
             <column name="ARTICLE_DESCRIPTION" type="NVARCHAR(2560)" />
+            <column name="ARTICLE_KEYWORDS" type="NVARCHAR(2560)" />
             <column name="ARTICLE_CONTENT" type="BLOB" />
             <column name="CREATE_TIME" type="TIMESTAMP" />
             <column name="LAST_MODIFIED_TIME" type="TIMESTAMP" />

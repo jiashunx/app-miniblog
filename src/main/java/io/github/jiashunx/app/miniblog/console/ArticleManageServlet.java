@@ -56,6 +56,7 @@ public class ArticleManageServlet extends AbstractRestServlet {
         String articleContent = params.get("articleContent").toString();
         String articleIdLocator = params.get("articleIdLocator").toString();
         String articleDescription = params.get("articleDescription").toString();
+        String articleKeywords = params.get("articleKeywords").toString();
         // 新增
         if (StringUtils.isBlank(articleId)) {
             ArticleEntity articleEntity = new ArticleEntity();
@@ -65,6 +66,7 @@ public class ArticleManageServlet extends AbstractRestServlet {
             articleEntity.setArticleContent(articleContent.getBytes(StandardCharsets.UTF_8));
             articleEntity.setArticleIdLocator(articleIdLocator);
             articleEntity.setArticleDescription(articleDescription);
+            articleEntity.setArticleKeywords(articleKeywords);
             articleEntity.setCreateTime(new Date());
             articleEntity.setLastModifiedTime(articleEntity.getCreateTime());
             AtomicReference<ArticleCategoryEntity> articleCategoryEntityRef = new AtomicReference<>();
@@ -90,6 +92,7 @@ public class ArticleManageServlet extends AbstractRestServlet {
             articleEntity.setArticleContent(articleContent.getBytes(StandardCharsets.UTF_8));
             articleEntity.setArticleIdLocator(articleIdLocator);
             articleEntity.setArticleDescription(articleDescription);
+            articleEntity.setArticleKeywords(articleKeywords);
             articleEntity.setLastModifiedTime(new Date());
             AtomicReference<ArticleCategoryEntity> articleCategoryEntityRef = new AtomicReference<>();
             AtomicReference<Boolean> insertCategoryEntity = new AtomicReference<>(false);
@@ -156,6 +159,7 @@ public class ArticleManageServlet extends AbstractRestServlet {
             kv.put("articleContent", "");
             kv.put("articleIdLocator", "");
             kv.put("articleDescription", "");
+            kv.put("articleKeywords", "");
             kv.put("categoryId", "");
             kv.put("tagIdList", "");
         } else {
@@ -166,6 +170,7 @@ public class ArticleManageServlet extends AbstractRestServlet {
             kv.put("articleContent", new String(entity.getArticleContent(), StandardCharsets.UTF_8));
             kv.put("articleIdLocator", entity.getArticleIdLocator());
             kv.put("articleDescription", entity.getArticleDescription());
+            kv.put("articleKeywords", entity.getArticleKeywords());
             ArticleCategoryEntity articleCategoryEntity = articleCategoryService.find(articleId);
             String categoryId = "";
             if (articleCategoryEntity != null) {

@@ -127,6 +127,7 @@
                 this.$ArticleName = $("#article-name");
                 this.$ArticleIdLocator = $("#article-id-locator")
                 this.$ArticleDescription = $("#article-description");
+                this.$ArticleKeywords = $("#article-keywords");
                 this.quill = new Quill('#editor-container', {
                     modules: {
                         formula: true,
@@ -172,7 +173,8 @@
                                 articleName: _this.$ArticleName.val(),
                                 articleContent: _this.quill.container.firstChild.innerHTML,
                                 articleIdLocator: _this.$ArticleIdLocator.val(),
-                                articleDescription: _this.$ArticleDescription.val()
+                                articleDescription: _this.$ArticleDescription.val(),
+                                articleKeywords: _this.$ArticleKeywords.val()
                             }),
                             success: _MB_defaultXHRSuccessHandler(function (result, status, xhr) {
                                 alert("create or update article success");
