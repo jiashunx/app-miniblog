@@ -177,7 +177,7 @@ public class IndexServlet implements MRestFilter {
         Kv kv = new Kv();
         kv.put("title", entity.getArticleName());
         kv.put("createTime", createTimeStr);
-        kv.put("url", requestUrl);
+        kv.put("url", request.getOriginUrl());
         kv.put("content", new String(entity.getArticleContent()));
         kv.put("keywords", entity.getArticleKeywords());
         kv.put("description", entity.getArticleDescription());
