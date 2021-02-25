@@ -26,6 +26,9 @@ public class ArticleEntity {
     @SQLite3Column(columnName = "ARTICLE_DESCRIPTION")
     private String articleDescription;
 
+    @SQLite3Column(columnName = "ARTICLE_KEYWORDS")
+    private String articleKeywords;
+
     @SQLite3Column(columnName = "ARTICLE_CONTENT")
     private byte[] articleContent;
 
@@ -67,6 +70,14 @@ public class ArticleEntity {
 
     public void setArticleDescription(String articleDescription) {
         this.articleDescription = articleDescription;
+    }
+
+    public String getArticleKeywords() {
+        return articleKeywords;
+    }
+
+    public void setArticleKeywords(String articleKeywords) {
+        this.articleKeywords = articleKeywords;
     }
 
     public byte[] getArticleContent() {
