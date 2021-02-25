@@ -22,7 +22,6 @@ import java.util.*;
 /**
  * @author jiashunx
  */
-@Servlet(urlPattern = "/console/category/*")
 public class CategoryManageServlet extends AbstractRestServlet {
 
     private static final String CATEGORY_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/category-index.html");

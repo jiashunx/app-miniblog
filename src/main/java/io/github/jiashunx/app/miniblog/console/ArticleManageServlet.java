@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 /**
  * @author jiashunx
  */
-@Servlet(urlPattern = "/console/article/*")
 public class ArticleManageServlet extends AbstractRestServlet {
 
     private static final String ARTICLE_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/article-index.html");

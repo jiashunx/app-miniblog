@@ -24,7 +24,6 @@ import java.util.*;
 /**
  * @author jiashunx
  */
-@Servlet(urlPattern = "/console/tag/*")
 public class TagManageServlet extends AbstractRestServlet {
 
     private static final String TAG_MANAGE_HTML = IOUtils.loadContentFromClasspath("template/console/tag-index.html");
