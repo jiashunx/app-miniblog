@@ -111,6 +111,7 @@ public class IndexServlet implements MRestFilter {
         }
         Kv kv = new Kv();
         kv.put("indexRowList", indexRowList);
+        kv.put("urlPrefix", "..");
         response.write(BlogUtils.render(INDEX_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
@@ -145,6 +146,7 @@ public class IndexServlet implements MRestFilter {
         }
         Kv kv = new Kv();
         kv.put("indexRowList", indexRowList);
+        kv.put("urlPrefix", "..");
         response.write(BlogUtils.render(INDEX_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
@@ -272,6 +274,14 @@ public class IndexServlet implements MRestFilter {
         kv.put("prevPageableIndex", indexModel.getPrevPageableIndex());
         kv.put("pageableIndexList", indexModel.getPageableIndexList());
         kv.put("nextPageableIndex", indexModel.getNextPageableIndex());
+        String urlPrefix = "";
+        String requestUrl = request.getUrl();
+        if (requestUrl.equals("/")) {
+            urlPrefix = "";
+        } else if (requestUrl.matches("^/\\d{4}/\\d{1,2}/\\d{1,2}/\\S+$")) {
+            urlPrefix = "../../..";
+        }
+        kv.put("urlPrefix", urlPrefix);
         response.write(BlogUtils.render(INDEX_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
