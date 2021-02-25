@@ -177,6 +177,8 @@ public class IndexServlet implements MRestFilter {
         kv.put("createTime", createTimeStr);
         kv.put("url", requestUrl);
         kv.put("content", new String(entity.getArticleContent()));
+        kv.put("keywords", entity.getArticleKeywords());
+        kv.put("description", entity.getArticleDescription());
         kv.put("tagList", tagList);
         response.write(BlogUtils.render(ARTICLE_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
