@@ -8,7 +8,7 @@
 
 JDK8、[masker-rest][1]、[tools-sqlite3][2]（sqlite工具包）、jQuery、JFinal Enjoy（模板引擎）
 
-## 计划实现功能：
+## 已实现功能：
 
 ### 管理控制台(带权限控制)
   - 登录
@@ -20,9 +20,8 @@ JDK8、[masker-rest][1]、[tools-sqlite3][2]（sqlite工具包）、jQuery、JFi
 ### 博客页(公共)
   - 首页(timeline)
   - 博客详情页
-  - 时间轴
-  - 标签及对应文章查询
-  - 分类及对应文章查询
+  - 标签页及对应文章查询
+  - 分类页及对应文章查询
 
 [1]: https://github.com/jiashunx/masker-rest
 [2]: https://github.com/jiashunx/tools-sqlite3
