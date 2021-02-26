@@ -111,6 +111,7 @@ public class IndexServlet implements MRestFilter {
         }
         Kv kv = new Kv();
         kv.put("indexRowList", indexRowList);
+        kv.put("urlPrefix", "..");
         response.write(BlogUtils.render(INDEX_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
@@ -145,6 +146,7 @@ public class IndexServlet implements MRestFilter {
         }
         Kv kv = new Kv();
         kv.put("indexRowList", indexRowList);
+        kv.put("urlPrefix", "..");
         response.write(BlogUtils.render(INDEX_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
@@ -175,7 +177,7 @@ public class IndexServlet implements MRestFilter {
         Kv kv = new Kv();
         kv.put("title", entity.getArticleName());
         kv.put("createTime", createTimeStr);
-        kv.put("url", requestUrl);
+        kv.put("url", request.getOriginUrl());
         kv.put("content", new String(entity.getArticleContent()));
         kv.put("keywords", entity.getArticleKeywords());
         kv.put("description", entity.getArticleDescription());
@@ -189,7 +191,7 @@ public class IndexServlet implements MRestFilter {
         int totalSize = entityList.size();
         int pageRowCount = 20;
         int pageSize = (totalSize / pageRowCount) + ((totalSize % pageRowCount) > 0 ? 1 : 0);
-        if (pageIndex < 1 || pageIndex > pageSize) {
+        if (pageIndex < 1 || pageSize > 0 && pageIndex > pageSize) {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
             return;
         }
@@ -272,6 +274,14 @@ public class IndexServlet implements MRestFilter {
         kv.put("prevPageableIndex", indexModel.getPrevPageableIndex());
         kv.put("pageableIndexList", indexModel.getPageableIndexList());
         kv.put("nextPageableIndex", indexModel.getNextPageableIndex());
+        String urlPrefix = "";
+        String requestUrl = request.getUrl();
+        if (requestUrl.equals("/")) {
+            urlPrefix = "";
+        } else if (requestUrl.matches("^/\\d{4}/\\d{1,2}/\\d{1,2}/\\S+$")) {
+            urlPrefix = "../../..";
+        }
+        kv.put("urlPrefix", urlPrefix);
         response.write(BlogUtils.render(INDEX_HTML, kv)
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
