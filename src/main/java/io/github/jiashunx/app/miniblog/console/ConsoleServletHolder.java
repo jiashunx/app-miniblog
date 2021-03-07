@@ -1,5 +1,6 @@
 package io.github.jiashunx.app.miniblog.console;
 
+import io.github.jiashunx.app.miniblog.index.IndexServlet;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.masker.rest.framework.servlet.MRestServlet;
 
@@ -22,6 +23,7 @@ public class ConsoleServletHolder {
                 , new CategoryManageServlet(serviceBus.getCategoryService(), serviceBus.getArticleCategoryService())
                 , new TagManageServlet(serviceBus.getTagService(), serviceBus.getArticleTagService())
                 , new ArticleManageServlet(serviceBus)
+                , new IndexServlet(serviceBus)
         };
     }
 

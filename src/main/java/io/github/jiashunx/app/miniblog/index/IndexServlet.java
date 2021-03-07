@@ -10,9 +10,8 @@ import io.github.jiashunx.app.miniblog.util.BlogUtils;
 import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.cons.Constants;
-import io.github.jiashunx.masker.rest.framework.filter.Filter;
-import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;
-import io.github.jiashunx.masker.rest.framework.filter.MRestFilterChain;
+import io.github.jiashunx.masker.rest.framework.servlet.AbstractRestServlet;
+import io.github.jiashunx.masker.rest.framework.servlet.mapping.GetMapping;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
 import io.github.jiashunx.tools.sqlite3.SQLite3JdbcTemplate;
@@ -23,8 +22,7 @@ import java.util.*;
 /**
  * @author jiashunx
  */
-@Filter(urlPatterns = "/*", order = Integer.MAX_VALUE)
-public class IndexServlet implements MRestFilter {
+public class IndexServlet extends AbstractRestServlet {
 
     private static final String INDEX_HTML = IOUtils.loadContentFromClasspath("template/index/index.html");
     private static final String ARTICLE_HTML = IOUtils.loadContentFromClasspath("template/index/article.html");
@@ -39,6 +37,7 @@ public class IndexServlet implements MRestFilter {
     private final ArticleTagService articleTagService;
 
     public IndexServlet(ServiceBus serviceBus) {
+        super();
         this.sqLite3JdbcTemplate = serviceBus.getDatabaseService().getJdbcTemplate();
         this.articleService = Objects.requireNonNull(serviceBus.getArticleService());
         this.categoryService = Objects.requireNonNull(serviceBus.getCategoryService());
@@ -47,43 +46,19 @@ public class IndexServlet implements MRestFilter {
         this.articleTagService = Objects.requireNonNull(serviceBus.getArticleTagService());
     }
 
-    @Override
-    public void doFilter(MRestRequest request, MRestResponse response, MRestFilterChain filterChain) {
-        String requestUrl = request.getUrl();
-        switch (requestUrl) {
-            case "/":
-                index(1, request, response);
-                break;
-            case "/categories":
-                categories(request, response);
-                break;
-            case "/tags":
-                tags(request, response);
-                break;
-            default:
-                //    /2021/02/23/article-short-id
-                if (requestUrl.matches("^/\\d{4}/\\d{1,2}/\\d{1,2}/\\S+$")) {
-                    locateArticle(request, response);
-                } else if (requestUrl.matches("^/tags/\\S+$")) {
-                    //    /tags/tag-name
-                    renderTagArticles(request, response);
-                } else if (requestUrl.matches("^/categories/\\S+$")) {
-                    //    /categories/category-name
-                    renderCategoryArticles(request, response);
-                } else if (requestUrl.matches("^/page/\\d+$")) {
-                    //    /page/page-index
-                    int pageIndex = Integer.parseInt(requestUrl.substring(requestUrl.lastIndexOf("/") + 1));
-                    index(pageIndex, request, response);
-                } else {
-                    filterChain.doFilter(request, response);
-                }
-                break;
-        }
+    @GetMapping(url = "/")
+    public void root(MRestRequest request, MRestResponse response) {
+        index0(1, request, response);
     }
 
+    @GetMapping(url = "/page/{pageIndex}")
+    public void index(MRestRequest request, MRestResponse response) {
+        index0(Integer.parseInt(request.getPathVariable("pageIndex")), request, response);
+    }
+
+    @GetMapping(url = "/categories/{categoryName}")
     public void renderCategoryArticles(MRestRequest request, MRestResponse response) {
-        String requestUrl = request.getUrl();
-        String categoryName = requestUrl.substring(requestUrl.lastIndexOf("/") + 1);
+        String categoryName = request.getPathVariable("categoryName");
         CategoryEntity categoryEntity = categoryService.findByCategoryName(categoryName);
         if (categoryEntity == null) {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
@@ -116,9 +91,9 @@ public class IndexServlet implements MRestFilter {
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
+    @GetMapping(url = "/tags/{tagName}")
     public void renderTagArticles(MRestRequest request, MRestResponse response) {
-        String requestUrl = request.getUrl();
-        String tagName = requestUrl.substring(requestUrl.lastIndexOf("/") + 1);
+        String tagName = request.getPathVariable("tagName");
         TagEntity tagEntity = tagService.findByTagName(tagName);
         if (tagEntity == null) {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
@@ -151,12 +126,11 @@ public class IndexServlet implements MRestFilter {
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
+    @GetMapping(url = "/{yyyy}/{MM}/{dd}/{locatorId}")
     public void locateArticle(MRestRequest request, MRestResponse response) {
-        String requestUrl = request.getUrl();
-        int index = requestUrl.lastIndexOf("/");
-        String createTimeStr = requestUrl.substring(0, index);
-        String locatorId = requestUrl.substring(index + 1);
-        createTimeStr = createTimeStr.substring(1).replace("/", "-");
+        String createTimeStr = String.format("%s-%s-%s", request.getPathVariable("yyyy")
+            , request.getPathVariable("MM"), request.getPathVariable("dd"));
+        String locatorId = request.getPathVariable("locatorId");
         ArticleEntity entity = articleService.findByLocatorIdAndDate(createTimeStr, locatorId);
         if (entity == null) {
             response.writeStatusPageAsHtml(HttpResponseStatus.NOT_FOUND);
@@ -186,7 +160,7 @@ public class IndexServlet implements MRestFilter {
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
-    public void index(int pageIndex, MRestRequest request, MRestResponse response) {
+    public void index0(int pageIndex, MRestRequest request, MRestResponse response) {
         List<ArticleEntity> entityList = articleService.listAll();
         int totalSize = entityList.size();
         int pageRowCount = 20;
@@ -289,6 +263,7 @@ public class IndexServlet implements MRestFilter {
     /**
      * 所有分类页面
      */
+    @GetMapping(url = "/categories")
     public void categories(MRestRequest request, MRestResponse response) {
         List<CategoryEntity> entityList = categoryService.listAll();
         List<Map<String, Object>> categoryList = new ArrayList<>();
@@ -306,6 +281,7 @@ public class IndexServlet implements MRestFilter {
     /**
      * 所有tag页面
      */
+    @GetMapping(url = "/tags")
     public void tags(MRestRequest request, MRestResponse response) {
         List<TagEntity> entityList = tagService.listAll();
         List<Map<String, Object>> tagList = new ArrayList<>();
