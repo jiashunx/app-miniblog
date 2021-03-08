@@ -2,7 +2,6 @@ package io.github.jiashunx.app.miniblog;
 
 import io.github.jiashunx.app.miniblog.console.*;
 import io.github.jiashunx.app.miniblog.exception.MiniBlogException;
-import io.github.jiashunx.app.miniblog.index.IndexServlet;
 import io.github.jiashunx.app.miniblog.service.ServiceBus;
 import io.github.jiashunx.masker.rest.framework.MRestServer;
 import io.github.jiashunx.masker.rest.framework.filter.MRestFilter;

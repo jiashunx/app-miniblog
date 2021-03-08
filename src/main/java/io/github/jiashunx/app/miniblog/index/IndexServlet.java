@@ -160,7 +160,7 @@ public class IndexServlet extends AbstractRestServlet {
                 , MRestHeaderBuilder.Build(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.CONTENT_TYPE_TEXT_HTML));
     }
 
-    public void index0(int pageIndex, MRestRequest request, MRestResponse response) {
+    private void index0(int pageIndex, MRestRequest request, MRestResponse response) {
         List<ArticleEntity> entityList = articleService.listAll();
         int totalSize = entityList.size();
         int pageRowCount = 20;
