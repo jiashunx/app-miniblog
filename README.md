@@ -41,12 +41,14 @@
    - [可选] --apwd 权限认证密码，默认admin，（example：<i>--apwd admin</i>
    - [可选] --jwt_secret_key jwt secret key，（example：<i>--jwt_secret_key jjjjjjjjj</i>
 
-### 版本清单（最新版本：<b>1.1.0</b>）：
+### 版本清单（最新版本：<b>1.1.1</b>）：
 
    - version 1.0.0 (released)
       - feature: 规划功能全部完成
    - version 1.1.0 (released)
-      - optimizing: 更新 [mask-rest][1] 版本至1.6.6，优化 [IndexServlet][4] 的映射拦截处理逻辑
+      - optimizing: 更新 [masker-rest][1] 版本至1.6.6，优化 [IndexServlet][4] 的映射拦截处理逻辑
+   - version 1.1.1 (released)
+      - optimizing: 更新 [masker-rest][1] 版本至1.6.7，修复部分缺陷。
 
 [1]: https://github.com/jiashunx/masker-rest
 [2]: https://github.com/jiashunx/tools-sqlite3
