@@ -50,6 +50,8 @@
    - version 1.1.1 (released)
       - optimizing: 更新 [masker-rest][1] 版本至1.6.7，修复部分缺陷。
    - version 1.1.2 (released)
+      - optimizing: 更新 [masker-rest][1] 版本至1.6.8，修复部分缺陷。
+   - version 1.1.3 (released)
       - optimizing: 更新 [masker-rest][1] 版本至1.7.0，修复部分缺陷。
 
 [1]: https://github.com/jiashunx/masker-rest
