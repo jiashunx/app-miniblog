@@ -49,6 +49,8 @@
       - optimizing: 更新 [masker-rest][1] 版本至1.6.6，优化 [IndexServlet][4] 的映射拦截处理逻辑
    - version 1.1.1 (released)
       - optimizing: 更新 [masker-rest][1] 版本至1.6.7，修复部分缺陷。
+   - version 1.1.2 (released)
+      - optimizing: 更新 [masker-rest][1] 版本至1.7.0，修复部分缺陷。
 
 [1]: https://github.com/jiashunx/masker-rest
 [2]: https://github.com/jiashunx/tools-sqlite3
