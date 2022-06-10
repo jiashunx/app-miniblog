@@ -11,7 +11,7 @@ import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.cons.Constants;
 import io.github.jiashunx.masker.rest.framework.model.MRestFileUpload;
 import io.github.jiashunx.masker.rest.framework.servlet.MRestServlet;
-import io.github.jiashunx.masker.rest.framework.servlet.Servlet;
+import io.github.jiashunx.masker.rest.framework.servlet.MServlet;
 import io.github.jiashunx.masker.rest.framework.util.FileUtils;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
 import io.github.jiashunx.masker.rest.framework.util.MRestHeaderBuilder;
@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * @author jiashunx
  */
-@Servlet(urlPattern = "/console/file/*")
+@MServlet(urlPattern = "/console/file/*")
 public class FileManageServlet implements MRestServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(FileManageServlet.class);

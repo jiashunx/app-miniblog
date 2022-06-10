@@ -11,7 +11,7 @@ import io.github.jiashunx.masker.rest.framework.MRestRequest;
 import io.github.jiashunx.masker.rest.framework.MRestResponse;
 import io.github.jiashunx.masker.rest.framework.cons.Constants;
 import io.github.jiashunx.masker.rest.framework.servlet.AbstractRestServlet;
-import io.github.jiashunx.masker.rest.framework.servlet.Servlet;
+import io.github.jiashunx.masker.rest.framework.servlet.MServlet;
 import io.github.jiashunx.masker.rest.framework.servlet.mapping.GetMapping;
 import io.github.jiashunx.masker.rest.framework.servlet.mapping.PostMapping;
 import io.github.jiashunx.masker.rest.framework.util.IOUtils;
