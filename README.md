@@ -53,6 +53,8 @@
       - optimizing: 更新 [masker-rest][1] 版本至1.6.8，修复部分缺陷。
    - version 1.1.3 (released)
       - optimizing: 更新 [masker-rest][1] 版本至1.7.0，修复部分缺陷。
+   - version 2.0.0 (released)
+      - feature: 编译构建环境由JDK8升级至JDK11
 
 [1]: https://github.com/jiashunx/masker-rest
 [2]: https://github.com/jiashunx/tools-sqlite3
